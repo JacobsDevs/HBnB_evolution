@@ -1,6 +1,6 @@
 # Okky's `HBnB - UML` Playgound
 
-## *==> The things to do <==*
+## *==> The things users can do <==*
 
 **User Management:** `user_can` 
 - Register
@@ -29,8 +29,12 @@
 ---
 
 # *==> Rules: <==*
+**--> Each `object` should be uniquely idetified by a `ID` <--** \
+**--> `Creation` and `update` *<ins>datetime<ins>* should be registerd for all `entities` <--**
 
-### *`user_entity`*
+
+
+### 1. *`user_entity`*
 
 - (`first_name`)
 - (`last_name`)
@@ -41,7 +45,7 @@
     - edit user_entity
     - delete user_entity
 
-### *`place_entity`*
+### 2. *`place_entity`*
 
 - (`title`)
 - (`description`)
@@ -50,3 +54,40 @@
 - (`longitude`)
 - (`owner`)
     - *link this via ID?*
+- (`amenities`)
+    - bathroom
+    - cinema
+    - toilet
+    - sauna
+    - pool
+    - etc
+- (`edit`)
+    - ~~create~~
+    - ~~update~~
+    - ~~delete~~
+    - ~~list (post/advertise)~~
+
+### 3. *`review_entity`*
+- (`review_place`)
+    - `user` able to leave review on listing / property
+    - ~~create~~
+    - ~~update~~
+    - ~~delete~~
+    - ~~list by place~~
+        - sort function?
+- (`rating`)
+- (`comment`)
+
+### 4. *`amenity_entity`*
+- (`name`)
+- (`description`)
+- ~~create~~
+- ~~updated~~
+- ~~deleted~~
+- ~~listed~~
+
+### 5. *`Global / Classes`*
+- `create`
+- `udpate`
+- `delete`
+- `list`
