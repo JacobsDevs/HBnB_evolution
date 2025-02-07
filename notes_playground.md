@@ -8,11 +8,11 @@
 
 ### 1. *`user_entity`*
 
-- [ ] (`first_name`)
-- [ ] (`last_name`)
-- [ ] (`email`)
-- [ ] (`password`)
-- [ ] (`admin`) == boolean (attribute required)
+- [x] (`first_name`)
+- [x] (`last_name`)
+- [x] (`email`)
+- [x] (`password`)
+- [x] (`admin`) == boolean (attribute required)
     - able to register (create)
     - edit user_entity
     - delete user_entity
@@ -40,19 +40,19 @@
     - ~~list (post/advertise)~~
 
 ### 3. *`review_entity`*
-- [ ] (`review_place`)
-    - [ ] `user` able to leave review on listing / property
+- [x] (`review_place`)
+    - [x] `user` able to leave review on listing / property
     - ~~create~~
     - ~~update~~
     - ~~delete~~
     - ~~list by place~~
         - sort function?
-- [ ] (`rating`)
-- [ ] (`comment`)
+- [x] (`rating`)
+- [x] (`comment` / `description`)
 
 ### 4. *`amenity_entity`*
-- [ ] (`name`)
-- [ ] (`description`)
+- [x] (`name`)
+- [x] (`description`)
 - ~~create~~
 - ~~updated~~
 - ~~deleted~~
