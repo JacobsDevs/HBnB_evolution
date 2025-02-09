@@ -19,14 +19,14 @@
 
 ### 2. *`place_entity`*
 
-- [ ] (`title`)
-- [ ] (`description`)
-- [ ] (`price`)
+- [x] (`title`)
+- [x] (`description`)
+- [x] (`price`)
 - [ ] (`latitude`)
 - [ ] (`longitude`)
-- [ ] (`owner`)
+- [x] (`owner`)
     - *link this via ID?*
-- [ ] (`amenities`)
+- [x] (`amenities`)
     - bathroom
     - cinema
     - toilet
@@ -38,7 +38,6 @@
     - ~~update~~
     - ~~delete~~
     - ~~list (post/advertise)~~
-
 ### 3. *`review_entity`*
 - [x] (`review_place`)
     - [x] `user` able to leave review on listing / property
@@ -70,9 +69,9 @@
 
 ## ==> HL_PCK_Diagram.io <== 
 - Presentation Layer
+    - Booking Management
     - Handles user interaction (desktop/mobile)
     - Display properties listings (gallery)
-    - Booking Management
 
 - Facade Pattern
     - Simplify communication to each layer
@@ -92,3 +91,11 @@
         - users
         - listings
 
+
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
