@@ -91,7 +91,7 @@
         - users
         - listings
 
-
+## ==> Class Diagram <==
 ```mermaid
 classDiagram
 direction TB
@@ -283,3 +283,38 @@ direction TB
     BookingRepository --> EntityManager
 
 ```
+
+
+
+## Sequence Diagram
+### Stories
+**userStories**
+- [x] As a `user` i want to create an account
+    - Click the button `sign-up`
+    - New page requesting details of `user`
+    - User will fill out form and click `register` to complete
+    - New page to confirm email address
+    - Once `approved` `user` will be returned back to home page. 
+
+- [ ] As a `owner`(`user`) i want to create a `place`
+    - Click `create_place` button
+    - Fill out `place_form`
+    - Click submit then `place` will be `listed`
+     
+- [ ] As a `user` i want to submit a `review`
+    - Click `submit_review` button after stay date
+    - Fill out `review_form` including `rating`
+    - Click submit
+    - redirected to `place_list` to see their `review`
+
+- [x] As a `user` i want to search for a `place`
+    - Click `search_field`
+    - Fill in search requirements
+    - Click search
+    - `place_list` will showcase in "gallery" or on page
+
+
+- As a `user` i want to delete my `place`
+- As a `user` i want to create a `booking`
+- As a `user` i want to delete my `account`
+- As a `user` i want to update my `details`
