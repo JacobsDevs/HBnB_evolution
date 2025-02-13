@@ -49,7 +49,7 @@ If the ```User``` is valid it will be saved to the ```Database``` and the ```Pre
 
 If the User is invalid or already exists the ```Presentation Layer``` will display an error prompting the ```User``` to fix the invalid data.
 
-![User Registration](Images/Sequences-user_creation.png)
+![User Registration](Images/Sequences-user_registration.png)
 
 ### Place Creation
 
