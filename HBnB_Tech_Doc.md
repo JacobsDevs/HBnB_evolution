@@ -40,10 +40,10 @@ The HBnB Evolution application supports:
 
 ## Sequence Diagram
 ### User Registration
-[User Registration](./Images/Sequence - User Registration.png)
+[User Registration](Images/Sequences-user_creation.png)
 ### Place Creation
-[Place Creation](./Images/Sequence - Place Creation.png)
+[Place Creation](Images/Sequences-place_creation.png)
 ### Review Submission
-![Review Submission](./Images/'Sequence - Review Submission.png')
+![Review Submission](Images/Sequences-review_submission.png)
 ### Place Search
 ![Place Search](Images/Sequences-list_places.png)
