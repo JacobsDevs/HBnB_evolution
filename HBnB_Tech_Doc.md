@@ -44,6 +44,6 @@ The HBnB Evolution application supports:
 ### Place Creation
 [Place Creation](./Images/Sequence - Place Creation.png)
 ### Review Submission
-[Review Submission](./Images/Sequence - Review Submission.png)
+![Review Submission](./Images/Sequence - Review Submission.png)
 ### Place Search
-[Place Search](Images/Sequence - List Places.png)
+![Place Search](Images/Sequence - List Places.png)
