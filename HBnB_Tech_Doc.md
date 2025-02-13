@@ -46,4 +46,4 @@ The HBnB Evolution application supports:
 ### Review Submission
 [Review Submission](./Images/Sequence - Review Submission.png)
 ### Place Search
-[Place Search](./Images/Sequence - List Places.png)
+[Place Search](Images/Sequence - List Places.png)
