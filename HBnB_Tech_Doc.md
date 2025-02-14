@@ -17,7 +17,7 @@ The HBnB Evolution application supports:
 - Amenity management for properties
 
 ## High-Level Diagram
-### Package Diagram
+### Package Diagram: Dstv
 ```mermaid```
 
 ### Layer Responbilities
