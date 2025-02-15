@@ -94,9 +94,23 @@ classDiagram
     User "1" --> "0..*" Review : writes
     Place "1" --> "0..*" Review : receives
     Place "1" --> "0..*" Amenity : has
-    ```
+```
 
 ### Logic Explanation
+
+### BaseEntity Class
+
+This is the abstract base class that provides common attributes for all entities in the system.
+
+#### Attributes:
+- `id` (UUID): Unique identifier for each entity instance
+- `created_at` (DateTime): Timestamp when the entity was created
+- `updated_at` (DateTime): Timestamp when the entity was last updated
+
+#### Purpose:
+- Provides audit trail capabilities
+- Ensures consistent identification across all entities
+- Implements common functionality for entity tracking
 
 
 
