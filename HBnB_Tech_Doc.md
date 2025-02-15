@@ -98,7 +98,8 @@ classDiagram
 
 ### Logic Explanation
 
-### <u>BaseEntity Class</u>
+<details><summary><u>BaseEntity Class</u></summary>
+<br>
 
 *This is the abstract base class that provides common attributes for all entities in the system.*
 
@@ -111,7 +112,10 @@ classDiagram
 - Provides audit trail capabilities
 - Ensures consistent identification across all entities
 - Implements common functionality for entity tracking
-### <u>User Class</u>
+</details>
+
+<details><summary><u>User Class</u></summary>
+<br>
 
 *Represents a user in the system, extending BaseEntity.*
 
@@ -130,7 +134,32 @@ classDiagram
 #### Relationships:
 - **One-to-Many** with Place (as owner)
 - **One-to-Many** with Review (as reviewer)
+</details>
 
+<details><summary><u>Place Class</u></summary>
+<br>
+Represents a property listing in the system, extending BaseEntity.
+
+#### Attributes:
+- `title` (String): Name/title of the property
+- `description` (String): Detailed description
+- `price` (Float): Daily rental price
+- `latitude` (Float): Geographic latitude
+- `longitude` (Float): Geographic longitude
+- `owner` (User): Reference to the property owner
+- `amenities` (List<Amenity>): Associated amenities
+
+#### Methods:
+- `create()`: Lists a new property
+- `update()`: Modifies property details
+- `delete()`: Removes property listing
+- `list_by_owner()`: Retrieves all properties for a specific owner
+
+#### Relationships:
+- **Many-to-One** with User (as owner)
+- **One-to-Many** with Review (as reviewed place)
+- **Many-to-Many** with Amenity
+</details>
 
 
 ---
