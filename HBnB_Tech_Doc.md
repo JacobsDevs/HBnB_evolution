@@ -98,9 +98,9 @@ classDiagram
 
 ### Logic Explanation
 
-### BaseEntity Class
+### <u>BaseEntity Class</u>
 
-This is the abstract base class that provides common attributes for all entities in the system.
+*This is the abstract base class that provides common attributes for all entities in the system.*
 
 #### Attributes:
 - `id` (UUID): Unique identifier for each entity instance
@@ -111,6 +111,25 @@ This is the abstract base class that provides common attributes for all entities
 - Provides audit trail capabilities
 - Ensures consistent identification across all entities
 - Implements common functionality for entity tracking
+### <u>User Class</u>
+
+*Represents a user in the system, extending BaseEntity.*
+
+#### Attributes:
+- `first_name` (String): User's first name
+- `last_name` (String): User's last name
+- `email` (String): User's email address (unique)
+- `password` (String): Hashed password
+- `is_admin` (Boolean): Flag indicating administrative privileges
+
+#### Methods:
+- `register()`: Creates a new user account
+- `update_profile()`: Updates user information
+- `delete_account()`: Removes user account from system
+
+#### Relationships:
+- **One-to-Many** with Place (as owner)
+- **One-to-Many** with Review (as reviewer)
 
 
 
