@@ -138,7 +138,8 @@ classDiagram
 
 <details><summary><u>Place Class</u></summary>
 <br>
-Represents a property listing in the system, extending BaseEntity.
+
+*Represents a property listing in the system, extending BaseEntity.*
 
 #### Attributes:
 - `title` (String): Name/title of the property
@@ -219,6 +220,29 @@ Represents a property listing in the system, extending BaseEntity.
 ### Place --> Amenity Relationship
 - A place can have multiple amenities
 - An amenity can be associated with multiple places
+</details>
+
+<details><summary><u>Data Validation Rules</u></summary>
+
+### User Entity
+- Email must be unique and follow email format
+- Password must meet minimum security requirements
+- First name and last name cannot be empty
+
+### Place Entity
+- Price must be positive
+- Title and description cannot be empty
+- Must have at list one Amenity attached
+
+### Review Entity
+- Rating must be between 1 and 5
+- Comment cannot be empty
+- User cannot review their own property
+- User can only review property they booked
+
+### Amenity Entity
+- Name must be unique
+- Description cannot be empty
 </details>
 
 ---
