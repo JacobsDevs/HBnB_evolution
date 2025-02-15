@@ -161,6 +161,27 @@ Represents a property listing in the system, extending BaseEntity.
 - **Many-to-Many** with Amenity
 </details>
 
+<details><summary><u>Review Class</u></summary>
+<br>
+
+*Represents a user review for a property, extending BaseEntity.*
+
+#### Attributes:
+- `reviewer` (User): Reference to the user writing the review
+- `place` (Place): Reference to the reviewed property
+- `rating` (Integer): Numerical rating (typically 1-5)
+- `comment` (String): Textual review content
+
+#### Methods:
+- `create()`: Submits a new review
+- `update()`: Modifies review content
+- `delete()`: Removes a review
+- `list_by_place()`: Retrieves all reviews for a specific property
+
+#### Relationships:
+- **Many-to-One** with User (as reviewer)
+- **Many-to-One** with Place (as reviewed property)
+</details>
 
 ---
 
