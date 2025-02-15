@@ -183,6 +183,44 @@ Represents a property listing in the system, extending BaseEntity.
 - **Many-to-One** with Place (as reviewed property)
 </details>
 
+<details><summary><u>Amenity Class</u></summary>
+<br>
+
+*Represents a property amenity, extending BaseEntity.*
+
+#### Attributes:
+- `name` (String): Name of the amenity
+- `description` (String): Detailed description of the amenity
+
+#### Methods:
+- `create()`: Adds a new amenity type
+- `update()`: Modifies amenity details
+- `delete()`: Removes an amenity type
+- `list_all()`: Retrieves all available amenities
+
+#### Relationships:
+- **Many-to-Many** with Place
+</details>
+
+<details><summary><u>Relationship Details</u></summary>
+
+### User --> Place Relationship
+- A user can own multiple places
+- Each place must have exactly one owner
+
+### User --> Review Relationship
+- A user can write multiple reviews
+- Each review must have exactly one reviewer
+
+### Place --> Review Relationship
+- A place can have multiple reviews
+- Each review must be associated with exactly one place
+
+### Place --> Amenity Relationship
+- A place can have multiple amenities
+- An amenity can be associated with multiple places
+</details>
+
 ---
 
 ## Sequence Diagram
