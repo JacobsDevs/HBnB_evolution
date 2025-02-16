@@ -58,21 +58,6 @@ graph TD
     SQLDB -->|Stores & Retrieves| Amenity
     SQLDB -->|Stores & Retrieves| Review
 
-    subgraph Responsibilities
-        PresResp["Presentation Layer Responsibilities:
-        1. Handle user interactions through UI or API endpoints.
-        2. Receive inputs and send requests to the Business Layer."]
-
-        BizResp["Business Layer Responsibilities:
-        1. Contains core functionality.
-        2. Implements Authorization/Validation.
-        3. Applies business rules for managing Users, Places, Reviews, and Amenities."]
-
-        PersistResp["Persistence Layer Responsibilities:
-        1. Handles data storage and retrieval.
-        2. Uses a relational database for efficiency."]
-    end
-
     UI -->|Implements| PresResp
     Facade -->|Implements| BizResp
     SQLDB -->|Implements| PersistResp
