@@ -43,9 +43,6 @@ graph TD
         API(APIs)
         end
 
-    Presentation Layer --> Business Layer
-    
-
 ```
 
 It is meant to depict a conceptual overview of how the elements of the HBnB system are organized and how they interact with each other.
