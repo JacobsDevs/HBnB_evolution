@@ -30,23 +30,21 @@ graph TD
         SQLDB(SQL DB)
     end
 
-    subgraph Business Layer
-        subgraph Property
+    Business Layer
+        Property
             Place(Place)
             Amenity(Amenity)
             Review(Review)
-        end
         Facade(Facade)
         User(User)
-    end
 
-    subgraph Presentation Layer
+    Presentation Layer
         UI(UI)
         API(APIs)
-    end
+        end
 
-    UI -->|Handles user interactions| API
-    API -->|Sends requests| Facade
+    Presentation Layer --> Business Layer
+    
 
 ```
 
