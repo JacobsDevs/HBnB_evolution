@@ -44,24 +44,6 @@ graph TD
         SQLDB(SQL DB)
     end
 
-    Client --> UI
-    UI -->|Handles user interactions| API
-    API -->|Sends request| Facade
-    Facade -->|Manages users| User
-    Facade -->|Manages properties| Place
-    Facade -->|Manages amenities| Amenity
-    Facade -->|Manages reviews| Review
-    Review -->|Belongs to| Place
-    Review -->|Belongs to| Amenity
-    SQLDB -->|Stores & Retrieves| User
-    SQLDB -->|Stores & Retrieves| Place
-    SQLDB -->|Stores & Retrieves| Amenity
-    SQLDB -->|Stores & Retrieves| Review
-
-    UI -->|Implements| PresResp
-    Facade -->|Implements| BizResp
-    SQLDB -->|Implements| PersistResp
-
 ```
 
 It is meant to depict a conceptual overview of how the elements of the HBnB system are organized and how they interact with each other.
