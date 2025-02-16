@@ -23,8 +23,7 @@ The HBnB Evolution application supports:
 ### Package Diagram: 
 This diagram illustrates the three-layer architecture of the HBnB application. 
 
-```
-mermaid
+```mermaid
 
 graph TD
 
