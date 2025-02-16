@@ -30,22 +30,28 @@ graph TD
         SQLDB(SQL DB)
     end
 
-    Business Layer
-        Property
+    subgraph Business Layer
+        subgraph Property
             Place(Place)
             Amenity(Amenity)
             Review(Review)
+        end
         Facade(Facade)
         User(User)
+    end
 
-    Presentation Layer
+    subgraph Presentation Layer
         UI(UI)
         API(APIs)
-        end
+    end
 
 ```
 
 It is meant to depict a conceptual overview of how the elements of the HBnB system are organized and how they interact with each other.
+
+Follow this [link](https://app.diagrams.net/#HJacobsDevs%2FHBnB_evolution%2Fokky%2FHBnB%20Evolution%20-%20Package%20Diagram.drawio#%7B%22pageId%22%3A%22b5b7bab2-c9e2-2cf4-8b2a-24fd1a2a6d21%22%7D) for a more detailed view:
+
+
 
 
 ### Layer Responbilities
