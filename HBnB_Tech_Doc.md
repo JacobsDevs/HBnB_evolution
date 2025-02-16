@@ -1,13 +1,16 @@
+![alt text](<Airbnb Project.png>)
+
+
 # HBnB Evolution Technical Documentation
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [High-Level Architecture](#high-level-diagram)
+2. [High-Level Package Diagram](#high-level-diagram)
 3. [Business Logic Layer](#class-diagram)
 4. [API Interaction Flow](#sequence-diagram)
 
 ## Introduction
-This technical documentation provides a comprehensive blueprint for the HBnB Evolution application, a simplified version of an AirBnB-like platform. The doucmentation outlines the systems architecture, detailed design of the business logic, and interavtions between different components. 
+This technical documentation provides a comprehensive blueprint for the HBnB Evolution application, a simplified version of an AirBnB-like platform. The documentation outlines the systems architecture, detailed design of the business logic, and interactions between different components. 
 
 ### Project Scope
 The HBnB Evolution application supports:
@@ -17,8 +20,67 @@ The HBnB Evolution application supports:
 - Amenity management for properties
 
 ## High-Level Diagram
-### Package Diagram: Dstv
-```mermaid```
+### Package Diagram: 
+This diagram illustrates the three-layer architecture of the HBnB application. 
+
+```mermaid
+graph TD
+    subgraph Presentation Layer
+        UI(UI)
+        API(APIs)
+    end
+
+    subgraph Business Layer
+        Facade(Facade)
+        User(User)
+        subgraph Property
+            Place(Place)
+            Amenity(Amenity)
+            Review(Review)
+        end
+    end
+
+    subgraph Persistence Layer
+        SQLDB(SQL DB)
+    end
+
+    Client --> UI
+    UI -->|Handles user interactions| API
+    API -->|Sends request| Facade
+    Facade -->|Manages users| User
+    Facade -->|Manages properties| Place
+    Facade -->|Manages amenities| Amenity
+    Facade -->|Manages reviews| Review
+    Review -->|Belongs to| Place
+    Review -->|Belongs to| Amenity
+    SQLDB -->|Stores & Retrieves| User
+    SQLDB -->|Stores & Retrieves| Place
+    SQLDB -->|Stores & Retrieves| Amenity
+    SQLDB -->|Stores & Retrieves| Review
+
+    subgraph Responsibilities
+        PresResp["Presentation Layer Responsibilities:
+        1. Handle user interactions through UI or API endpoints.
+        2. Receive inputs and send requests to the Business Layer."]
+
+        BizResp["Business Layer Responsibilities:
+        1. Contains core functionality.
+        2. Implements Authorization/Validation.
+        3. Applies business rules for managing Users, Places, Reviews, and Amenities."]
+
+        PersistResp["Persistence Layer Responsibilities:
+        1. Handles data storage and retrieval.
+        2. Uses a relational database for efficiency."]
+    end
+
+    UI -->|Implements| PresResp
+    Facade -->|Implements| BizResp
+    SQLDB -->|Implements| PersistResp
+
+```
+
+It is meant to depict a conceptual overview of how the elements of the HBnB system are organized and how they interact with each other.
+
 
 ### Layer Responbilities
 ##### Presentation Layer
