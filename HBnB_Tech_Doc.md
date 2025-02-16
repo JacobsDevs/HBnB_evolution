@@ -45,8 +45,8 @@ graph TD
         API(APIs)
     end
 
-    Presentation Layer --> Business Layer
-    Business Layer --> Persistence Layer
+    Presentation Layer-->Business Layer
+    Business Layer-->Persistence Layer
 
 ```
 
