@@ -45,8 +45,8 @@ graph TD
         API(APIs)
     end
 
-    "Presentation Layer"-->"Business Layer"
-    "Business Layer"-->"Persistence Layer"
+    UI -->|Handles user interactions| API
+    API -->|Sends requests| Facade
 
 ```
 
