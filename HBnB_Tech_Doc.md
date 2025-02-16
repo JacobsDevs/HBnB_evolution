@@ -25,9 +25,9 @@ This diagram illustrates the three-layer architecture of the HBnB application.
 
 ```mermaid
 graph TD
-    subgraph Presentation Layer
-        UI(UI)
-        API(APIs)
+
+    subgraph Persistence Layer
+        SQLDB(SQL DB)
     end
 
     subgraph Business Layer
@@ -40,8 +40,9 @@ graph TD
         end
     end
 
-    subgraph Persistence Layer
-        SQLDB(SQL DB)
+    subgraph Presentation Layer
+        UI(UI)
+        API(APIs)
     end
 
 ```
