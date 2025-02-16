@@ -52,16 +52,33 @@ It is meant to depict a conceptual overview of how the elements of the HBnB syst
 
 Follow this *[link](https://app.diagrams.net/#HJacobsDevs%2FHBnB_evolution%2Fokky%2FHBnB%20Evolution%20-%20Package%20Diagram.drawio#%7B%22pageId%22%3A%22b5b7bab2-c9e2-2cf4-8b2a-24fd1a2a6d21%22%7D)* for a more detailed view:
 
-
-
-
 ### Layer Responbilities
 ##### Presentation Layer
-- 
+
+1. Provides user interaction via a UI (User Interface).
+
+2. Exposes system functionalities through APIs.
+
+3. Handles client requests and formats responses accordingly.
+
 ##### Business Logic Layer
-- 
+
+1. Manages core application logic and data processing.
+
+2. Contains the Facade component, which acts as an interface for various business operations.
+
+3. Handles Users, Properties (Places, Amenities, Reviews), and their interaction with each other.
+
+4. Ensures security, validation, and enforcement of business rules.
+
+
 ##### Persistence Layer
-- 
+
+1. Stores and manages data using a SQL Database.
+
+2. Ensures data consistency and integrity.
+
+3. Provides CRUD (Create, Read, Update, Delete) operations for the business layer.
 
 ---
 
