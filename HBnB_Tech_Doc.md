@@ -31,13 +31,14 @@ graph TD
     end
 
     subgraph Business Layer
+        Facade(Facade)
+        User(User)
         subgraph Property
             Place(Place)
             Amenity(Amenity)
             Review(Review)
         end
-        Facade(Facade)
-        User(User)
+        
     end
 
     subgraph Presentation Layer
