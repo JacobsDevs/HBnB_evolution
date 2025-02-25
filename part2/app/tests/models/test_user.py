@@ -1,5 +1,6 @@
 import pytest
 import sys
+sys.path.append('../../..')
 from app.models.user import User
 from app.services.facade import HBnBFacade
 
