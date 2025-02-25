@@ -85,6 +85,7 @@ class TestClass():
 
     def testUserEmailIsUnique(self, setup_facade, valid_user):
         users = setup_facade.get_all()
+        test
         with pytest.raises(Exception) as exception:
             User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
         assert exception.type == ValueError
