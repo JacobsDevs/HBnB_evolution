@@ -1,6 +1,5 @@
 ![alt text](<Airbnb Project.png>)
 
-
 # HBnB Evolution Technical Documentation
 
 ## Table of Contents
@@ -66,7 +65,7 @@ Follow this *[link](https://app.diagrams.net/#HJacobsDevs%2FHBnB_evolution%2Fokk
 1. Manages core application logic and data processing.
 
 2. Contains the Facade component, which acts as an interface for various business operations.
-
+ 4 conflicts 
 3. Handles Users, Properties (Places, Amenities, Reviews), and their interaction with each other.
 
 4. Ensures security, validation, and enforcement of business rules.
