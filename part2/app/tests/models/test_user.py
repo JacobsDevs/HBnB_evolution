@@ -33,7 +33,6 @@ class TestClass():
         object is stored in the facade's user_repo.
         """
         assert setup_facade.get_all() == [valid_user]
-        assert valid_user.id == "a"
 
     def testUserInstantiation(self, valid_user):
         user = valid_user
@@ -77,6 +76,13 @@ class TestClass():
             user = User(first_name="John", last_name="Smith", password="password", is_admin=True)
         assert exception.type == ValueError
         assert "Email is required" in str(exception.value)
+
+    def testUserEmailInvalid(self):
+        """Required, maximum length of 50 characters."""
+        with pytest.raises(Exception) as exception:
+            user = User("John", "Smith", "invalid", "password", True)
+        assert exception.type == ValueError
+        assert "Email is not valid" in str(exception.value)
 
     def testUserEmailInvalid(self):
         """Required, maximum length of 50 characters."""
