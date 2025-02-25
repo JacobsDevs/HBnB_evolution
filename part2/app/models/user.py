@@ -1,4 +1,6 @@
 from app.models.baseModel import BaseModel
+from email_validator import validate_email, EmailNotValidError
+import re
 
 class User(BaseModel):
     def __init__(self, first_name=None, last_name=None, email=None, password=None, is_admin=False): 
@@ -70,7 +72,11 @@ class User(BaseModel):
         return password != "weak"
 
     def validate_email(self, email):
-        return email != "invalid"
+        try:
+            valid = validate_email(email)
+            return True
+        except EmailNotValidError as e:
+            return False
 
 
 """    def add_review_to_place(self, place, review):
