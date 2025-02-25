@@ -1,6 +1,5 @@
 import pytest
 import sys
-sys.path.append('../../..')
 from app.models.user import User
 from app.services.facade import HBnBFacade
 
@@ -84,12 +83,6 @@ class TestClass():
         assert exception.type == ValueError
         assert "Email is not valid" in str(exception.value)
 
-    def testUserEmailInvalid(self):
-        """Required, maximum length of 50 characters."""
-        with pytest.raises(Exception) as exception:
-            user = User("John", "Smith", "invalid", "password", True)
-        assert exception.type == ValueError
-        assert "Email is not valid" in str(exception.value)
 
     def testUserPasswordWeak(self):
         with pytest.raises(Exception) as exception:
