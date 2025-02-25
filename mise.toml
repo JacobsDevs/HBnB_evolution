@@ -1,0 +1,5 @@
+[tools]
+python = "3"
+
+[env]
+PYTHONPATH = "/home/jacob/Code/Holberton/HBnB_Evolution/part2"
