@@ -1,6 +1,4 @@
 import pytest
-import sys
-sys.path.append('../../..')
 from app.models.user import User
 from app.services.facade import HBnBFacade
 
@@ -10,6 +8,7 @@ class TestClass():
     so you will need to define everything that you want to persist inside the
     fixture.
     """
+
     @pytest.fixture
     def valid_user(self):
         """
