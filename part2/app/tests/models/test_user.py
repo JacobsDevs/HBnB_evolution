@@ -83,6 +83,13 @@ class TestClass():
         assert exception.type == EmailNotValidError
         assert "Email is not valid" in str(exception.value)
 
+    def testUserEmailIsUnique(self, setup_facade, valid_user):
+        users = setup_facade.get_all()
+        with pytest.raises(Exception) as exception:
+            User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
+        assert exception.type == ValueError
+        assert "Email is in use" in str(exception.value)
+
 
     def testUserPasswordShort(self):
         with pytest.raises(Exception) as exception:
