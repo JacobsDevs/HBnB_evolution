@@ -169,7 +169,6 @@ class Review(BaseModel):
         # In real implementation, this would interact with the repository
         # return repository.get_all_by_attribute('place_id', place.id)
         return []
-
     def to_dict(self):
         """
         Convert the review to a dictionary.
