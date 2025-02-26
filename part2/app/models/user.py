@@ -1,5 +1,6 @@
 from typing import Tuple
 from app.models.baseModel import BaseModel
+from app.services.__init__ import facade
 from email_validator import validate_email, EmailNotValidError
 
 class User(BaseModel):
@@ -38,6 +39,7 @@ class User(BaseModel):
         self.is_admin = is_admin
         self.places = []
         super().__init__()
+        facade.user_repo.add(self)
 
     @property
     def first_name(self):
@@ -93,6 +95,8 @@ class User(BaseModel):
         """Validates the email requirements from __init__ docstring"""
         if value == None:
             raise ValueError("Email is required")
+        elif facade.user_repo.get_by_attribute('email', value) != None:
+            raise ValueError("Email is not unique")
         elif self.validate_email(value) is False:
             raise EmailNotValidError("Email is not valid")
         else:
@@ -126,6 +130,9 @@ class User(BaseModel):
             return True
         except EmailNotValidError as e:
             return False
+
+    def delete(self):
+        facade.user_repo.delete(self.id)
 
 
 """    def add_review_to_place(self, place, review):

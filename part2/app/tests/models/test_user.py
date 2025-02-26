@@ -16,6 +16,7 @@ class TestClass():
         """
         user = User("John", "Smith", "john@smith.com", "password1!")
         yield user
+        user.delete()
 
     @pytest.fixture
     def setup_facade(self, valid_user):
@@ -84,11 +85,11 @@ class TestClass():
         assert "Email is not valid" in str(exception.value)
 
     def testUserEmailIsUnique(self, setup_facade, valid_user):
-        users = setup_facade.get_all()
         with pytest.raises(Exception) as exception:
             User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
+            User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
         assert exception.type == ValueError
-        assert "Email is in use" in str(exception.value)
+        assert "Email is not unique" in str(exception.value)
 
 
     def testUserPasswordShort(self):
