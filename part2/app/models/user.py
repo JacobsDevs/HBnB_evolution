@@ -125,13 +125,15 @@ class User(BaseModel):
             return (False, ValueError("Password must be at least 8 characters"))
 
     def validate_email(self, email):
+        """Checks an email is valid by RFC Standards using email-validator"""
         try:
             valid = validate_email(email)
             return True
         except EmailNotValidError as e:
             return False
 
-    def delete(self):
+    def delete_from_database(self):
+        """Removes self from the user_repo"""
         facade.user_repo.delete(self.id)
 
 
