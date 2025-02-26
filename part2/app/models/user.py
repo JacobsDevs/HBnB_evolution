@@ -76,8 +76,3 @@ class User(BaseModel):
             return True
         except EmailNotValidError as e:
             return False
-
-
-"""    def add_review_to_place(self, place, review):
-        self.reviews.append(review)
-        place.add_review(review) """
