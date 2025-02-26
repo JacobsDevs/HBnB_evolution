@@ -1,6 +1,5 @@
+from email_validator import EmailNotValidError
 import pytest
-import sys
-sys.path.append('../../..')
 from app.models.user import User
 from app.services.facade import HBnBFacade
 
@@ -15,8 +14,9 @@ class TestClass():
         """
         This will always contain this valid user
         """
-        user = User("John", "Smith", "john@smith.com", "password")
+        user = User("John", "Smith", "john@smith.com", "password1!")
         yield user
+        user.delete_from_database()
 
     @pytest.fixture
     def setup_facade(self, valid_user):
@@ -39,7 +39,7 @@ class TestClass():
         assert user.first_name == "John"
         assert user.last_name == "Smith"
         assert user.email == "john@smith.com"
-        assert user.password == "password"
+        assert user.password == "password1!"
         assert user.is_admin == False
 
     def testUserFirstNameMissing(self):
@@ -81,12 +81,42 @@ class TestClass():
         """Required, maximum length of 50 characters."""
         with pytest.raises(Exception) as exception:
             user = User("John", "Smith", "invalid", "password", True)
-        assert exception.type == ValueError
+        assert exception.type == EmailNotValidError
         assert "Email is not valid" in str(exception.value)
 
+    def testUserEmailIsUnique(self, setup_facade, valid_user):
+        """Email must not already be registered to a user"""
+        with pytest.raises(Exception) as exception:
+            User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
+            User("Jack", "Smith", "john@smith.com", "ABCD1234!!")
+        assert exception.type == ValueError
+        assert "Email is not unique" in str(exception.value)
 
-    def testUserPasswordWeak(self):
+
+    def testUserPasswordShort(self):
+        """Password must be 8 characters minimum"""
         with pytest.raises(Exception) as exception:
             user = User("John", "Smith", "john@smith.com", "weak", True)
         assert exception.type == ValueError
-        assert "Password is too weak" in str(exception.value)
+        assert "Password must be at least 8 characters" in str(exception.value)
+
+    def testUserPasswordNoDigits(self):
+        """Password requires 1 digit"""
+        with pytest.raises(Exception) as exception:
+            user = User("John", "Smith", "john@smith.com", "abcdefgh", True)
+        assert exception.type == ValueError
+        assert "Password is missing a digit" in str(exception.value)
+
+    def testUserPasswordNoLetters(self):
+        """Password requires 1 letter"""
+        with pytest.raises(Exception) as exception:
+            user = User("John", "Smith", "john@smith.com", "12345678", True)
+        assert exception.type == ValueError
+        assert "Password is missing a letter" in str(exception.value)
+
+    def testUserPasswordNoSpecialCharacters(self):
+        """Password requires 1 special character"""
+        with pytest.raises(Exception) as exception:
+            user = User("John", "Smith", "john@smith.com", "abcdabcd123", True)
+        assert exception.type == ValueError
+        assert "Password is missing a special character" in str(exception.value)

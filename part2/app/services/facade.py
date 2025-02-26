@@ -1,5 +1,4 @@
 from app.persistence.repository import InMemoryRepository
-from app.models.user import User
 
 class HBnBFacade:
     def __init__(self):
@@ -10,9 +9,10 @@ class HBnBFacade:
 
     def create_user(self, user_data):
         try:
+            from app.models.user import User
             user = User(user_data)
             self.user_repo.add(user)
-        except InvalidUserDataException:
+        except Exception:
             return "This user data is shit"
 
     def get_place(self, place_id):
