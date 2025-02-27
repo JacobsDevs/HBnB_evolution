@@ -1,4 +1,4 @@
-from app.models.baseModel import BaseModel
+from .baseModel import BaseModel
 
 
 class Amenity(BaseModel):
@@ -93,12 +93,3 @@ class Amenity(BaseModel):
         # In real implementation, this would interact with the repository
         # return repository.get_all()
         return []
-
-    def to_dict(self):
-        """
-        Convert the amenity to a dictionary.
-        
-        Returns:
-            dict: Dictionary containing amenity attributes
-        """
-        return super().to_dict()

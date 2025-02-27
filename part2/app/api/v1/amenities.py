@@ -8,3 +8,7 @@ amenity_model = api.model('Amenity', {
     'name': fields.String(require=True, description='Name of the amenity')
     'description': fields.String(required=True, description='Description of the amenity')
 })
+
+@api.route('/')
+
+@api.route('/<amenity_id>')

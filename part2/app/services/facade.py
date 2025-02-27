@@ -1,12 +1,15 @@
-from app.persistence.repository import InMemoryRepository
-from app.models.place import Place
-from app.models.review import Review
-from app.models.amenity import Amenity
 import json
+from ..persistence.repository import InMemoryRepository
+from ..models.place import Place
+from ..models.review import Review
+from ..models.amenity import Amenity
+from ..models.user import User
 
 class HBnBFacade:
     """
     The HBnBFacade class acts as a bridge between the API layer and the model/persistence layers.
+
+    <==|==> CRUD operations should be handled here in the facade <==|==>
     
     This class follows the Facade design pattern, which provides a simplified interface
     to a complex subsystem. It coordinates all operations involving models and repositories,
@@ -25,7 +28,6 @@ class HBnBFacade:
 
     # User operations
     def create_user(self, user_data):
-        from app.models.user import User
 
         """
         Create a new user and store it in the repository.
@@ -68,87 +70,87 @@ class HBnBFacade:
 
 # === Amenity ===
 
-def create_amenity(self, amenity_data):
-    """
-    Create a new amenity and store it in the repository.
-    Args:
-        amenity_data (dict): Dictionary containing amenity data
-        - name (str): Name of the amenity (required)
-        - description (str, optional): Description of the amenity
-    Returns:
-        Amenity: The created amenity instance
-    Raises:
-        ValueError: If validation fails (e.g., missing name, name too long)
-    """
-    # Create a new amenity instance
-    amenity = Amenity(
-        name=amenity_data.get('name'),
-        description=amenity_data.get('description')
-    )
+    def create_amenity(self, amenity_data):
+        """
+        Create a new amenity and store it in the repository.
+        Args:
+            amenity_data (dict): Dictionary containing amenity data
+            - name (str): Name of the amenity (required)
+            - description (str, optional): Description of the amenity
+        Returns:
+            Amenity: The created amenity instance
+        Raises:
+            ValueError: If validation fails (e.g., missing name, name too long)
+        """
+        # Create a new amenity instance
+        amenity = Amenity(
+            name=amenity_data.get('name'),
+            description=amenity_data.get('description')
+        )
 
-    # Store in repository
-    self.amenity_repo.add(amenity)
+        # Store in repository
+        self.amenity_repo.add(amenity)
 
-    return amenity
+        return amenity
 
-def delete_amenity(self, amenity_id):
-    """
-    Delete an amenity.
-    Args:
-        amenity_id (str): ID of the amenity to delete
-    Returns:
-        bool: True if deletion was successful, False if amenity not found
-    """
-    amenity = self.get_amenity(amenity_id)
-    if not amenity:
-        return False
+    def delete_amenity(self, amenity_id):
+        """
+        Delete an amenity.
+        Args:
+            amenity_id (str): ID of the amenity to delete
+        Returns:
+            bool: True if deletion was successful, False if amenity not found
+        """
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            return False
 
-    self.amenity_repo.delete(amenity_id)
-    return True
+        self.amenity_repo.delete(amenity_id)
+        return True
 
-def get_amenity(self, amenity_id):
-    """
-    Retrieve an amenity ID. 
+    def get_amenity(self, amenity_id):
+        """
+        Retrieve an amenity ID. 
 
-    Args:
-        amenity_id (str): ID of the amenity to retrieve
-    Returns:
-        Amenity: The amenity instance(object) if found, None otherwise
-    """
+        Args:
+            amenity_id (str): ID of the amenity to retrieve
+        Returns:
+            Amenity: The amenity instance(object) if found, None otherwise
+        """
 
-    return self.amenity_repo.get(amenity_id)
+        return self.amenity_repo.get(amenity_id)
 
-def get_all_amenities(self):
-    """
-    Retrieve all amenities.
-    Returns:
-        List: List of all Amenity instances (objects)
-    """
-    amenities = self.amenity_repo.get_all()
-    return [a.__dict__ for a in amenities]
+    def get_all_amenities(self):
+        """
+        Retrieve all amenities.
+        Returns:
+            List: List of all Amenity instances (objects)
+        """
+        amenities = self.amenity_repo.get_all()
+        return [a.__dict__ for a in amenities]
 
-def update_amenity(self, amenity_id, amenity_data):
-    """
-    Update an amenity's information (Data)
-    
-    Args:
-        amenity_id (str): ID of the amenity to update
-        amenity_data (dict): Dictionary containing updated amenity data
-        - name (str, optional): New name for the amenity
-        - description (str, optional): New description for the amenity
+    def update_amenity(self, amenity_id, amenity_data):
+        """
+        Update an amenity's information (Data)
+        
+        Args:
+            amenity_id (str): ID of the amenity to update
+            amenity_data (dict): Dictionary containing updated amenity data
+            - name (str, optional): New name for the amenity
+            - description (str, optional): New description for the amenity
 
-    Returns:
-        Amenity: The updated amenity instance (object)
-    Raises:
-        ValueError: if amenity not found of validation fails
-    """
+        Returns:
+            Amenity: The updated amenity instance (object)
+        Raises:
+            ValueError: if amenity not found of validation fails
+        """
 
-    # Get the (amenity_id) from the repository
-    amenity = self.amenity_repo.get(amenity_id)
-    if not amenity:
-        return None
+        # Get the (amenity_id) from the repository
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return None
 
-    # Update the amenity with the new data
-    self.amenity_repo.update(amenity_id, amenity_data)
+        # Update the amenity with the new data
+        self.amenity_repo.update(amenity_id, amenity_data)
 
-    return self.get_amenity(amenity_id)
+        return self.get_amenity(amenity_id)

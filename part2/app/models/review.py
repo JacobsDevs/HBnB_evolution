@@ -168,26 +168,4 @@ class Review(BaseModel):
         """
         # In real implementation, this would interact with the repository
         # return repository.get_all_by_attribute('place_id', place.id)
-        return []
-    def to_dict(self):
-        """
-        Convert the review to a dictionary.
-        
-        Returns:
-            dict: Dictionary containing review attributes
-        """
-        review_dict = super().to_dict()
-        
-        # Add reference IDs
-        if hasattr(self, 'place'):
-            review_dict['place_id'] = self.place.id
-            
-        if hasattr(self, 'user'):
-            review_dict['user_id'] = self.user.id
-            # Include additional user information
-            review_dict['user_info'] = {
-                'first_name': self.user.first_name,
-                'last_name': self.user.last_name
-            }
-            
-        return review_dict
+        return [place]
