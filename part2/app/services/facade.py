@@ -117,3 +117,12 @@ def get_amenity(self, amenity_id):
     """
 
     return self.amenity_repo.get(amenity_id)
+
+def get_all_amenities(self):
+    """
+    Retrieve all amenities.
+    Returns:
+        List: List of all Amenity instances (objects)
+    """
+    amenities = self.amenity_repo.get_all()
+    return [a.__dict__ for a in amenities]
