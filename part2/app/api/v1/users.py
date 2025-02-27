@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-
+import json
 # Namespace -> Object from wich Users endopoint will inherit API configuration/
 api = Namespace('users', description='User operations')
 
@@ -29,7 +29,11 @@ class UserList(Resource):
                 'last_name': new_user.last_name,
                 'email': new_user.email,
                 }, 201
-    
+    def get(self):
+        """Get a list of all users"""
+        users = facade.get_all_users()
+        print(users)
+        return users
 
 @api.route('/<user_id>')
 class UserResource(Resource):

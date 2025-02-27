@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+import json
 
 class HBnBFacade:
     """
@@ -57,6 +58,10 @@ class HBnBFacade:
     
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
+
+    def get_all_users(self):
+        users = self.user_repo.get_all()
+        return [c.__dict__ for c in users]
 
 #     def get_place(self, place_id):
 #         pass

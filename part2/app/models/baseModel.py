@@ -18,8 +18,8 @@ class BaseModel:
         - The current datetime for both created_at and updated_at
         """
         self.id = str(uuid.uuid4())  # Generate a random UUID and convert to string
-        self.created_at = datetime.now()  # Set creation timestamp
-        self.updated_at = datetime.now()  # Set initial update timestamp
+        self.created_at = str(datetime.now())  # Set creation timestamp
+        self.updated_at = str(datetime.now())  # Set initial update timestamp
 
     def save(self):
         """
