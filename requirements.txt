@@ -1,3 +1,5 @@
 flask
 flask-restx
+pytest
 email-validator
+
