@@ -106,3 +106,14 @@ def delete_amenity(self, amenity_id):
     self.amenity_repo.delete(amenity_id)
     return True
 
+def get_amenity(self, amenity_id):
+    """
+    Retrieve an amenity ID. 
+
+    Args:
+        amenity_id (str): ID of the amenity to retrieve
+    Returns:
+        Amenity: The amenity instance(object) if found, None otherwise
+    """
+
+    return self.amenity_repo.get(amenity_id)
