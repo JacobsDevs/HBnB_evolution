@@ -9,6 +9,7 @@ class TestClass():
     so you will need to define everything that you want to persist inside the
     fixture.
     """
+
     @pytest.fixture
     def valid_user(self):
         """
