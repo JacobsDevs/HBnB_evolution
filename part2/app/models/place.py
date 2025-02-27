@@ -1,21 +1,4 @@
 from app.models.baseModel import BaseModel
-<<<<<<< HEAD
-from app.services.facade import HBnBFacade
-
-
-data_base = HBnBFacade()
-
-class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner_id, amenities=[], description=None):
-        super().__init__()
-        self.title = title
-        self.description = description
-        self.price = price
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner_id = owner_id
-        self.amenities = amenities
-=======
 from app.models.user import User
 
 class Place(BaseModel):
@@ -61,7 +44,6 @@ class Place(BaseModel):
 
         # Initialize lists for relationships
         self.amenities = []
->>>>>>> model_test_review
         self.reviews = []
         
     """Title Setter and Getter"""
@@ -335,67 +317,7 @@ class Place(BaseModel):
         self.amenities.append(amenity)
         self.save()  # Update the updated_at timestamp
         return self
-
-<<<<<<< HEAD
+    
     def valid_string_length(self, string, length):
         return len(string) <= length
-=======
-    def remove_amenity(self, amenity_id):
-        """
-        Remove an amenity from the place.
-        
-        Args:
-            amenity_id: ID of the amenity to remove
-            
-        Returns:
-            Place: The updated place instance
-        """
-        self.amenities = [a for a in self.amenities if a.id != amenity_id]
-        self.save()  # Update the updated_at timestamp
-        return self
 
-    @classmethod
-    def list_by_owner(cls, owner):
-        """
-        List all places owned by a specific user.
-        In a real application, this would query the repository.
-        
-        Args:
-            owner (User): User instance to filter by
-            
-        Returns:
-            list: List of Place instances owned by the user
-        """
-        # In real implementation, this would interact with the repository
-        # return repository.get_all_by_attribute('owner_id', owner.id)
-        return []
-
-    def to_dict(self):
-        """
-        Convert the place to a dictionary.
-        
-        Returns:
-            dict: Dictionary containing place attributes
-        """
-        place_dict = super().to_dict()
-
-        # Handle relationships
-        if hasattr(self, 'owner'):
-            place_dict['owner_id'] = self.owner.id
-            # Include additional owner information
-            place_dict['owner_info'] = {
-                'first_name': self.owner.first_name,
-                'last_name': self.owner.last_name,
-                'email': self.owner.email
-            }
-
-        # Format amenities as a list of IDs
-        if hasattr(self, 'amenities') and self.amenities:
-            place_dict['amenity_ids'] = [amenity.id for amenity in self.amenities]
-
-        # Format reviews as a list of IDs
-        if hasattr(self, 'reviews') and self.reviews:
-            place_dict['review_ids'] = [review.id for review in self.reviews]
-
-        return place_dict
->>>>>>> model_test_review

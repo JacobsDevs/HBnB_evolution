@@ -1,6 +1,5 @@
 from typing import Tuple
 from app.models.baseModel import BaseModel
-from app.services.__init__ import facade
 from email_validator import validate_email, EmailNotValidError
 
 class User(BaseModel):
@@ -39,7 +38,6 @@ class User(BaseModel):
         self.is_admin = is_admin
         self.places = []
         super().__init__()
-        facade.user_repo.add(self)
 
     @property
     def first_name(self):
@@ -95,10 +93,10 @@ class User(BaseModel):
         """Validates the email requirements from __init__ docstring"""
         if value == None:
             raise ValueError("Email is required")
-        elif facade.user_repo.get_by_attribute('email', value) != None:
-            raise ValueError("Email is not unique")
-        elif self.validate_email(value) is False:
-            raise EmailNotValidError("Email is not valid")
+        # elif facade.user_repo.get_by_attribute('email', value) != None:
+        #     raise ValueError("Email is not unique")
+        # elif self.validate_email(value) is False:
+        #     raise EmailNotValidError("Email is not valid")
         else:
             self.__email = value
 
@@ -124,17 +122,17 @@ class User(BaseModel):
         else:
             return (False, ValueError("Password must be at least 8 characters"))
 
-    def validate_email(self, email):
-        """Checks an email is valid by RFC Standards using email-validator"""
-        try:
-            valid = validate_email(email)
-            return True
-        except EmailNotValidError as e:
-            return False
+    # def validate_email(self, email):
+    #     """Checks an email is valid by RFC Standards using email-validator"""
+    #     try:
+    #         valid = validate_email(email)
+    #         return True
+    #     except EmailNotValidError as e:
+    #         return False
 
-    def delete_from_database(self):
-        """Removes self from the user_repo"""
-        facade.user_repo.delete(self.id)
+    # def delete_from_database(self):
+    #     """Removes self from the user_repo"""
+    #     facade.user_repo.delete(self.id)
 
 
 """    def add_review_to_place(self, place, review):
