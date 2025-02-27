@@ -52,10 +52,10 @@ class HBnBFacade:
         self.user_repo.add(user)
 
         return user
-    
+
     def get_user(self, user_id):
         return self.user_repo.get(user_id)
-    
+
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
@@ -66,80 +66,27 @@ class HBnBFacade:
 #     def get_place(self, place_id):
 #         pass
 
-# # === Amenity ===
+# === Amenity ===
 
-# def create_amenity(self, amenity_data):
-#     """
-#     Create a new amenity and store it in the repository.
-    
-#     Args:
-#         amenity_data (dict): Dictionary containing amenity data
-#             - name (str): Name of the amenity (required)
-#             - description (str, optional): Description of the amenity
-            
-#     Returns:
-#         Amenity: The created amenity instance
-            
-#     Raises:
-#         ValueError: If validation fails (e.g., missing name, name too long)
-#     """
-#     # Import here to avoid circular imports
-#     from app.models.amenity import Amenity
+def create_amenity(self, amenity_data):
+    """
+    Create a new amenity and store it in the repository.
+    Args:
+        amenity_data (dict): Dictionary containing amenity data
+        - name (str): Name of the amenity (required)
+        - description (str, optional): Description of the amenity
+    Returns:
+        Amenity: The created amenity instance
+    Raises:
+        ValueError: If validation fails (e.g., missing name, name too long)
+    """
+    # Create a new amenity instance
+    amenity = Amenity(
+        name=amenity_data.get('name'),
+        description=amenity_data.get('description')
+    )
 
-#     # Create a new amenity instance
-#     amenity = Amenity(
-#         name=amenity_data.get('name'),
-#         description=amenity_data.get('description')
-#     )
+    # Store in repository
+    self.amenity_repo.add(amenity)
 
-#     # Store in repository
-#     self.amenity_repo.add(amenity)
-
-#     return amenity
-
-# def get_amenity(self, amenity_id):
-#     """
-#     Retrieve an amenity by ID.
-    
-#     Args:
-#         amenity_id (str): ID of the amenity to retrieve
-        
-#     Returns:
-#         Amenity: The amenity instance if found, None otherwise
-#     """
-#     return self.amenity_repo.get(amenity_id)
-
-# def get_all_amenities(self):
-#     """
-#     Retrieve all amenities.
-    
-#     Returns:
-#         list: List of all Amenity instances
-#     """
-#     return self.amenity_repo.get_all()
-
-# def update_amenity(self, amenity_id, amenity_data):
-#     """
-#     Update an amenity's information.
-    
-#     Args:
-#         amenity_id (str): ID of the amenity to update
-#         amenity_data (dict): Dictionary containing updated amenity data
-#             - name (str, optional): New name for the amenity
-#             - description (str, optional): New description for the amenity
-            
-#     Returns:
-#         Amenity: The updated amenity instance
-            
-#     Raises:
-#         ValueError: If amenity not found or validation fails
-#     """
-#     # Get the amenity from the repository
-#     amenity = self.amenity_repo.get(amenity_id)
-#     if not amenity:
-#         raise ValueError(f"Amenity with ID {amenity_id} not found")
-
-#     # Update the amenity with the new data
-#     amenity.update(amenity_data)
-
-#     return amenity
+    return amenity
