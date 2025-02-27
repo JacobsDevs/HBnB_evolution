@@ -126,3 +126,29 @@ def get_all_amenities(self):
     """
     amenities = self.amenity_repo.get_all()
     return [a.__dict__ for a in amenities]
+
+def update_amenity(self, amenity_id, amenity_data):
+    """
+    Update an amenity's information (Data)
+    
+    Args:
+        amenity_id (str): ID of the amenity to update
+        amenity_data (dict): Dictionary containing updated amenity data
+        - name (str, optional): New name for the amenity
+        - description (str, optional): New description for the amenity
+
+    Returns:
+        Amenity: The updated amenity instance (object)
+    Raises:
+        ValueError: if amenity not found of validation fails
+    """
+
+    # Get the (amenity_id) from the repository
+    amenity = self.amenity_repo.get(amenity_id)
+    if not amenity:
+        return None
+
+    # Update the amenity with the new data
+    self.amenity_repo.update(amenity_id, amenity_data)
+
+    return self.get_amenity(amenity_id)
