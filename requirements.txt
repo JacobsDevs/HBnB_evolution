@@ -1,4 +1,9 @@
 flask
 flask-restx
-email-validator
 pytest
+email-validator
+<<<<<<< HEAD
+pytest
+=======
+
+>>>>>>> b5580d7c6582f894258e641c5d57d66ddaee4b50
