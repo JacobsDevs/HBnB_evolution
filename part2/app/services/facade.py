@@ -90,3 +90,19 @@ def create_amenity(self, amenity_data):
     self.amenity_repo.add(amenity)
 
     return amenity
+
+def delete_amenity(self, amenity_id):
+    """
+    Delete an amenity.
+    Args:
+        amenity_id (str): ID of the amenity to delete
+    Returns:
+        bool: True if deletion was successful, False if amenity not found
+    """
+    amenity = self.get_amenity(amenity_id)
+    if not amenity:
+        return False
+
+    self.amenity_repo.delete(amenity_id)
+    return True
+
