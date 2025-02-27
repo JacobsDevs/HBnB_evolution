@@ -1,5 +1,9 @@
 [tools]
+<<<<<<< HEAD
 python = "3.13"
+=======
+python = "3"
+>>>>>>> model_test_review
 
 [env]
 PYTHONPATH = "/home/jacob/Code/Holberton/HBnB_Evolution/part2"
