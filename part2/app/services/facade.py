@@ -1,9 +1,9 @@
-import json
 from ..persistence.repository import InMemoryRepository
 from ..models.place import Place
 from ..models.review import Review
 from ..models.amenity import Amenity
 from ..models.user import User
+import json
 
 class HBnBFacade:
     """
@@ -154,3 +154,11 @@ class HBnBFacade:
         self.amenity_repo.update(amenity_id, amenity_data)
 
         return self.get_amenity(amenity_id)
+
+
+# Create a single application-wide instance of HBnBFacade
+# This follows a singleton-like pattern to ensure all modules
+# import and use the same facade instance, maintaining consistent
+# state across the application and providing centralized access
+# to all repositories
+facade = HBnBFacade()
