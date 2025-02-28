@@ -74,3 +74,74 @@ class AmenityList(Resource):
         except ValueError as err_msg_create:
             # Handle validation errors from the model
             return {'error message creating amenity': str(err_msg_create)}, 400
+
+@api.route('/<amenity_id>')
+class AmenityResource(Resource):
+    """
+    Resource class for operations on individual amenities.
+    Handles operations that require a specific amenity ID:
+    - GET: Retrieve a specific amenity
+    - PUT: Update a specific amenity
+    - DELETE: Remove a specific amenity
+    """
+
+    @api.response(200, 'Amenity details retrieved successfully')
+    @api.response(400, 'Amenity not found')
+    def get(self, amenity_id):
+        """
+        Get amenity details via ID (UUID)
+
+        This endpoint retrieves details of a specific amenity by ID
+
+        Args:
+            amenity_id (str): UUID of amenity
+
+        Returns:
+            tuple: A tuple containing:
+                - dict: The amenity data if found
+                - int: HTTP status code (200 GREAT SUCCESS)
+        """
+
+    @api.expect(amenity_model, validate=True)
+    @api.response(200,'Amenity Updated Successfully')
+    @api.response(404,'Amenity not found')
+    @api.response(400,'Invalid Data input')
+    def put(self, amenity_id):
+        """
+        Update amenity data
+
+        This endpoint updates an existing amenity with the provided data.
+        The amenity is identified by its ID.
+
+        Args: 
+            amenity_id (str): UUID of amenity to update
+
+        Returns: 
+            tuple: A tuple containing:
+                - dict: the update amenity data
+                - int: HTTP status code (200 = GREAT SUCCESS)
+
+        Raises:
+            404 Not found: If amenity with the given ID doesn't exist
+            400 Bad request: If input validation fails
+        """
+
+    @api.response(204, 'Amenity successfully deleted')
+    @api.response(404, 'Amenity not found')
+    def delete(self, amenity_id):
+        """
+        Delete an amenity.
+
+        This endpoint removes an amenity from the system (memory/DB)
+        Amenity identified via ID
+
+        args: amenity_id (str): UUID of amenity wanting to delete
+
+        Returns:
+            tuple: tuple containing:
+                - str: Empty string (no content will be shown due to deletion)
+                - int: HTTP status code (204 indicating no content delete was a success)
+
+        Raises:
+            404 Not Found: If the amenity ID doesn't exist.
+        """
