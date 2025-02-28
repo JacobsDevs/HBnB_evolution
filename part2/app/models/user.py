@@ -122,6 +122,19 @@ class User(BaseModel):
         else:
             return (False, ValueError("Password must be at least 8 characters"))
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "password": self.password,
+            "is_admin": self.is_admin,
+            "places": self.places
+        }
+
     # def validate_email(self, email):
     #     """Checks an email is valid by RFC Standards using email-validator"""
     #     try:

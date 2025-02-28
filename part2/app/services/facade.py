@@ -61,7 +61,7 @@ class HBnBFacade:
 
     def get_all_users(self):
         users = self.user_repo.get_all()
-        return [c.__dict__ for c in users]
+        return [c.serialize() for c in users]
 
 #     def get_place(self, place_id):
 #         pass

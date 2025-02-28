@@ -32,7 +32,6 @@ class UserList(Resource):
     def get(self):
         """Get a list of all users"""
         users = facade.get_all_users()
-        print(users)
         return users
 
 @api.route('/<user_id>')
