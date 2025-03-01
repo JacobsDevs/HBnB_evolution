@@ -100,7 +100,25 @@ class AmenityResource(Resource):
             tuple: A tuple containing:
                 - dict: The amenity data if found
                 - int: HTTP status code (200 GREAT SUCCESS)
+            
+        Raises:
+            404 not found: If the amenity with the given ID doesn't exit
         """
+
+        # Use the facade to get the amenity by ID
+        amenity = facade.get_amenity(amenity_id)
+
+        if not amenity:
+            return {'error': 'Amenity not found'}, 404
+
+        # Return the amenity data with status code
+        return {
+            'id': amenity_id,
+            'name': amenity.name,
+            'description': amenity.description,
+            'created_at': amenity.created_at,
+            'updated_at': amenity.updated_at
+        }, 200
 
     @api.expect(amenity_model, validate=True)
     @api.response(200,'Amenity Updated Successfully')
