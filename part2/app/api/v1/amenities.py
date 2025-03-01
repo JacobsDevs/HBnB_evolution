@@ -65,7 +65,7 @@ class AmenityList(Resource):
 
             # Return created amenity_data with a 201 status code(Created Success)
             return {
-                'id': new_amenity,
+                'id': new_amenity.id,
                 'name': new_amenity.name,
                 'description': new_amenity.description,
                 'created_at':new_amenity.created_at,
@@ -113,7 +113,7 @@ class AmenityResource(Resource):
 
         # Return the amenity data with status code
         return {
-            'id': amenity_id,
+            'id': amenity.id,
             'name': amenity.name,
             'description': amenity.description,
             'created_at': amenity.created_at,
@@ -143,6 +143,35 @@ class AmenityResource(Resource):
             404 Not found: If amenity with the given ID doesn't exist
             400 Bad request: If input validation fails
         """
+
+        # Check if amenity exists
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            return {'error': 'Amenity doesn\'t exist'}, 404
+
+        # Extract the updated data from the request
+        update_data = api.payload
+
+        try:
+            # Use facade to update amenity
+            updated_amenity = facade.update_amenity(amenity_id, update_data)
+
+            # If update successful, return the updated data
+            if updated_amenity:
+                return {
+                    'id': updated_amenity.id,
+                    'name': updated_amenity.name,
+                    'description': updated_amenity.description,
+                    'created_at': updated_amenity.created_at,
+                    'updated_at': updated_amenity.updated_at
+            }, 200
+            # else:
+            # # Fail safe return
+            #     return {'error': 'Amenity doesn\'t exist'}, 404
+        except ValueError as e:
+        # Handle validation errors from the 'model'
+            return {'error': str(e)}, 400
+
 
     @api.response(204, 'Amenity successfully deleted')
     @api.response(404, 'Amenity not found')
