@@ -172,7 +172,6 @@ class AmenityResource(Resource):
         # Handle validation errors from the 'model'
             return {'error': str(e)}, 400
 
-
     @api.response(204, 'Amenity successfully deleted')
     @api.response(404, 'Amenity not found')
     def delete(self, amenity_id):
@@ -192,3 +191,12 @@ class AmenityResource(Resource):
         Raises:
             404 Not Found: If the amenity ID doesn't exist.
         """
+        # Use facade to delete the amenity
+        success = facade.delete_amenity(amenity_id)
+
+        # If amenity doesn't exist
+        if not success:
+            return {'error': 'Amenity doesn\'t exist'}, 404
+
+        # Return status code for deletion
+        return '', 204
