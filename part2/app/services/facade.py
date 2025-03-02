@@ -159,8 +159,8 @@ class HBnBFacade:
 # === Review ===
 # [x] create_review
 # [x]  get_review
-# []  get_all_reviews
-# [] update_review
+# [x]  get_all_reviews
+# [x] update_review
 # [x]  delete_review
 
 
@@ -219,6 +219,44 @@ class HBnBFacade:
         """
 
         return self.review_repo.get(review_id)
+
+    def get_all_review(self):
+        """
+        Retrieve all reviews.
+
+        Returns:
+            List: List of all Reviews instances (objects)
+        """
+        review = self.review_repo.get_all()
+        return [a.__dict__ for a in review]
+
+    def update_review(self, review_id, review_data):
+        """
+        Update a review's information (Data)
+        
+        Args:
+            review_id (str): ID of the review to update
+            review_data (dict): Dictionary containing updated review data
+            - text (str): Content of the review
+            - rating (int): Rating (1-5)
+            - place (Place): Place being reviewed
+            - user (User): User who wrote the review
+
+        Returns:
+            review: The updated review instance (object)
+        Raises:
+            ValueError: if review not found of validation fails
+        """
+
+        # Get the (review_id) from the repository
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+
+        # Update the review with the new data
+        self.review_repo.update(review_id, review_data)
+
+        return self.get_review(review_id)
 
 
 facade = HBnBFacade()
