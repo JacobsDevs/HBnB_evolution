@@ -34,3 +34,19 @@ class TestAmenities():
         assert response.status_code == 200
         assert response.json["id"] == amenity_id
         assert response.json["name"] == "WiFi"
+
+    def test_amenity_delete(self, client, amenity_data):
+        """Deletes an amenity"""
+        # First create an amenity
+        post_response = client.post("/api/v1/amenities/", json=amenity_data)
+        amenity_id = post_response.json["id"]
+
+        # Delete the amenity
+        response = client.delete(f"/api/v1/amenities/{amenity_id}")
+        assert response.status_code == 204
+
+        # Verify the amenity was deleted
+        get_response = client.get(f"/api/v1/amenities/{amenity_id}")
+        assert get_response.status_code == 404
+
+    
