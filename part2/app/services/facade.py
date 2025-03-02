@@ -180,6 +180,15 @@ class HBnBFacade:
             review: The created review instance
 
         """
+        # Validation error checks
+        place = self.place_repo.get(review_data.get('place_id'))
+        if not place:
+            raise ValueError(f"Place with ID {review_data.get('place_id')} not found")
+
+        user = self.user_repo.get(review_data.get('user_id'))
+        if not user:
+            raise ValueError(f"User with ID {review_data.get('user_id')} not found")
+
         # Create a new review instance
         review = Review(
             text=review_data.get('text'),
@@ -220,7 +229,7 @@ class HBnBFacade:
 
         return self.review_repo.get(review_id)
 
-    def get_all_review(self):
+    def get_all_reviews(self):
         """
         Retrieve all reviews.
 
@@ -228,7 +237,7 @@ class HBnBFacade:
             List: List of all Reviews instances (objects)
         """
         review = self.review_repo.get_all()
-        return [a.__dict__ for a in review]
+        return [r.__dict__ for r in review]
 
     def update_review(self, review_id, review_data):
         """
