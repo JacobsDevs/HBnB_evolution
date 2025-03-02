@@ -61,13 +61,11 @@ class Review(BaseModel):
         """
         try:
             rating_value = int(rating)
+            if not 1 <= rating_value <= 5:
+                raise ValueError("Rating must be between 1 and 5")
+            self.rating = rating_value
         except (ValueError, TypeError):
             raise ValueError("Rating must be an integer")
-
-        if rating_value < 1 or rating_value > 5:
-            raise ValueError("Rating must be between 1 and 5")
-
-        self.rating = rating_value
 
     def set_place(self, place):
         """
@@ -82,12 +80,12 @@ class Review(BaseModel):
         """
         if not place:
             raise ValueError("Place is required")
-
+            
         # Import Place here to avoid circular imports
         from app.models.place import Place
         if not isinstance(place, Place):
             raise TypeError("Place must be a Place instance")
-
+            
         self.place = place
 
     def set_user(self, user):
@@ -107,21 +105,6 @@ class Review(BaseModel):
             raise TypeError("User must be a User instance")
             
         self.user = user
-
-    def create(self):
-        """
-        Create a new review.
-        Also adds the review to the place's review list.
-        
-        Returns:
-            Review: The created review instance
-        """
-        # Add this review to the place's review list
-        if hasattr(self, 'place') and self.place:
-            self.place.add_review(self)
-            
-        self.save()
-        return self
 
     def update(self, data):
         """
@@ -143,29 +126,3 @@ class Review(BaseModel):
         # Update remaining fields using the base method
         super().update(data)
         return self
-
-    def delete(self):
-        """
-        Delete the review.
-        
-        Returns:
-            bool: True if deletion was successful
-        """
-        # In real implementation, this would interact with the repository
-        return True
-
-    @classmethod
-    def list_by_place(cls, place):
-        """
-        List all reviews for a specific place.
-        In a real application, this would query the repository.
-        
-        Args:
-            place: Place instance to filter by
-            
-        Returns:
-            list: List of Review instances for the place
-        """
-        # In real implementation, this would interact with the repository
-        # return repository.get_all_by_attribute('place_id', place.id)
-        return [place]
