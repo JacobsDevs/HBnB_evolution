@@ -22,3 +22,15 @@ class TestAmenities():
         assert len(response.json) > 0
         # Check that our amenity is in the list
         assert any(a["name"] == "WiFi" for a in response.json)
+
+    def test_amenity_get_by_id(self, client, amenity_data):
+        """Gets an amenity by ID"""
+        # First create an amenity
+        post_response = client.post("/api/v1/amenities/", json=amenity_data)
+        amenity_id = post_response.json["id"]
+
+        # Get the amenity by ID
+        response = client.get(f"/api/v1/amenities/{amenity_id}")
+        assert response.status_code == 200
+        assert response.json["id"] == amenity_id
+        assert response.json["name"] == "WiFi"
