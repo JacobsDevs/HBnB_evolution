@@ -49,4 +49,21 @@ class TestAmenities():
         get_response = client.get(f"/api/v1/amenities/{amenity_id}")
         assert get_response.status_code == 404
 
-    
+    def test_amenity_update(self, client, amenity_data):
+        """Updates an amenity"""
+        # First create an amenity
+        post_response = client.post("/api/v1/amenities/", json=amenity_data)
+        amenity_id = post_response.json["id"]
+
+        # Update the amenity
+        update_data = {
+            "name": "Free WiFi",
+            "description": "Complimentary high-speed internet"
+        }
+        response = client.put(f"/api/v1/amenities/{amenity_id}", json=update_data)
+        assert response.status_code == 200
+        assert response.json["name"] == "Free WiFi"
+
+        # Verify the update was persisted
+        get_response = client.get(f"/api/v1/amenities/{amenity_id}")
+        assert get_response.json["name"] == "Free WiFi"
