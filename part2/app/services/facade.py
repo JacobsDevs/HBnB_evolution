@@ -163,8 +163,6 @@ class HBnBFacade:
 # [x] update_review
 # [x]  delete_review
 
-
-
     def create_review(self, review_data):
         """
         Create a new review and store it in the repository.
