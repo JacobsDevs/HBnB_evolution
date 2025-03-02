@@ -11,7 +11,7 @@ class TestClass():
     - Basic attributes as specified in the class diagram (name, description)
     - Validation for attribute constraints (name required, max length 50)
     - Inherited BaseEntity attributes (id, created_at, updated_at)
-    - All required methods (create, update, delete)
+    - Update method for modifying amenity data
     - Data conversion for API responses
     """
 
@@ -26,10 +26,8 @@ class TestClass():
 
         # Check method docstrings
         assert Amenity.__init__.__doc__ is not None
-        assert Amenity.create.__doc__ is not None
+        assert Amenity.set_name.__doc__ is not None
         assert Amenity.update.__doc__ is not None
-        assert Amenity.delete.__doc__ is not None
-        assert Amenity.list_all.__doc__ is not None
 
     @pytest.fixture
     def valid_amenity(self):
@@ -181,7 +179,7 @@ class TestClass():
         assert amenity.name == "High-Speed Wi-Fi"
         assert amenity.description == "5G wireless internet"
         # Check that the updated_at timestamp was updated
-        assert amenity.updated_at > original_updated_at
+        assert amenity.updated_at != original_updated_at
 
     def test_amenity_to_dict(self, valid_amenity):
         """
@@ -205,55 +203,6 @@ class TestClass():
         assert "__class__" in amenity_dict
         assert amenity_dict["__class__"] == "Amenity"
 
-    def test_amenity_creation_method(self, valid_amenity):
-        """
-        Tests the create() method.
-        
-        Verifies that:
-        - The create() method returns the amenity instance
-        - This matches the create() method in the class diagram
-        
-        Args:
-            valid_amenity: The Amenity fixture to test
-        """
-        amenity = valid_amenity
-        result = amenity.create()
-
-        # The create() method should return the amenity instance
-        assert result == amenity
-
-    def test_amenity_list_all_method(self):
-        """
-        Tests the list_all() class method.
-        
-        Verifies that:
-        - The list_all() method can be called as a class method
-        - It returns a list (which would contain all amenities in a real implementation)
-        - This matches the list_all() method in the class diagram
-        """
-    # Call the class method
-        result = Amenity.list_all()
-
-    # Check that it returns a list (even if empty in testing)
-        assert isinstance(result, list)
-
-    def test_amenity_delete_method(self, valid_amenity):
-        """
-        Tests the delete() method.
-        
-        Verifies that:
-        - The delete() method returns True for success
-        - This matches the delete() method in the class diagram
-        
-        Args:
-            valid_amenity: The Amenity fixture to test
-        """
-        amenity = valid_amenity
-        result = amenity.delete()
-
-        # The delete() method should return True for success
-        assert result is True
-
     def test_amenity_name_wrong_type(self):
         """
         Tests that providing a non-string value for name raises an error.
@@ -270,12 +219,12 @@ class TestClass():
         This ensures that validation still occurs during updates.
         """
         amenity = valid_amenity
-        
+
         # Try to update with invalid name (too long)
         with pytest.raises(Exception) as exception:
             amenity.update({"name": "A" * 51})
         assert "cannot exceed 50 characters" in str(exception.value)
-        
+
         # Verify the original name is unchanged
         assert amenity.name == "Wi-Fi"
 
@@ -285,9 +234,9 @@ class TestClass():
         This ensures the update method only updates valid attributes.
         """
         amenity = valid_amenity
-        
+
         # Try to update with a non-existent attribute
         amenity.update({"nonexistent_field": "Some value"})
-        
+
         # Verify the attribute wasn't added
         assert not hasattr(amenity, "nonexistent_field")

@@ -28,7 +28,7 @@ class Review(BaseModel):
             TypeError: If place or user are not correct instance types
         """
         super().__init__()  # Initialize BaseEntity attributes
-        
+
         # Validate and set attributes
         self.set_text(text)
         self.set_rating(rating)
@@ -63,10 +63,10 @@ class Review(BaseModel):
             rating_value = int(rating)
         except (ValueError, TypeError):
             raise ValueError("Rating must be an integer")
-            
+
         if rating_value < 1 or rating_value > 5:
             raise ValueError("Rating must be between 1 and 5")
-            
+
         self.rating = rating_value
 
     def set_place(self, place):
@@ -82,12 +82,12 @@ class Review(BaseModel):
         """
         if not place:
             raise ValueError("Place is required")
-            
+
         # Import Place here to avoid circular imports
         from app.models.place import Place
         if not isinstance(place, Place):
             raise TypeError("Place must be a Place instance")
-            
+
         self.place = place
 
     def set_user(self, user):

@@ -8,7 +8,7 @@ api = Namespace('amenities', description='Amenity Operations')
 # Define the amenity model(structure) for input validation and documentation
 # Request validation and swagger documentation (web dev use later potentially)
 amenity_model = api.model('Amenity', {
-    'name': fields.String(require=True, description='Name of the amenity'),
+    'name': fields.String(required=True, description='Name of the amenity'),
     'description': fields.String(required=True, description='Description of the amenity')
 })
 

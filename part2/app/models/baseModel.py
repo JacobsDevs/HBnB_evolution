@@ -26,7 +26,7 @@ class BaseModel:
         Update the updated_at timestamp whenever the entity is modified.
         This should be called whenever an entity's attributes are changed.
         """
-        self.updated_at = datetime.now()
+        self.updated_at = str(datetime.now())
 
     def update(self, data):
         """
