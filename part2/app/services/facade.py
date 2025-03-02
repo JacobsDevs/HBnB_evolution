@@ -154,9 +154,16 @@ class HBnBFacade:
         self.amenity_repo.update(amenity_id, amenity_data)
 
         return self.get_amenity(amenity_id)
-    
+
 
 # === Review ===
+# [x] create_review
+# [x]  get_review
+# []  get_all_reviews
+# [] update_review
+# [x]  delete_review
+
+
 
     def create_review(self, review_data):
         """
@@ -185,7 +192,7 @@ class HBnBFacade:
         self.review_repo.add(review)
 
         return review
-    
+
     def delete_review(self, review_id):
         """
         Delete a review.
@@ -200,6 +207,18 @@ class HBnBFacade:
 
         self.review_repo.delete(review_id)
         return True
+
+    def get_review(self, review_id):
+        """
+        Retrieve a review ID. 
+
+        Args:
+            review_id (str): ID of the review to retrieve
+        Returns:
+            review: The review instance(object) if found, None otherwise
+        """
+
+        return self.review_repo.get(review_id)
 
 
 facade = HBnBFacade()
