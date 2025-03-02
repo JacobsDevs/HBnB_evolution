@@ -156,9 +156,9 @@ class HBnBFacade:
         return self.get_amenity(amenity_id)
 
 
+facade = HBnBFacade()
 # Create a single application-wide instance of HBnBFacade
 # This follows a singleton-like pattern to ensure all modules
 # import and use the same facade instance, maintaining consistent
 # state across the application and providing centralized access
 # to all repositories
-facade = HBnBFacade()
