@@ -154,6 +154,52 @@ class HBnBFacade:
         self.amenity_repo.update(amenity_id, amenity_data)
 
         return self.get_amenity(amenity_id)
+    
+
+# === Review ===
+
+    def create_review(self, review_data):
+        """
+        Create a new review and store it in the repository.
+
+        Args:
+            review_data (dict): Dictionary containing review data
+            - text (str): Content of the review
+            - rating (int): Rating (1-5)
+            - place (Place): Place being reviewed
+            - user (User): User who wrote the review
+
+        Returns:
+            review: The created review instance
+
+        """
+        # Create a new review instance
+        review = Review(
+            text=review_data.get('text'),
+            rating=review_data.get('rating'),
+            place=review_data.get('place'),
+            user=review_data.get('user')
+        )
+
+        # Store in repository
+        self.review_repo.add(review)
+
+        return review
+    
+    def delete_review(self, review_id):
+        """
+        Delete a review.
+        Args:
+            review_id (str): ID of the review to delete
+        Returns:
+            bool: True if deletion was successful, False if review not found
+        """
+        review = self.get_review(review_id)
+        if not review:
+            return False
+
+        self.review_repo.delete(review_id)
+        return True
 
 
 facade = HBnBFacade()
