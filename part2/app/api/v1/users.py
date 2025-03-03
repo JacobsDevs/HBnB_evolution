@@ -46,7 +46,12 @@ class UserList(Resource):
         elif len(clean_args.keys()) == 1:
             user = facade.get_user_by_parameter(sorted(clean_args.keys())[0], sorted(clean_args.values())[0])
             if user:
-                return user.serialize(), 200
+                return {
+                    'id': user.id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email
+                }, 200
             else:
                 return {'error': 'User not found'}, 404
 
@@ -64,3 +69,11 @@ class UserResource(Resource):
                 'last_name': user.last_name,
                 'email': user.email,
                 }, 200
+    def put(self, user_id):
+        user_data = api.payload
+        user = facade.update_user(user_id, user_data)
+        if user == None:
+            return {'error': 'User not found'}, 404
+        elif user == False:
+            return {'error': 'Input data invalid'}, 400
+        return user, 200

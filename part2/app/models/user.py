@@ -150,4 +150,4 @@ class User(BaseModel):
 
 """    def add_review_to_place(self, place, review):
         self.reviews.append(review)
-        place.add_review(review) """
+        place.ad_review(review) """

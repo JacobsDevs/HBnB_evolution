@@ -34,16 +34,27 @@ class TestUserEndpoints():
         assert response.json['first_name'] == 'John'
 
     def testUserUpdateParameters(self, client, user):
-        response = client.get("/api/v1/users", query_string={'first_name': "John"})
-        print(response.json)
-        user = response.json
-        assert user.last_name == "John"
-        response = client.put("/api/v1/users/{}".format(user.id), json={'first_name': 'Jason'})
+        response = client.get("/api/v1/users/", query_string={'first_name': "John"})
+        id = response.json['id']
+        address = "/api/v1/users/{}".format(id)
+        response = client.put(address, json={'first_name': 'Jason'})
         assert response.status_code == 200
-        response = client.get("/api/v1/users/{}".format(user.id))
+        response = client.get(address)
         assert response.json['first_name'] == 'Jason'
         assert response.json['email'] == 'john@smith.com'
+        assert response.status_code == 200
 
+    def testUserUpdateInvalidParameters(self, client, user):
+        response = client.get("/api/v1/users/", query_string={'email': "john@smith.com"})
+        print(response.json)
+        id = response.json['id']
+        address = "/api/v1/users/{}".format(id)
+        response = client.put(address, json={'name': 'Jason'})
+        assert response.status_code == 400
+
+    def testUserUpdateUserDoesNotExist(self, client, user):
+        response = client.put("/api/v1/users/ABC", json={'first_name': 'Jason'})
+        assert response.status_code == 404
 
 """
         [*] Create user

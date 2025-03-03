@@ -66,6 +66,17 @@ class HBnBFacade:
         users = self.user_repo.get_all()
         return [c.serialize() for c in users]
 
+    def update_user(self, user_id, user_data):
+        user = self.user_repo.get(user_id)
+        if user == None:
+            return None
+        if any(x not in user.serialize() for x in user_data.keys()):
+            return False
+        user.update(user_data)
+        return True
+
+
+
 #     def get_place(self, place_id):
 #         pass
 
