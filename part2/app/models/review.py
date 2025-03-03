@@ -88,12 +88,12 @@ class Review(BaseModel):
         """
         if not place:
             raise ValueError("Place is required")
-            
+
         # Import Place here to avoid circular imports
         from app.models.place import Place
         if not isinstance(place, Place):
             raise TypeError("Place must be a Place instance")
-            
+
         self.place = place
 
     def set_user(self, user):
@@ -111,7 +111,7 @@ class Review(BaseModel):
             raise ValueError("User is required")
         if not isinstance(user, User):
             raise TypeError("User must be a User instance")
-            
+
         self.user = user
 
     def update(self, data):
@@ -127,10 +127,10 @@ class Review(BaseModel):
         # Special handling for validated fields
         if 'text' in data:
             self.set_text(data.pop('text'))
-            
+
         if 'rating' in data:
             self.set_rating(data.pop('rating'))
-            
+
         # Update remaining fields using the base method
         super().update(data)
         return self
