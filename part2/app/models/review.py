@@ -13,26 +13,34 @@ class Review(BaseModel):
         user (User): User who wrote the review
     """
 
-    def __init__(self, text, rating, place, user):
+    def __init__(self, text, rating, place_id=None, user_id=None, place=None, user=None):
         """
         Initialize a new Review instance.
         
         Args:
             text (str): Content of the review
             rating (int): Rating (1-5)
-            place (Place): Place being reviewed
-            user (User): User who wrote the review
-            
-        Raises:
-            ValueError: If validation fails for any field
-            TypeError: If place or user are not correct instance types
+            place_id (str, optional): ID of the place being reviewed
+            user_id (str, optional): ID of the user who wrote the review
+            place (Place, optional): Place being reviewed
+            user (User, optional): User who wrote the review
         """
         super().__init__()  # Initialize BaseEntity attributes
 
         # Validate and set attributes
         self.set_text(text)
         self.set_rating(rating)
+
+        # If place_id is provided, fetch the place object
+        if place_id:
+            from app.services.facade import facade
+            place = facade.get_place(place_id)
         self.set_place(place)
+
+        # If user_id is provided, fetch the user object
+        if user_id:
+            from app.services.facade import facade
+            user = facade.get_user(user_id)
         self.set_user(user)
 
     def set_text(self, text):

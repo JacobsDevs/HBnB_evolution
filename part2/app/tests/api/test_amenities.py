@@ -55,14 +55,16 @@ class TestAmenities():
         post_response = client.post("/api/v1/amenities/", json=amenity_data)
         amenity_id = post_response.json["id"]
 
-        # Update the amenity
+        # Update the amenity - now including all original data
         update_data = {
             "name": "Free WiFi",
             "description": "Complimentary high-speed internet"
         }
         response = client.put(f"/api/v1/amenities/{amenity_id}", json=update_data)
+
         assert response.status_code == 200
         assert response.json["name"] == "Free WiFi"
+        assert response.json["description"] == "Complimentary high-speed internet"
 
         # Verify the update was persisted
         get_response = client.get(f"/api/v1/amenities/{amenity_id}")

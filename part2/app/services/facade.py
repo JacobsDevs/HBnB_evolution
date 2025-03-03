@@ -65,8 +65,18 @@ class HBnBFacade:
         users = self.user_repo.get_all()
         return [c.__dict__ for c in users]
 
-#     def get_place(self, place_id):
-#         pass
+    # === Place === (TEMP)
+
+    def get_place(self, place_id):
+        """
+        Retrieve a place by its ID.
+
+        Args:
+            place_id (str): ID of the place to retrieve
+        Returns:
+            Place: The place instance if found, None otherwise
+        """
+        return self.place_repo.get(place_id)
 
 # === Amenity ===
 
@@ -131,29 +141,30 @@ class HBnBFacade:
 
     def update_amenity(self, amenity_id, amenity_data):
         """
-        Update an amenity's information (Data)
+        Update an amenity's information
         
         Args:
             amenity_id (str): ID of the amenity to update
-            amenity_data (dict): Dictionary containing updated amenity data
-            - name (str, optional): New name for the amenity
-            - description (str, optional): New description for the amenity
+            amenity_data (dict): Complete amenity data
 
         Returns:
-            Amenity: The updated amenity instance (object)
+            Amenity: The updated amenity instance
         Raises:
-            ValueError: if amenity not found of validation fails
+            ValueError: if amenity not found or validation fails
         """
-
-        # Get the (amenity_id) from the repository
-        amenity = self.amenity_repo.get(amenity_id)
+        # Get the existing amenity
+        amenity = self.get_amenity(amenity_id)
         if not amenity:
             return None
 
-        # Update the amenity with the new data
+        # Update the amenity
+        amenity.name = amenity_data.get('name')
+        amenity.description = amenity_data.get('description')
+
+        # Save the updated amenity
         self.amenity_repo.update(amenity_id, amenity_data)
 
-        return self.get_amenity(amenity_id)
+        return amenity
 
 
 # === Review ===
@@ -166,33 +177,24 @@ class HBnBFacade:
     def create_review(self, review_data):
         """
         Create a new review and store it in the repository.
-
-        Args:
-            review_data (dict): Dictionary containing review data
-            - text (str): Content of the review
-            - rating (int): Rating (1-5)
-            - place (Place): Place being reviewed
-            - user (User): User who wrote the review
-
-        Returns:
-            review: The created review instance
-
         """
-        # Validation error checks
-        place = self.place_repo.get(review_data.get('place_id'))
+
+        # Get place and user objects first
+        place = self.get_place(review_data.get('place_id'))
+        user = self.get_user(review_data.get('user_id'))
+
+        # Fail safe
         if not place:
             raise ValueError(f"Place with ID {review_data.get('place_id')} not found")
 
-        user = self.user_repo.get(review_data.get('user_id'))
         if not user:
             raise ValueError(f"User with ID {review_data.get('user_id')} not found")
 
-        # Create a new review instance
         review = Review(
             text=review_data.get('text'),
             rating=review_data.get('rating'),
-            place=review_data.get('place'),
-            user=review_data.get('user')
+            place=place,
+            user=user
         )
 
         # Store in repository
@@ -232,38 +234,41 @@ class HBnBFacade:
         Retrieve all reviews.
 
         Returns:
-            List: List of all Reviews instances (objects)
+            List: List of all Reviews as dictionaries
         """
-        review = self.review_repo.get_all()
-        return [r.__dict__ for r in review]
+        reviews = self.review_repo.get_all()
+        return [
+            {
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'place_id': review.place.id,
+                'user_id': review.user.id,
+                'created_at': review.created_at,
+                'updated_at': review.updated_at
+            } for review in reviews
+        ]
 
     def update_review(self, review_id, review_data):
         """
         Update a review's information (Data)
-        
-        Args:
-            review_id (str): ID of the review to update
-            review_data (dict): Dictionary containing updated review data
-            - text (str): Content of the review
-            - rating (int): Rating (1-5)
-            - place (Place): Place being reviewed
-            - user (User): User who wrote the review
-
-        Returns:
-            review: The updated review instance (object)
-        Raises:
-            ValueError: if review not found of validation fails
         """
-
-        # Get the (review_id) from the repository
+        # Get the review from the repository
         review = self.review_repo.get(review_id)
         if not review:
             return None
 
-        # Update the review with the new data
+        # Update only the provided fields
+        if 'text' in review_data:
+            review.set_text(review_data['text'])
+
+        if 'rating' in review_data:
+            review.set_rating(review_data['rating'])
+
+        # Save the updated review
         self.review_repo.update(review_id, review_data)
 
-        return self.get_review(review_id)
+        return review
 
 
 facade = HBnBFacade()

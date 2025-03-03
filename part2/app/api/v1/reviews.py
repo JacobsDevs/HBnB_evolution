@@ -9,9 +9,7 @@ api = Namespace('reviews', description='Review Operations')
 # Request validation and swagger documentation (web dev use later potentially)
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Leaving review comment'),
-    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5'),
-    'place_id': fields.String(required=True, description='Place must exist'),
-    'user_id': fields.String(required=True, description='User must exist')
+    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5')
 })
 
 @api.route('/')
@@ -164,21 +162,17 @@ class ReviewResource(Resource):
             updated_review = facade.update_review(review_id, update_data)
 
             # If update successful, return the updated data
-            if updated_review:
-                return {
-                    'id': updated_review.id,
-                    'created_at': updated_review.created_at,
-                    'updated_at': updated_review.updated_at,
-                    'text': updated_review.text,
-                    'rating': updated_review.rating,
-                    'place_id': updated_review.place.id,
-                    'user_id': updated_review.user.id
+            return {
+                'id': updated_review.id,
+                'created_at': updated_review.created_at,
+                'updated_at': updated_review.updated_at,
+                'text': updated_review.text,
+                'rating': updated_review.rating,
+                'place_id': updated_review.place.id,
+                'user_id': updated_review.user.id
             }, 200
-            # else:
-            # # Fail safe return
-            #     return {'error': 'review doesn\'t exist'}, 404
         except ValueError as e:
-        # Handle validation errors from the 'model'
+            # Handle validation errors from the 'model'
             return {'error': str(e)}, 400
 
     @api.response(204, 'review successfully deleted')
