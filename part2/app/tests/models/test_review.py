@@ -1,3 +1,4 @@
+from app.services import facade
 import pytest
 from app.models.review import Review
 from app.models.user import User
@@ -25,18 +26,19 @@ class TestClass():
         assert Review.list_by_place.__doc__ is not None
 
     @pytest.fixture
-    def valid_user(self):
+    def valid_user(self, user):
         """
         This fixture creates a valid User instance for testing.
         
         The Review model requires a User instance for the reviewer attribute,
         so we need to create a valid User first.
         """
-        user = User("John", "Smith", "john@smith.com", "password123")
-        yield user
+        user = User(user['first_name'], user['last_name'], user['email'], user['password'])
+        return user
+
 
     @pytest.fixture
-    def valid_place(self, valid_user):
+    def valid_place(self, valid_user, place):
         """
         This fixture creates a valid Place instance for testing.
         
@@ -46,18 +48,31 @@ class TestClass():
         Note that this fixture depends on the valid_user fixture because
         a Place requires an owner (User).
         """
-        place = Place(
-                title="Cozy Apartment",
-                description="A beautiful place in the city",
-                price=100.50,
-                latitude=37.7749,
-                longitude=-122.4194,
-                owner=valid_user
-            )
-        yield place
+        place = Place(title=place['title'],
+                      description=place['description'],
+                      price=place['price'],
+                      latitude=place['latitude'],
+                      longitude=place['longitude'],
+                      owner_id=valid_user.id,
+                      amenities=[])
+        return place
 
     @pytest.fixture
-    def valid_review(self, valid_place, valid_user):
+    def setup_facade(self, valid_user, valid_place):
+        """
+        This fixture sets up the facade pattern with repositories containing
+        the valid user, place, and review.
+        
+        It demonstrates the integration between the Review model and the
+        facade/repository pattern required by the project.
+        """
+        facade = HBnBFacade()
+        facade.user_repo.add(valid_user)
+        facade.place_repo.add(valid_place)
+        yield facade
+
+    @pytest.fixture
+    def valid_review(self, setup_facade):
         """
         This fixture creates a valid Review instance for testing.
         
@@ -70,39 +85,30 @@ class TestClass():
         
         This fixture depends on both valid_place and valid_user fixtures.
         """
+        user = setup_facade.user_repo.get_all()[0]
+        place = setup_facade.place_repo.get_all()[0]
         review = Review(
                 text="Great place, highly recommended!",
                 rating=5,
-                place=valid_place,
-                user=valid_user
-            )
-        yield review
+                user_id=user.id,
+                place_id=place.id,
+                facade=setup_facade
+        )
+        return review
 
-    @pytest.fixture
-    def setup_facade(self, valid_user, valid_place, valid_review):
-        """
-        This fixture sets up the facade pattern with repositories containing
-        the valid user, place, and review.
-        
-        It demonstrates the integration between the Review model and the
-        facade/repository pattern required by the project.
-        """
-        facade = HBnBFacade()
-        facade.user_repo.add(valid_user)
-        facade.place_repo.add(valid_place)
-        facade.review_repo.add(valid_review)
-        yield facade.review_repo
 
-    def test_fixtures_persist(self, setup_facade, valid_review):
+    def test_fixtures_persist(self, setup_facade, valid_user, valid_place, valid_review):
         """
         Tests that the valid_review object is stored in the facade's review_repo.
         
         This verifies the basic functionality of the InMemoryRepository and its
         interaction with the Review model.
         """
-        assert setup_facade.get_all() == [valid_review]
+        assert setup_facade.user_repo.get_all() == [valid_user]
+        assert setup_facade.place_repo.get_all() == [valid_place]
+        assert setup_facade.review_repo.get_all() == [valid_review]
 
-    def test_review_instantiation(self, valid_review, valid_place, valid_user):
+    def test_review_instantiation(self, valid_place, valid_user, setup_facade):
         """
         Test basic review creation with all required attributes.
         
@@ -111,11 +117,11 @@ class TestClass():
         2. All attributes are set properly
         3. The inheritance from BaseEntity provides id, created_at, and updated_at
         """
-        review = valid_review
+        review = Review("Great place, highly recommended!", 5, user_id=valid_user.id, place_id=valid_place.id, facade=setup_facade)
         assert review.text == "Great place, highly recommended!"
         assert review.rating == 5
-        assert review.place == valid_place
-        assert review.user == valid_user
+        assert review.place_id == valid_place.id
+        assert review.user_id == valid_user.id
 
         # Verify inherited attributes from BaseEntity
         assert hasattr(review, "id")
@@ -129,7 +135,7 @@ class TestClass():
         According to the documentation, the text of a review is required.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text=None, rating=5, place=valid_place, user=valid_user)
+            review = Review(text=None, rating=5, place_id=valid_place.id, user_id=valid_user.id)
         assert exception.type == ValueError
         assert "Review text is required" in str(exception.value)
 
@@ -140,7 +146,7 @@ class TestClass():
         An empty string should be treated the same as None - invalid.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="", rating=5, place=valid_place, user=valid_user)
+            review = Review(text="", rating=5, place_id=valid_place.id, user_id=valid_user.id)
         assert exception.type == ValueError
         assert "Review text is required" in str(exception.value)
 
@@ -151,9 +157,9 @@ class TestClass():
         According to the documentation, the rating is required.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=None, place=valid_place, user=valid_user)
-        assert exception.type == ValueError
-        assert "Rating must be" in str(exception.value)
+            review = Review(text="Great place!", rating=None, place_id=valid_place.id, user_id=valid_user.id)
+        assert exception.type == TypeError
+        assert "Rating must be an integer" in str(exception.value)
 
     def test_review_rating_too_low(self, valid_place, valid_user):
         """
@@ -162,9 +168,9 @@ class TestClass():
         According to the documentation, the rating must be between 1 and 5.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=0, place=valid_place, user=valid_user)
+            review = Review(text="Great place!", rating=0, place_id=valid_place.id, user_id=valid_user.id)
         assert exception.type == ValueError
-        assert "Rating must be between 1 and 5" in str(exception.value)
+        assert "Rating must be between 1 - 5" in str(exception.value)
 
     def test_review_rating_too_high(self, valid_place, valid_user):
         """
@@ -173,9 +179,9 @@ class TestClass():
         According to the documentation, the rating must be between 1 and 5.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=6, place=valid_place, user=valid_user)
+            review = Review(text="Great place!", rating=6, place_id=valid_place.id, user_id=valid_user.id)
         assert exception.type == ValueError
-        assert "Rating must be between 1 and 5" in str(exception.value)
+        assert "Rating must be between 1 - 5" in str(exception.value)
 
     def test_review_place_missing(self, valid_user):
         """
@@ -184,42 +190,43 @@ class TestClass():
         According to the documentation, the place being reviewed is required.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=5, place=None, user=valid_user)
+            review = Review(text="Great place!", rating=5, place_id=None, user_id=valid_user.id)
         assert exception.type == ValueError
         assert "Place is required" in str(exception.value)
 
-    def test_review_user_missing(self, valid_place):
+    def test_review_user_missing(self, valid_place, setup_facade):
         """
         Tests that user (reviewer) is required.
         
         According to the documentation, the user who wrote the review is required.
         """
+        print(valid_place)
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=5, place=valid_place, user=None)
+            review = Review(text="Great place!", rating=5, place_id=valid_place.id, user_id=None, facade=setup_facade)
         assert exception.type == ValueError
         assert "User is required" in str(exception.value)
 
-    def test_review_place_type(self, valid_user):
+    def test_review_place_type(self, valid_user, setup_facade):
         """
         Tests that place must be a Place instance.
         
         This ensures type validation for the place attribute.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=5, place="not a place", user=valid_user)
+            review = Review(text="Great place!", rating=5, place_id="not a place", user_id=valid_user.id, facade=setup_facade)
         assert exception.type in [ValueError, TypeError]
-        assert "Place must be" in str(exception.value)
+        assert "Place doesn't exist" in str(exception.value)
 
-    def test_review_user_type(self, valid_place):
+    def test_review_user_type(self, valid_place, setup_facade):
         """
         Tests that user must be a User instance.
         
         This ensures type validation for the user attribute.
         """
         with pytest.raises(Exception) as exception:
-            review = Review(text="Great place!", rating=5, place=valid_place, user="not a user")
+            review = Review(text="Great place!", rating=5, place_id=valid_place.id, user_id="not a user", facade=setup_facade)
         assert exception.type in [ValueError, TypeError]
-        assert "User must be" in str(exception.value)
+        assert "User doesn't Exist" in str(exception.value)
 
     def test_review_update(self, valid_review):
         """
@@ -257,7 +264,7 @@ class TestClass():
         # Try to update with invalid rating
         with pytest.raises(Exception) as exception:
             review.update({"rating": 10})
-        assert "Rating must be between 1 and 5" in str(exception.value)
+        assert "Rating must be between 1 - 5" in str(exception.value)
 
         # Verify the original rating is unchanged
         assert review.rating == 5
