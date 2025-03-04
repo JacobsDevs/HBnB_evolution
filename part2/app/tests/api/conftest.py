@@ -3,6 +3,7 @@ from app import create_app
 from app.models.user import User
 from app.models.amenity import Amenity
 
+
 @pytest.fixture()
 def app():
     app = create_app()
@@ -18,33 +19,6 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
-
-@pytest.fixture()
-def user(app):
-    from app.models.user import User
-    from app.services.facade import facade
-
-    # Create a user
-    new_user = User("John", "Smith", "john@smith.com", "abcd1234!")
-    facade.user_repo.add(new_user)
-    return new_user
-
-@pytest.fixture()
-def place(app, user):
-    from app.models.place import Place
-    from app.services.facade import facade
-
-    # Create a place
-    new_place = Place(
-        title="Test Place",
-        description="A nice place to stay",
-        price=100.00,
-        latitude=0.0,
-        longitude=0.0,
-        owner=user
-    )
-    facade.place_repo.add(new_place)
-    return new_place
 
 @pytest.fixture()
 def amenity_data():
@@ -63,3 +37,37 @@ def review_data(user, place):
         "place_id": place.id,  # Use the actual place ID
         "user_id": user.id     # Use the actual user ID
     }
+
+@pytest.fixture()
+def user():
+  return {
+        "first_name": "John",
+        "last_name": "Smith",
+        "email": "john@smith.com",
+        "password": "abcd1234!"
+    }
+
+@pytest.fixture()
+def place():
+    place = {
+        "title": "Holberton",
+        "description": "Melbourne School",
+        "price": 100,
+        "latitude": -37.81712,
+        "longitude": 144.95926,
+        "owner_id": "12345",
+        "amenities": [],
+    }
+    return place
+
+@pytest.fixture()
+def update():
+    new_place = {
+        "title": "KameHouse",
+        "price": 10.10,
+        "latitude": 20.20,
+        "longitude": 30.30,
+        "owner_id": "56789",
+        "amenities": [],
+    }
+    return new_place
