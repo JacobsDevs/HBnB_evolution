@@ -13,26 +13,34 @@ class Review(BaseModel):
         user (User): User who wrote the review
     """
 
-    def __init__(self, text, rating, place, user):
+    def __init__(self, text, rating, place_id=None, user_id=None, place=None, user=None):
         """
         Initialize a new Review instance.
         
         Args:
             text (str): Content of the review
             rating (int): Rating (1-5)
-            place (Place): Place being reviewed
-            user (User): User who wrote the review
-            
-        Raises:
-            ValueError: If validation fails for any field
-            TypeError: If place or user are not correct instance types
+            place_id (str, optional): ID of the place being reviewed
+            user_id (str, optional): ID of the user who wrote the review
+            place (Place, optional): Place being reviewed
+            user (User, optional): User who wrote the review
         """
         super().__init__()  # Initialize BaseEntity attributes
 
         # Validate and set attributes
         self.set_text(text)
         self.set_rating(rating)
+
+        # If place_id is provided, fetch the place object
+        if place_id:
+            from app.services.facade import facade
+            place = facade.get_place(place_id)
         self.set_place(place)
+
+        # If user_id is provided, fetch the user object
+        if user_id:
+            from app.services.facade import facade
+            user = facade.get_user(user_id)
         self.set_user(user)
 
     def set_text(self, text):
@@ -61,13 +69,11 @@ class Review(BaseModel):
         """
         try:
             rating_value = int(rating)
+            if not 1 <= rating_value <= 5:
+                raise ValueError("Rating must be between 1 and 5")
+            self.rating = rating_value
         except (ValueError, TypeError):
             raise ValueError("Rating must be an integer")
-
-        if rating_value < 1 or rating_value > 5:
-            raise ValueError("Rating must be between 1 and 5")
-
-        self.rating = rating_value
 
     def set_place(self, place):
         """
@@ -105,23 +111,8 @@ class Review(BaseModel):
             raise ValueError("User is required")
         if not isinstance(user, User):
             raise TypeError("User must be a User instance")
-            
-        self.user = user
 
-    def create(self):
-        """
-        Create a new review.
-        Also adds the review to the place's review list.
-        
-        Returns:
-            Review: The created review instance
-        """
-        # Add this review to the place's review list
-        if hasattr(self, 'place') and self.place:
-            self.place.add_review(self)
-            
-        self.save()
-        return self
+        self.user = user
 
     def update(self, data):
         """
@@ -136,36 +127,10 @@ class Review(BaseModel):
         # Special handling for validated fields
         if 'text' in data:
             self.set_text(data.pop('text'))
-            
+
         if 'rating' in data:
             self.set_rating(data.pop('rating'))
-            
+
         # Update remaining fields using the base method
         super().update(data)
         return self
-
-    def delete(self):
-        """
-        Delete the review.
-        
-        Returns:
-            bool: True if deletion was successful
-        """
-        # In real implementation, this would interact with the repository
-        return True
-
-    @classmethod
-    def list_by_place(cls, place):
-        """
-        List all reviews for a specific place.
-        In a real application, this would query the repository.
-        
-        Args:
-            place: Place instance to filter by
-            
-        Returns:
-            list: List of Review instances for the place
-        """
-        # In real implementation, this would interact with the repository
-        # return repository.get_all_by_attribute('place_id', place.id)
-        return [place]

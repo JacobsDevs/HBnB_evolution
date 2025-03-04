@@ -21,6 +21,24 @@ def runner(app):
     return app.test_cli_runner()
 
 @pytest.fixture()
+def amenity_data():
+    """Fixture providing test data for an amenity"""
+    return {
+        "name": "WiFi",
+        "description": "High-speed wireless internet"
+    }
+
+@pytest.fixture()
+def review_data(user, place):
+    """Test data for a review"""
+    return {
+        "text": "Great place to stay!",
+        "rating": 5,
+        "place_id": place.id,  # Use the actual place ID
+        "user_id": user.id     # Use the actual user ID
+    }
+
+@pytest.fixture()
 def user():
   return {
         "first_name": "John",
@@ -53,11 +71,3 @@ def update():
         "amenities": [],
     }
     return new_place
-
-@pytest.fixture()
-def amenity_data():
-    """Fixture providing test data for an amenity"""
-    return {
-        "name": "WiFi",
-        "description": "High-speed wireless internet"
-    }

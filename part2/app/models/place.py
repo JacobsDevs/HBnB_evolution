@@ -46,7 +46,7 @@ class Place(BaseModel):
         # Initialize lists for relationships
         self.amenities = amenities
         self.reviews = []
-        
+
     """Title Setter and Getter"""
     @property
     def title(self):
@@ -92,6 +92,15 @@ class Place(BaseModel):
 
     @latitude.setter
     def latitude(self, value):
+        """
+        Set and validate the latitude.
+        
+        Args:
+            latitude (float): Latitude coordinate
+            
+        Raises:
+            ValueError: If latitude is invalid
+        """
         if value is None:
             raise ValueError("Latitude is required")
         elif not -90.0 <= value <= 90.0:
@@ -104,6 +113,15 @@ class Place(BaseModel):
 
     @longitude.setter
     def longitude(self, value):
+        """
+        Set and validate the longitude.
+        
+        Args:
+            longitude (float): Longitude coordinate
+            
+        Raises:
+            ValueError: If longitude is invalid
+        """
         if value is None:
             raise ValueError("Longitude is required")
         if not -180.0 <= value <= 180.0:
@@ -118,6 +136,16 @@ class Place(BaseModel):
     
     @owner_id.setter
     def owner_id(self, value):
+        """
+        Set and validate the owner.
+        
+        Args:
+            owner (User): User instance who owns the place
+            
+        Raises:
+            TypeError: If owner is not a User instance
+            ValueError: If owner is not valid
+        """
         if value is None:
             raise ValueError("An owner ID is required")
         
@@ -144,11 +172,24 @@ class Place(BaseModel):
         if review is None:
             raise ValueError("Review cannot be None")
         self.reviews.append(review)
-    
+        self.save()  # Update the updated_at timestamp
+        return self
+
     def add_amenities(self, amenity):
+        """
+        Add an amenity to the place.
+
+        Args:
+            amenity: Amenity instance to add
+
+        Returns:
+            Place: The updated place instance with the new amenity
+        """
         if amenity is None:
             raise ValueError("Amenity cannot be None")
         self.amenities.append(amenity)
+        self.save()  # Update the updated_at timestamp
+        return self
 
     def valid_string_length(self, string, length):
         return len(string) <= length
