@@ -21,7 +21,12 @@ def runner(app):
 
 @pytest.fixture()
 def user():
-    return User("John", "Smith", "john@smith.com", "abcd1234!")
+  return {
+        "first_name": "John",
+        "last_name": "Smith",
+        "email": "john@smith.com",
+        "password": "abcd1234!"
+    }
 
 @pytest.fixture()
 def place():

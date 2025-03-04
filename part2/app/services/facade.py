@@ -54,15 +54,26 @@ class HBnBFacade:
     
     def get_user(self, user_id):
         return self.user_repo.get(user_id)
+
+    def get_user_by_parameter(self, key, value):
+        return self.user_repo.get_by_attribute(key, value)
     
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
     def get_all_users(self):
         users = self.user_repo.get_all()
-        return [c.__dict__ for c in users]
-    
-   
+        return [c.serialize() for c in users]
+
+    def update_user(self, user_id, user_data):
+        user = self.user_repo.get(user_id)
+        if user == None:
+            return None
+        if any(x not in user.serialize() for x in user_data.keys()):
+            return False
+        user.update(user_data)
+        return True
+      
     # Place Operations
 
     def create_place(self, place_data):
@@ -76,7 +87,6 @@ class HBnBFacade:
             longitude=place_data.get('longitude'),
             amenities=place_data.get('amenities'),
             owner_id=place_data.get('owner_id'),
-            # user_repo=place_data.get('user_repo')
         )
 
         self.place_repo.add(place)
@@ -95,7 +105,6 @@ class HBnBFacade:
     def update_place(self, place_id, place_data):
         new_data = self.place_repo.update(place_id, place_data)
         return new_data.serialization()
-
 
 
 
