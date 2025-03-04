@@ -1,9 +1,8 @@
-from ..persistence.repository import InMemoryRepository
-from ..models.place import Place
-from ..models.review import Review
-from ..models.amenity import Amenity
-from ..models.user import User
-import json
+from app.persistence.repository import InMemoryRepository
+from app.models.user import User
+from app.models.place import Place
+from app.models.review import Review
+from app.models.amenity import Amenity
 
 class HBnBFacade:
     """
@@ -58,12 +57,59 @@ class HBnBFacade:
     def get_user(self, user_id):
         return self.user_repo.get(user_id)
 
+    def get_user_by_parameter(self, key, value):
+        return self.user_repo.get_by_attribute(key, value)
+    
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
     def get_all_users(self):
         users = self.user_repo.get_all()
-        return [c.__dict__ for c in users]
+        return [c.serialize() for c in users]
+
+    def update_user(self, user_id, user_data):
+        user = self.user_repo.get(user_id)
+        if user == None:
+            return None
+        if any(x not in user.serialize() for x in user_data.keys()):
+            return False
+        user.update(user_data)
+        return True
+      
+    # Place Operations
+
+    def create_place(self, place_data):
+        """Create a Place Object"""
+       
+        place = Place(
+            title=place_data.get('title'),
+            description=place_data.get('description'),
+            price=place_data.get('price'),
+            latitude=place_data.get('latitude'),
+            longitude=place_data.get('longitude'),
+            amenities=place_data.get('amenities'),
+            owner_id=place_data.get('owner_id'),
+        )
+
+        self.place_repo.add(place)
+        return place
+        
+    
+    def get_place(self, place_id):
+        place = self.place_repo.get(place_id)
+        return place.serialization()
+    
+    def get_all_places(self):
+        all_places = self.place_repo.get_all()
+        json_places = [item.serialization() for item in all_places]
+        return json_places
+        
+    def update_place(self, place_id, place_data):
+        new_data = self.place_repo.update(place_id, place_data)
+        return new_data.serialization()
+
+
+
 
 #     def get_place(self, place_id):
 #         pass
