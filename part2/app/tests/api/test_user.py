@@ -61,5 +61,5 @@ class TestUserEndpoints():
         [*] Get by ID
         [*] Get by parameter
         [*] Get all users
-        [ ] Update a user
+        [*] Update a user
 """
