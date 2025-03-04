@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 from app.models.user import User
+from app.models.amenity import Amenity
 
 
 @pytest.fixture()
@@ -52,3 +53,11 @@ def update():
         "amenities": [],
     }
     return new_place
+
+@pytest.fixture()
+def amenity_data():
+    """Fixture providing test data for an amenity"""
+    return {
+        "name": "WiFi",
+        "description": "High-speed wireless internet"
+    }

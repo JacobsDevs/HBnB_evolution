@@ -1,4 +1,4 @@
-from app.models.baseModel import BaseModel
+from .baseModel import BaseModel
 
 
 class Amenity(BaseModel):
@@ -43,16 +43,6 @@ class Amenity(BaseModel):
             raise ValueError("Amenity name cannot exceed 50 characters")
         self.name = name
 
-    def create(self):
-        """
-        Create a new amenity.
-        
-        Returns:
-            Amenity: The created amenity instance
-        """
-        self.save()
-        return self
-
     def update(self, data):
         """
         Update the amenity information.
@@ -70,35 +60,3 @@ class Amenity(BaseModel):
         # Update remaining fields using the base method
         super().update(data)
         return self
-
-    def delete(self):
-        """
-        Delete the amenity from memory(RAM).
-        
-        Returns:
-            bool: True if deletion was successful
-        """
-        # In real implementation, this would interact with the repository
-        return True
-
-    @classmethod
-    def list_all(cls):
-        """
-        List all amenities.
-        In a real application, this would query the repository.
-        
-        Returns:
-            list: List of all Amenity instances
-        """
-        # In real implementation, this would interact with the repository
-        # return repository.get_all()
-        return []
-
-    def to_dict(self):
-        """
-        Convert the amenity to a dictionary.
-        
-        Returns:
-            dict: Dictionary containing amenity attributes
-        """
-        return super().to_dict()

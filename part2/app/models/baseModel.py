@@ -26,7 +26,7 @@ class BaseModel:
         Update the updated_at timestamp whenever the entity is modified.
         This should be called whenever an entity's attributes are changed.
         """
-        self.updated_at = datetime.now()
+        self.updated_at = str(datetime.now())
 
     def update(self, data):
         """
@@ -55,10 +55,6 @@ class BaseModel:
             dict: Dictionary containing all entity attributes
         """
         entity_dict = self.__dict__.copy()
-
-        # Convert datetime objects to ISO format strings for better serialization
-        entity_dict['created_at'] = self.created_at.isoformat()
-        entity_dict['updated_at'] = self.updated_at.isoformat()
 
         # Add class name for type information
         entity_dict['__class__'] = self.__class__.__name__
