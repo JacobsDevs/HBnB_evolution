@@ -17,7 +17,6 @@ class TestClass():
         """
         user = User("John", "Smith", "john@smith.com", "password1!")
         yield user
-        user.delete_from_database()
 
     @pytest.fixture
     def setup_facade(self, valid_user):
