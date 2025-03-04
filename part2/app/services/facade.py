@@ -55,13 +55,27 @@ class HBnBFacade:
     
     def get_user(self, user_id):
         return self.user_repo.get(user_id)
+
+    def get_user_by_parameter(self, key, value):
+        return self.user_repo.get_by_attribute(key, value)
     
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
     def get_all_users(self):
         users = self.user_repo.get_all()
-        return [c.__dict__ for c in users]
+        return [c.serialize() for c in users]
+
+    def update_user(self, user_id, user_data):
+        user = self.user_repo.get(user_id)
+        if user == None:
+            return None
+        if any(x not in user.serialize() for x in user_data.keys()):
+            return False
+        user.update(user_data)
+        return True
+
+
 
 #     def get_place(self, place_id):
 #         pass
