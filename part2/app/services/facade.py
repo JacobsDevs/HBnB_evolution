@@ -1,8 +1,8 @@
 from app.persistence.repository import InMemoryRepository
+from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
-import json
 
 class HBnBFacade:
     """
@@ -25,7 +25,6 @@ class HBnBFacade:
 
     # User operations
     def create_user(self, user_data):
-        from app.models.user import User
 
         """
         Create a new user and store it in the repository.
@@ -62,6 +61,44 @@ class HBnBFacade:
     def get_all_users(self):
         users = self.user_repo.get_all()
         return [c.__dict__ for c in users]
+    
+   
+    # Place Operations
+
+    def create_place(self, place_data):
+        """Create a Place Object"""
+       
+        place = Place(
+            title=place_data.get('title'),
+            description=place_data.get('description'),
+            price=place_data.get('price'),
+            latitude=place_data.get('latitude'),
+            longitude=place_data.get('longitude'),
+            amenities=place_data.get('amenities'),
+            owner_id=place_data.get('owner_id'),
+            # user_repo=place_data.get('user_repo')
+        )
+
+        self.place_repo.add(place)
+        return place
+        
+    
+    def get_place(self, place_id):
+        place = self.place_repo.get(place_id)
+        return place.serialization()
+    
+    def get_all_places(self):
+        all_places = self.place_repo.get_all()
+        json_places = [item.serialization() for item in all_places]
+        return json_places
+        
+    def update_place(self, place_id, place_data):
+        new_data = self.place_repo.update(place_id, place_data)
+        return new_data.serialization()
+
+
+
+
 
 #     def get_place(self, place_id):
 #         pass
