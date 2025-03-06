@@ -25,22 +25,12 @@ class HBnBFacade:
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
-    # User operations
+# === User operations ===
     def create_user(self, user_data):
-
         """
         Create a new user and store it in the repository.
-        
-        Args:
-            user_data (dict): Dictionary containing user data
-            
-        Returns:
-            User: The created user instance
-            
-        Raises:
-            ValueError: If validation fails
         """
-        # Create a new user instance with the provided data
+        # Create a new user instance
         user = User(
             first_name=user_data.get('first_name'),
             last_name=user_data.get('last_name'),
@@ -51,11 +41,23 @@ class HBnBFacade:
 
         # Store in repository
         self.user_repo.add(user)
+        
+        # Verify user was added
+        print(f"Added user with ID: {user.id}")
+        all_users = self.user_repo.get_all()
+        print(f"Users in repository after adding: {[u.id for u in all_users]}")
 
         return user
 
     def get_user(self, user_id):
-        return self.user_repo.get(user_id)
+        print(f"Looking for user with ID: {user_id}")
+        all_users = self.user_repo.get_all()
+        print(f"Available users: {[u.id for u in all_users]}")
+        
+        user = self.user_repo.get(user_id)
+        print(f"Found user: {user}")
+        
+        return user
 
     def get_user_by_parameter(self, key, value):
         return self.user_repo.get_by_attribute(key, value)
@@ -65,7 +67,8 @@ class HBnBFacade:
 
     def get_all_users(self):
         users = self.user_repo.get_all()
-        return [c.serialize() for c in users]
+        print(f"All users in repository: {[u.id for u in users]}")
+        return [u.serialize() for u in users]
 
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
@@ -76,29 +79,50 @@ class HBnBFacade:
         user.update(user_data)
         return True
       
-    # Place Operations
+# === Place Operations ===
 
     def create_place(self, place_data):
-        """Create a Place Object"""
-       
+        """Create a Place Object with optional amenities"""
+        
+        # Extract amenity IDs from the request
+        amenity_ids = place_data.get('amenities', [])
+        amenities = []
+        
+        # Get actual amenity objects from the repository
+        for amenity_id in amenity_ids:
+            amenity = self.amenity_repo.get(amenity_id)
+            if amenity:
+                amenities.append(amenity)
+        
         place = Place(
             title=place_data.get('title'),
             description=place_data.get('description'),
             price=place_data.get('price'),
             latitude=place_data.get('latitude'),
             longitude=place_data.get('longitude'),
-            amenities=place_data.get('amenities'),
+            amenities=amenities,
             owner_id=place_data.get('owner_id'),
         )
 
         self.place_repo.add(place)
         return place
         
-    
     def get_place(self, place_id):
+        """
+        Retrieve a place by its ID.
+
+        Args:
+            place_id (str): ID of the place to retrieve
+        Returns:
+            dict: The place data as a dictionary if found, None otherwise
+        """
         place = self.place_repo.get(place_id)
+        if place is None:
+            return None
+            
+        # Return the serialized place, not the place object itself
         return place.serialization()
-    
+
     def get_all_places(self):
         all_places = self.place_repo.get_all()
         json_places = [item.serialization() for item in all_places]
@@ -108,21 +132,6 @@ class HBnBFacade:
         new_data = self.place_repo.update(place_id, place_data)
         return new_data.serialization()
 
-
-
-
-    # === Place === (TEMP)
-
-    def get_place(self, place_id):
-        """
-        Retrieve a place by its ID.
-
-        Args:
-            place_id (str): ID of the place to retrieve
-        Returns:
-            Place: The place instance if found, None otherwise
-        """
-        return self.place_repo.get(place_id)
 
 # === Amenity ===
 
@@ -166,24 +175,38 @@ class HBnBFacade:
 
     def get_amenity(self, amenity_id):
         """
-        Retrieve an amenity ID. 
+        Retrieve an amenity by its ID.
 
         Args:
             amenity_id (str): ID of the amenity to retrieve
         Returns:
-            Amenity: The amenity instance(object) if found, None otherwise
+            Amenity: The amenity instance if found, None otherwise
         """
-
-        return self.amenity_repo.get(amenity_id)
+        # Debug output
+        print(f"Looking for amenity with ID: {amenity_id}")
+        all_amenities = self.amenity_repo.get_all()
+        print(f"Available amenities: {[a.id for a in all_amenities]}")
+        
+        # Try to get the amenity
+        amenity = self.amenity_repo.get(amenity_id)
+        print(f"Found amenity: {amenity}")
+        
+        return amenity
 
     def get_all_amenities(self):
         """
         Retrieve all amenities.
         Returns:
-            List: List of all Amenity instances (objects)
+            List: List of all Amenity instances as dictionaries
         """
         amenities = self.amenity_repo.get_all()
-        return [a.__dict__ for a in amenities]
+        return [{
+            'id': a.id,
+            'name': a.name,
+            'description': a.description if hasattr(a, 'description') else "",
+            'created_at': a.created_at,
+            'updated_at': a.updated_at
+        } for a in amenities]
 
     def update_amenity(self, amenity_id, amenity_data):
         """
@@ -212,40 +235,88 @@ class HBnBFacade:
 
         return amenity
 
+    def get_amenities_by_place(self, place_id):
+        """
+        Retrieve all amenities for a specific place.
+        
+        Args:
+            place_id (str): ID of the place
+            
+        Returns:
+            list: List of amenities for the place, or None if place not found
+        """
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+            
+        return place.amenities
+
+    def add_amenity_to_place(self, place_id, amenity_id):
+        """
+        Add an amenity to a place.
+        
+        Args:
+            place_id (str): ID of the place
+            amenity_id (str): ID of the amenity
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        place = self.place_repo.get(place_id)
+        if not place:
+            return False
+            
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return False
+            
+        place.add_amenity(amenity)
+        return True
 
 # === Review ===
-# [x] create_review
-# [x]  get_review
-# [x]  get_all_reviews
-# [x] update_review
-# [x]  delete_review
 
     def create_review(self, review_data):
         """
         Create a new review and store it in the repository.
+        Additionally, link the review to its associated place.
         """
-
         # Get place and user objects first
-        place = self.get_place(review_data.get('place_id'))
-        user = self.get_user(review_data.get('user_id'))
+        place_id = review_data.get('place_id')
+        user_id = review_data.get('user_id')
+        
+        # Debug all repository data
+        print(f"Looking for user with ID: {user_id}")
+        all_users = self.user_repo.get_all()
+        print(f"All users in repository: {[u.id for u in all_users]}")
+        
+        # Get the raw objects, not serialized versions
+        place_obj = self.place_repo.get(place_id)
+        user_obj = self.user_repo.get(user_id)
+        
+        print(f"Found place: {place_obj}")
+        print(f"Found user: {user_obj}")
 
         # Fail safe
-        if not place:
-            raise ValueError(f"Place with ID {review_data.get('place_id')} not found")
+        if not place_obj:
+            raise ValueError(f"Place with ID {place_id} not found")
 
-        if not user:
-            raise ValueError(f"User with ID {review_data.get('user_id')} not found")
+        if not user_obj:
+            raise ValueError(f"User with ID {user_id} not found")
 
+        # Create review with direct object references
         review = Review(
             text=review_data.get('text'),
             rating=review_data.get('rating'),
-            place=place,
-            user=user
+            place=place_obj,
+            user=user_obj
         )
 
         # Store in repository
         self.review_repo.add(review)
-
+        
+        # Add the review to the place's reviews list
+        place_obj.add_review(review)
+        
         return review
 
     def delete_review(self, review_id):
@@ -315,6 +386,32 @@ class HBnBFacade:
         self.review_repo.update(review_id, review_data)
 
         return review
+
+    def get_reviews_by_place(self, place_id):
+        """
+        Retrieve all reviews for a specific place.
+        
+        Args:
+            place_id (str): ID of the place
+        
+        Returns:
+            list: List of reviews for the place
+        """
+        place = self.get_place(place_id)
+        if not place:
+            return None
+
+        # Return the reviews from the place object
+        return [
+            {
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'user_id': review.user.id,
+                'created_at': review.created_at,
+                'updated_at': review.updated_at
+            } for review in place.reviews
+        ]
 
 
 facade = HBnBFacade()

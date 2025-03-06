@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from ...services.facade import facade
+from app.services import facade
 
 # Create a namespace for amenities-related endpoints
 # Easier to read and identify the page / endpoint

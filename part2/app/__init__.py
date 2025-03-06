@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api
 from datetime import datetime
+from app.services.facade import facade
 from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns

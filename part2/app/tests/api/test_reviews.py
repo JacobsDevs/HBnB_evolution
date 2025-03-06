@@ -67,3 +67,43 @@ class TestReviews():
         # Verify the review was deleted
         get_response = client.get(f"/api/v1/reviews/{review_id}")
         assert get_response.status_code == 404
+
+    def test_get_reviews_for_place(self, client, review_data):
+        """Tests retrieving reviews for a specific place"""
+        # First create a review
+        post_response = client.post("/api/v1/reviews/", json=review_data)
+        place_id = review_data['place_id']
+        
+        # Get reviews for the place
+        response = client.get(f"/api/v1/places/{place_id}/reviews")
+        
+        assert response.status_code == 200
+        assert len(response.json) > 0
+        
+        # Check that our review is in the list
+        review_texts = [r["text"] for r in response.json]
+        assert "Great place to stay!" in review_texts
+        
+    def test_add_review_to_place(self, client, review_data):
+        """Tests adding a review directly to a place"""
+        place_id = review_data['place_id']
+        
+        # Create a new review for the place
+        new_review_data = {
+            "text": "Another excellent stay!",
+            "rating": 4,
+            "user_id": review_data['user_id']
+        }
+        
+        response = client.post(f"/api/v1/places/{place_id}/reviews", json=new_review_data)
+        
+        assert response.status_code == 201
+        assert response.json['text'] == "Another excellent stay!"
+        assert response.json['place_id'] == place_id
+        
+        # Check that the review was added to the place
+        get_response = client.get(f"/api/v1/places/{place_id}")
+        reviews = get_response.json.get('reviews', [])
+        
+        review_texts = [r["text"] for r in reviews]
+        assert "Another excellent stay!" in review_texts

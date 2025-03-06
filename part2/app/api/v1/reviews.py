@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from ...services.facade import facade
+from app.services import facade
 
 # Create a namespace for reviews-related endpoints
 # Easier to read and identify the page / endpoint
@@ -203,3 +203,89 @@ class ReviewResource(Resource):
 
         # Return status code for deletion
         return '', 204
+
+@api.route('/places/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    """
+    Resource class for operations related to reviews for a specific place.
+    - GET: Retrieve all reviews for a specific place
+    """
+    
+    @api.response(200, 'List of reviews for the place retrieved successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """
+        Get all reviews for a specific place
+        
+        This endpoint retrieves all reviews associated with a specific place.
+        The place is identified by its ID.
+        
+        Args:
+            place_id (str): UUID of the place
+            
+        Returns:
+            tuple: A tuple containing:
+                - list: The list of reviews for the place
+                - int: HTTP status code (200 for success)
+                
+        Raises:
+            404 Not Found: If the place with the given ID doesn't exist
+        """
+        reviews = facade.get_reviews_by_place(place_id)
+        
+        if reviews is None:
+            return {'error': 'Place not found'}, 404
+            
+        return reviews, 200
+    
+    @api.expect(review_model)
+    @api.response(201, 'Review for place created successfully')
+    @api.response(404, 'Place not found')
+    @api.response(400, 'Invalid input data')
+    def post(self, place_id):
+        """
+        Add a review to a specific place
+        
+        This endpoint creates a new review associated with a specific place.
+        The place is identified by its ID.
+        
+        Args:
+            place_id (str): UUID of the place
+            
+        Returns:
+            tuple: A tuple containing:
+                - dict: The created review data
+                - int: HTTP status code (201 for created successfully)
+                
+        Raises:
+            404 Not Found: If the place with the given ID doesn't exist
+            400 Bad Request: If input validation fails
+        """
+        # Ensure the place exists
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+            
+        # Extract data from the request payload
+        review_data = api.payload
+        
+        # Add the place_id to the review data
+        review_data['place_id'] = place_id
+        
+        try:
+            # Create the review using the facade
+            new_review = facade.create_review(review_data)
+            
+            # Return the created review data
+            return {
+                'id': new_review.id,
+                'text': new_review.text,
+                'rating': new_review.rating,
+                'user_id': new_review.user.id,
+                'place_id': place_id,
+                'created_at': new_review.created_at,
+                'updated_at': new_review.updated_at
+            }, 201
+        except ValueError as e:
+            return {'error': str(e)}, 400
+

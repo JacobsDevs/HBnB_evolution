@@ -33,13 +33,13 @@ class Review(BaseModel):
 
         # If place_id is provided, fetch the place object
         if place_id:
-            from app.services.facade import facade
+            from app.services import facade
             place = facade.get_place(place_id)
         self.set_place(place)
 
         # If user_id is provided, fetch the user object
         if user_id:
-            from app.services.facade import facade
+            from app.services import facade
             user = facade.get_user(user_id)
         self.set_user(user)
 

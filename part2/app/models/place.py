@@ -47,9 +47,9 @@ class Place(BaseModel):
         self.amenities = amenities
         self.reviews = []
 
-    """Title Setter and Getter"""
     @property
     def title(self):
+        """Title Setter and Getter"""
         return self.__title
     
     @title.setter
@@ -61,10 +61,10 @@ class Place(BaseModel):
         else:
             self.__title = value
     
-    """Description Setter and Getter"""
-    """Optional parameter"""
     @property
     def description(self):
+        """ Description Setter and Getter
+            Optional parameter """
         return self.__description
     
     @description.setter
@@ -72,9 +72,9 @@ class Place(BaseModel):
         self.__description = value if value else ""
 
     
-    """Price Setter and Getter"""
     @property
     def price(self):
+        """Price Setter and Getter"""
         return self.__price
 
     @price.setter
@@ -85,9 +85,9 @@ class Place(BaseModel):
             raise ValueError("Price must be a positive value")
         self.__price = float(value)
 
-    """Latitud and longitude Setter and Getter"""
     @property
     def latitude(self):
+        """Latitud and longitude Setter and Getter"""
         return self.__latitude
 
     @latitude.setter
@@ -127,8 +127,6 @@ class Place(BaseModel):
         if not -180.0 <= value <= 180.0:
             raise ValueError("Longitude must be within the range of -180.0 to 180.0")
         self.__longitude = float(value)
-
-    """Owner_id Setter and Getter / condition that owner exist"""
        
     @property
     def owner_id(self):
@@ -155,8 +153,6 @@ class Place(BaseModel):
         #     raise ValueError("User does not exist")
         self.__owner_id = value
 
-    """Amenities Setter and Getter / optional amenities"""
-
     @property
     def amenities(self):
         return self.__amenities
@@ -165,46 +161,97 @@ class Place(BaseModel):
     def amenities(self, value):
         self.__amenities = value if value else []
 
-    """Double check what else should be taken into account
-    Additional Validation on amenities and reviews"""
-
     def add_review(self, review):
+        """ Add a review to the place """
         if review is None:
             raise ValueError("Review cannot be None")
-        self.reviews.append(review)
-        self.save()  # Update the updated_at timestamp
+    
+        # Check if the review is already in the reviews list
+        if not hasattr(self, 'reviews'):
+            self.reviews = []
+    
+        if review not in self.reviews:
+            self.reviews.append(review)
+            self.save()  # Update the updated_at timestamp
+    
         return self
-
-    def add_amenities(self, amenity):
+    
+    def add_amenity(self, amenity): 
         """
         Add an amenity to the place.
-
+        
         Args:
             amenity: Amenity instance to add
-
+        
         Returns:
             Place: The updated place instance with the new amenity
         """
         if amenity is None:
             raise ValueError("Amenity cannot be None")
+        
+        # Ensure the amenities attribute exists
+        if not hasattr(self, 'amenities') or self.amenities is None:
+            self.amenities = []
+        
+        # Check if the amenity is already in the list (prevent duplicates)
+        # First try to check by ID
+        amenity_ids = [a.id for a in self.amenities if hasattr(a, 'id')]
+        if hasattr(amenity, 'id') and amenity.id in amenity_ids:
+            # Already have this amenity
+            return self
+            
+        # If we don't have it by ID, add it
         self.amenities.append(amenity)
         self.save()  # Update the updated_at timestamp
+        
         return self
 
     def valid_string_length(self, string, length):
         return len(string) <= length
     
     def serialization(self):
+        """
+        Convert the place to a dictionary for API responses.
+        """
+        # Process amenities
+        amenities_data = []
+        if hasattr(self, 'amenities') and self.amenities:
+            for amenity in self.amenities:
+                if amenity is not None:
+                    amenity_data = {
+                        'id': amenity.id,
+                        'name': amenity.name
+                    }
+                    if hasattr(amenity, 'description'):
+                        amenity_data['description'] = amenity.description
+                    amenities_data.append(amenity_data)
+        
+        # Process reviews
+        reviews_data = []
+        if hasattr(self, 'reviews') and self.reviews:
+            for review in self.reviews:
+                if review is not None:
+                    review_data = {
+                        'id': review.id,
+                        'text': review.text,
+                        'rating': review.rating,
+                        'created_at': review.created_at,
+                        'updated_at': review.updated_at
+                    }
+                    if hasattr(review, 'user') and review.user:
+                        review_data['user_id'] = review.user.id
+                    reviews_data.append(review_data)
+        
         return {
             "id": self.id,
-            "created_at": self.created_at.isoformat() if isinstance(self.created_at, datetime) else None,
-            "updated_at": self.updated_at.isoformat() if isinstance(self.created_at, datetime) else None,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
             "title": self.title,
-            "description" : self.description,
+            "description": self.description,
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "owner_id": self.owner_id,
-            "amenities": [amenity.serialization() for amenity in self.amenities],
-            "reviews": [review.serialization() for review in self.reviews]
+            "amenities": amenities_data,
+            "reviews": reviews_data
         }

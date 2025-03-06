@@ -58,4 +58,50 @@ class PlaceResource(Resource):
             return updated_place, 200
         except ValueError:
             return {"error": "Invalid input data"}, 400
+
+@api.route('/<place_id>/amenities')
+class PlaceAmenityResource(Resource):
+    """
+    Resource class for operations on amenities for a specific place.
+    """
+    
+    @api.response(200, 'List of amenities for the place retrieved successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all amenities for a specific place"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+            
+        # Return amenities from the place
+        return place.get('amenities', []), 200
+    
+    @api.expect(api.model('AmenityId', {
+        'amenity_id': fields.String(required=True, description='ID of the amenity to add')
+    }))
+    @api.response(200, 'Amenity added to place successfully')
+    @api.response(404, 'Place or amenity not found')
+    def post(self, place_id):
+        """Add an amenity to a place"""
+        # Extract amenity ID from the request body
+        amenity_id = api.payload.get('amenity_id')
         
+        # Debug logging
+        print(f"Adding amenity {amenity_id} to place {place_id}")
+        
+        # Use the facade's add_amenity_to_place method
+        success = facade.add_amenity_to_place(place_id, amenity_id)
+        
+        if not success:
+            # More detailed error - check which part failed
+            place = facade.place_repo.get(place_id)
+            amenity = facade.amenity_repo.get(amenity_id)
+            
+            if not place:
+                return {'error': 'Place not found'}, 404
+            if not amenity:
+                return {'error': 'Amenity not found'}, 404
+            
+            return {'error': 'Failed to add amenity to place'}, 500
+        
+        return {'message': 'Amenity added to place successfully'}, 200

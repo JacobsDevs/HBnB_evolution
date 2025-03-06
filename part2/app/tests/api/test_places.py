@@ -74,3 +74,47 @@ class TestClass():
         response1 = client.get(f"/api/v1/places/{place_id}")
         print(response1.json)
         assert response1.json['title'] == "KameHouse"
+    
+    def test_get_amenities_for_place(self, client, place, amenity_data):
+        """Tests retrieving amenities for a specific place"""
+        # First create a place
+        place_response = client.post("/api/v1/places/", json=place)
+        place_id = place_response.json["id"]
+        
+        # Create an amenity
+        amenity_response = client.post("/api/v1/amenities/", json=amenity_data)
+        amenity_id = amenity_response.json["id"]
+        
+        # Add amenity to place
+        response = client.post(f"/api/v1/places/{place_id}/amenities", json={"amenity_id": amenity_id})
+        assert response.status_code == 200
+        
+        # Get amenities for the place
+        get_response = client.get(f"/api/v1/places/{place_id}/amenities")
+        
+        assert get_response.status_code == 200
+        amenity_names = [a["name"] for a in get_response.json]
+        assert amenity_data["name"] in amenity_names
+        
+    def test_add_amenity_to_place(self, client, place, amenity_data):
+        """Tests adding an amenity to a place"""
+        # First create a place
+        place_response = client.post("/api/v1/places/", json=place)
+        place_id = place_response.json["id"]
+        
+        # Create an amenity
+        amenity_response = client.post("/api/v1/amenities/", json=amenity_data)
+        amenity_id = amenity_response.json["id"]
+        
+        # Add amenity to place
+        response = client.post(f"/api/v1/places/{place_id}/amenities", json={"amenity_id": amenity_id})
+        
+        assert response.status_code == 200
+        assert response.json["message"] == "Amenity added to place successfully"
+        
+        # Verify the amenity was added to the place
+        get_place_response = client.get(f"/api/v1/places/{place_id}")
+        amenities = get_place_response.json.get('amenities', [])
+        
+        amenity_ids = [a["id"] for a in amenities]
+        assert amenity_id in amenity_ids
