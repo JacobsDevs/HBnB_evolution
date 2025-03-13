@@ -6,6 +6,7 @@ from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.places import api as places_ns
+from config import *
 
 # """This class is to convert the DateTime object into a string,
 # because Flask's JSON Serialization does not automatically handle
@@ -18,8 +19,9 @@ from app.api.v1.places import api as places_ns
 #             return obj.isoformat()
 #         return super().default(obj)
 
-def create_app():
+def create_app(config_class = "config.DevelopmentConfig"):
     app = Flask(__name__)
+    app.config.from_object(config_class)
     api = Api(app, version=1.0, title='HBnB aPI', description='HBnb Application API')
 
     #register the users namespace
