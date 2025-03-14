@@ -48,7 +48,7 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it
-        Args: password (str): test password to hash
+        Args: password (str): plaintext password to hash
         Note: bcrypt is used to securely hash the password
         """
 
@@ -56,8 +56,20 @@ class User(BaseModel):
         password_check = self.validate_password(password)
         if password_check[0] == False:
             raise password_check[1]
-        
-        
+
+        # Use bcrypt to hash the password
+        self.__password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):    
+        """Verifies the password that was inputted to match the hashed password
+        Args: password (str): plaintext password to check
+        Returns: boolean [True if match, False otherwise]
+        """
+
+        if self.__password is None:
+            return False
+        return bcrypt.check_password_hash(self.__password, password)
+
     @property
     def first_name(self):
         """Returns first_name"""
