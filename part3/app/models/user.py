@@ -1,6 +1,8 @@
 from typing import Tuple
 from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
+from flask_bcrypt import Bcrypt
+from app import bcrypt
 
 class User(BaseModel):
     """User Model
@@ -39,6 +41,23 @@ class User(BaseModel):
         self.places = []
         super().__init__()
 
+        if password:
+            self.hash_password(password)
+        else:
+            self.__password = None
+
+    def hash_password(self, password):
+        """Hashes the password before storing it
+        Args: password (str): test password to hash
+        Note: bcrypt is used to securely hash the password
+        """
+
+        # Validate password
+        password_check = self.validate_password(password)
+        if password_check[0] == False:
+            raise password_check[1]
+        
+        
     @property
     def first_name(self):
         """Returns first_name"""
