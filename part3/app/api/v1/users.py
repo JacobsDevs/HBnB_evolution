@@ -5,10 +5,12 @@ import json
 from flask_restx.postman import clean
 
 api = Namespace('users', description='User operations')
+
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='first name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email address of the user')
+    'email': fields.String(required=True, description='Email address of the user'),
+    'password': fields.String(required=True, description='Password the user authentication')
 })
 
 parser = reqparse.RequestParser()
