@@ -2,7 +2,7 @@ from typing import Tuple
 from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
 from flask_bcrypt import Bcrypt
-from app import bcrypt
+from app.extensions import bcrypt
 
 class User(BaseModel):
     """User Model
