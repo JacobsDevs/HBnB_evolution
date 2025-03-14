@@ -77,8 +77,14 @@ class HBnBFacade:
         user = self.user_repo.get(user_id)
         if user == None:
             return None
-        if any(x not in user.serialize() for x in user_data.keys()):
+        # Check all available fields when updating
+        if any(x not in ['first_name', 'last_name', 'email', 'password', 'is_admin'] for x in user_data.keys()):
             return False
+        # process password separate due to hashing requirement
+        if 'password' in user_data:
+            password = user_data.pop('password')
+            user.hash_password(password)
+
         user.update(user_data)
         return True
       
