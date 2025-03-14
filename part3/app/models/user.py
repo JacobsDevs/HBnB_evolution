@@ -36,22 +36,23 @@ class User(BaseModel):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = password
+        self.__password = None
         self.is_admin = is_admin
         self.places = []
         super().__init__()
 
         if password:
             self.hash_password(password)
-        else:
-            self.__password = None
 
     def hash_password(self, password):
         """Hashes the password before storing it
         Args: password (str): plaintext password to hash
         Note: bcrypt is used to securely hash the password
         """
-
+        # FAIL SAFE
+        if password is None:
+            raise ValueError("Password cannot be None")
+        
         # Validate password
         password_check = self.validate_password(password)
         if password_check[0] == False:
