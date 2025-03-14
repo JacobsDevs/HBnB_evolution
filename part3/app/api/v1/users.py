@@ -74,12 +74,15 @@ class UserResource(Resource):
     def put(self, user_id):
         user_data = api.payload
         user = facade.update_user(user_id, user_data)
-        if user == None:
+        if user is None:
             return {'error': 'User not found'}, 404
-        elif user == False:
+        elif user is False:
             return {'error': 'Input data invalid'}, 400
-        return {'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email
-                }, 200
+        else:
+            u = user
+            return {
+                'id': u.id,
+                'first_name': u.first_name,
+                'last_name': u.last_name,
+                'email': u.email
+            }, 200

@@ -86,7 +86,7 @@ class HBnBFacade:
             user.hash_password(password)
 
         user.update(user_data)
-        return True
+        return user
       
 # === Place Operations ===
 
