@@ -35,9 +35,12 @@ class HBnBFacade:
             first_name=user_data.get('first_name'),
             last_name=user_data.get('last_name'),
             email=user_data.get('email'),
-            password=user_data.get('password'),
             is_admin=user_data.get('is_admin', False)
         )
+
+        # Hash the password once provided
+        if 'password' in user_data:
+            user.hash_password(user_data['password'])
 
         # Store in repository
         self.user_repo.add(user)

@@ -67,7 +67,7 @@ class UserResource(Resource):
         if not user:
             return {'error': 'User not found'}, 404
         return {'id': user.id,
-                'first_name':user.first_name,
+                'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email,
                 }, 200
@@ -78,4 +78,8 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         elif user == False:
             return {'error': 'Input data invalid'}, 400
-        return user, 200
+        return {'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+                }, 200
