@@ -54,9 +54,17 @@ class UserList(Resource):
         }, 201
 
     @api.expect(parser)
-    @jwt_required()
+    @jwt_required() # Only Authenticated users can view this list
     def get(self):
-        """Get a list of all users"""
+        """Get a list of all users for Admin Only users"""
+        # Check if the current user attempting to access list is admin or not
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        if not is_admin:
+            return {'error': 'Admin privileges required to view all users'}, 403
+
+
         query_args = parser.parse_args()
         clean_args = {k: v  for (k, v) in query_args.items() if v != None}
         if clean_args == {}:
