@@ -18,10 +18,7 @@ review_model = api.model('Review', {
 @api.route('/')
 class ReviewList(Resource):
     """
-    'Resource' class for operations on collection reviews (GET)
-    Handles operations that don't require a specific review ID:
-    - GET: Retrieve ALL reviews
-    - POST: Create a new review
+    'Resource' class for operations on collection reviews
     """
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
@@ -42,6 +39,8 @@ class ReviewList(Resource):
     @api.expect(review_model, validate=True)
     @api.response(201,'review successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def post(self):
         """
         Create a new review.
@@ -60,8 +59,34 @@ class ReviewList(Resource):
         Raises:
             400 Bad Request: If input validation fails
         """
+        # Always get JWT status
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
         # Extract data from the request payload
         review_data = api.payload
+
+        # If user_id is current user set it, unless Admin authorized if no, set it to the current approved user
+        if 'user_id' in review_data:
+            if not is_admin and review_data['user_id'] is not current_user_id:
+                return {'error': 'Unauthorized action - cannot create review as another user'}, 403
+        else:
+            review_data['user_id'] = current_user_id
+
+        # See the place being reviewed and make sure the owner isn't reviewing their own place.
+        place_id = review_data.get('place_id')
+        place = facade.get_place(place_id)
+
+        if not place:
+            return {'error': 'Place not found'}, 404
+
+        if not is_admin and place.get('owner_id') is current_user_id:
+            return {'error': 'You cannot review your own place'}, 400
+
+        if not is_admin and facade.has_user_reviewed_place(current_user_id, place_id):
+            return {'error': 'You have already reviewed this place'}, 400
+
 
         try:
             # Use the facade (controller) to create new review
