@@ -1,8 +1,10 @@
 from flask_restx import Namespace, Resource, fields, reqparse
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_restx.postman import clean
 from app.services import facade
+from app.api.v1.auth import admin_password
 import json
 
-from flask_restx.postman import clean
 
 api = Namespace('users', description='User operations')
 
@@ -10,7 +12,8 @@ user_model = api.model('User', {
     'first_name': fields.String(required=True, description='first name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email address of the user'),
-    'password': fields.String(required=True, description='Password the user authentication')
+    'password': fields.String(required=True, description='Password the user authentication'),
+    'is_admin': fields.Boolean(description='Admin privileges flag')
 })
 
 parser = reqparse.RequestParser()
