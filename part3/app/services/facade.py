@@ -87,6 +87,23 @@ class HBnBFacade:
 
         user.update(user_data)
         return user
+
+    def delete_user(self, user_id):
+        """
+        Delete a user by ID
+
+        Args: user_id (str): ID of the user to delete
+
+        Returns:
+            bool: True if user was deleted, False if user not found
+        """
+
+        user = self.user_repo.get(user_id)
+        if not user:
+            return False
+
+        self.user_repo.delete(user_id)
+        return True
       
 # === Place Operations ===
 

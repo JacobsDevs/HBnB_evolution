@@ -129,17 +129,29 @@ class UserResource(Resource):
         # Non-admin users can still update their own information
         if not is_admin:
             if 'email' in user_data or 'password' in user_data or 'is_admin' in user_data:
-                return {'error': 'Regular useres cannot modify email, password or admin status'}, 403
-            
+                return {'error': 'Regular users cannot modify email, password or admin status'}, 403
+
         user = facade.update_user(user_id, user_data)
         if user is None:
             return {'error': 'User not found'}, 404
         elif user is False:
             return {'error': 'Input data invalid'}, 400
-        
+
         return {
             'id': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email
         }, 200
+
+    @api.response(204, 'User deleted successfully')
+    @api.response(404, 'User not found')
+    @api.response(403, 'Unauthorized action')
+    @admin_required()
+    def delete(self, user_id):
+        """Delete a user (Admin Only)"""
+        success = facade.delete_user(user_id)
+        if not success:
+            return {'error': 'User not found'}, 404
+
+        return '', 204
