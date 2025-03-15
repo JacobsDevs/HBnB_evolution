@@ -16,6 +16,14 @@ user_model = api.model('User', {
     'is_admin': fields.Boolean(description='Admin privileges flag')
 })
 
+user_update_model = api.model('UserUpdate', {
+    'first_name': fields.String(description='first name of the user'),
+    'last_name': fields.String(description='Last name of the user'),
+    'email': fields.String(description='Email address of the user'),
+    'password': fields.String(description='Password the user authentication'),
+    'is_admin': fields.Boolean(description='Admin privileges flag')
+})
+
 parser = reqparse.RequestParser()
 parser.add_argument('first_name', location='args')
 parser.add_argument('last_name', location='args')
