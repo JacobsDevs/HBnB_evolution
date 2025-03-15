@@ -101,18 +101,18 @@ class PlaceResource(Resource):
         current_user_id = get_jwt_identity()
         claims = get_jwt()
         is_admin = claims.get('is_admin', False)
-        
+
         place = facade.get_place(place_id)
         if place is None:
             return {"error": "Place not found"}, 404
-            
+
         if not is_admin and place.get('owner_id') is not current_user_id:
             return {"error": "Unauthorized action - not the place owner"}, 403
-            
+
         success = facade.delete_place(place_id)
         if not success:
             return {"error": "Place not found"}, 404
-            
+
         return '', 204
 
 @api.route('/<place_id>/amenities')
@@ -120,7 +120,7 @@ class PlaceAmenityResource(Resource):
     """
     Resource class for operations on amenities for a specific place.
     """
-    
+
     @api.response(200, 'List of amenities for the place retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
@@ -128,36 +128,46 @@ class PlaceAmenityResource(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-            
+
         # Return amenities from the place
         return place.get('amenities', []), 200
-    
+
     @api.expect(api.model('AmenityId', {
         'amenity_id': fields.String(required=True, description='ID of the amenity to add')
     }))
     @api.response(200, 'Amenity added to place successfully')
     @api.response(404, 'Place or amenity not found')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def post(self, place_id):
-        """Add an amenity to a place"""
+        """Add an amenity to a place (Owner and Admin Only)"""
+        # Do the JWT checks first
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        place_obj = facade.get_place(place_id)
+        if not place_obj:
+            return  {'error': 'Place not found'}, 404
+        
+        if not is_admin and place_obj.get('owner_id') is not current_user_id:
+            return {"error": "Unauthorized action - not the place owner"}, 403
+
         # Extract amenity ID from the request body
         amenity_id = api.payload.get('amenity_id')
-        
+
         # Debug logging
-        print(f"Adding amenity {amenity_id} to place {place_id}")
-        
+        # print(f"Adding amenity {amenity_id} to place {place_id}")
+
         # Use the facade's add_amenity_to_place method
         success = facade.add_amenity_to_place(place_id, amenity_id)
-        
+
         if not success:
-            # More detailed error - check which part failed
-            place = facade.place_repo.get(place_id)
-            amenity = facade.amenity_repo.get(amenity_id)
-            
-            if not place:
-                return {'error': 'Place not found'}, 404
+            amenity = facade.get_amenity(amenity_id)
+
             if not amenity:
                 return {'error': 'Amenity not found'}, 404
-            
+
             return {'error': 'Failed to add amenity to place'}, 500
-        
+
         return {'message': 'Amenity added to place successfully'}, 200
