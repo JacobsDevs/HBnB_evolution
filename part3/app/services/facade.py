@@ -1,8 +1,11 @@
-from app.persistence.repository import InMemoryRepository
+# Importing the new SQLAlchemy repo class to the facade
+from app.persistence.SQLAlchemy_repo import SQLAlchemyRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
+
+ 
 
 class HBnBFacade:
     """
@@ -20,10 +23,10 @@ class HBnBFacade:
         Initialize repositories for each entity type.
         Each repository is responsible for storing and retrieving a specific entity type.
         """
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository()
+        self.place_repo = SQLAlchemyRepository()
+        self.review_repo = SQLAlchemyRepository()
+        self.amenity_repo = SQLAlchemyRepository()
 
 # === User operations ===
     def create_user(self, user_data):

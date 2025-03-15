@@ -7,6 +7,7 @@ from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.places import api as places_ns
 from config import *
+from flask_sqlalchemy import SQLAlchemy
 
 # """This class is to convert the DateTime object into a string,
 # because Flask's JSON Serialization does not automatically handle
@@ -18,6 +19,9 @@ from config import *
 #             "DateTime to string"
 #             return obj.isoformat()
 #         return super().default(obj)
+
+# Creating the DataBase object SQLAlchemy
+db = SQLAlchemy()
 
 def create_app(config_class = "config.DevelopmentConfig"):
     app = Flask(__name__)
