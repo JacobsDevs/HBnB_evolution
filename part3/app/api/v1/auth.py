@@ -8,26 +8,48 @@ api = Namespace('auth', description='Authentication operations')
 
 login_model = api.model('Login', {
     'email': fields.String(require=True, description='User email address'),
-    'password': fields.String(required=True, descreiption='User Password')
+    'password': fields.String(required=True, description='User Password')
+})
+
+# Model for Token Response when created
+token_model = api.mode('Token', {
+    'access_token': fields.String(description='JWT access token'),
+    'user_id': fields.String(description='User ID')
 })
 
 @api.route('/login')
 class Login(Resource):
+    """Login page for authentication and authorization"""
     @api.expect(login_model)
     @api.response(200,'Login Successful')
     @api.response(401,'Authentication failed')
     def post(self):
+        """Login to get JWT Token
+        Created and stored on client machine"""
 
-        # Find the user by email 
+        data = request.json
+
+        # Find the user by email
+        user = facade.get_user_by_email(data.get('email'))
 
         # Check if user exists and password is correct
+        if user and user.verify_password(data.get('password')):
 
         # Create token with user identity and admin credentials
-
         # Admin status in token allows verification of admin privileges
             # >> Having the credentials and status in the token means that
             #   no query is needed or made to the database
             #   for each protected endpoint
+            access_token = create_access_token(
+                identity=user.id,
+                additional_claims={"is_admin": user.is_admin}
+            )
+            return {
+                'access_token': access_token,
+                'user_id': user.id
+            }, 200
+
+        return {'error': 'Invalid email or password'}, 401
 
 
 # Check if user is an admin or not (boolean)
