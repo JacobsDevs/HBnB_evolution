@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 # Create a namespace for reviews-related endpoints
@@ -10,6 +11,8 @@ api = Namespace('reviews', description='Review Operations')
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Leaving review comment'),
     'rating': fields.Integer(required=True, description='Rating must be between 1 and 5')
+    'place_id': fields.String(description='ID of the place being reviewed'),
+    'user_id': fields.String(description='ID of the user writing the review'),
 })
 
 @api.route('/')
