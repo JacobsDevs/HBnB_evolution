@@ -21,7 +21,7 @@ token_model = api.mode('Token', {
 class Login(Resource):
     """Login page for authentication and authorization"""
     @api.expect(login_model)
-    @api.response(200,'Login Successful')
+    @api.response(200,'Login Successful', token_model)
     @api.response(401,'Authentication failed')
     def post(self):
         """Login to get JWT Token
@@ -53,4 +53,30 @@ class Login(Resource):
 
 
 # Check if user is an admin or not (boolean)
+# Utility Function (Decorator)
+# Remember: >> 'jwt_required() does the authentication
+#           and 'claims does the authorization (Does it have the right
+#           privileges being "is_admin, TRUE" )
+#       *args = Captures positional arguments as tuples '()'
+#       **kwargs = Captures keyword arguments as dictionaries '{}'
+def admin_password():
+    """
+    Custom decorator to check if the authenticated user is an admin
 
+    This utility function can be used as a decorator on endpoints that should only be accessible to admins only. is_admin = True
+
+    Returns: Decorated function that checks admin status
+    """
+    def wrapper(fn):
+        @jwt_required()
+        def decorator(*args, **kwargs):
+            # Claims is where we get the JWT Token from
+            claims = get_jwt()
+
+            if not claims.get('is_admin', False):
+                return {'error': 'Admin privilege required'}, 403
+
+            # Return the (Original) function
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper
