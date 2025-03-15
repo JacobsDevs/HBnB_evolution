@@ -446,6 +446,22 @@ class HBnBFacade:
             } for review in place.reviews
         ]
 
+    def has_user_reviewed_place(self, user_id, place_id):
+        """
+        Check if the user has already reviewed a place
+
+        Args:   user_id (str): ID of user
+                place_id (str): ID of the place
+        
+        Returns:
+                bool: True if the user has already reviewed the place, False otherwise
+        """
+        reviews = self.review_repo.get_all()
+        for review in reviews:
+            if review.user_id is user_id and review.place_id is place_id:
+                return True
+            return False
+
 
 facade = HBnBFacade()
 # Create a single application-wide instance of HBnBFacade
