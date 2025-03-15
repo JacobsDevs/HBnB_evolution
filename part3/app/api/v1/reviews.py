@@ -222,6 +222,8 @@ class ReviewResource(Resource):
 
     @api.response(204, 'review successfully deleted')
     @api.response(404, 'review not found')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def delete(self, review_id):
         """
         Delete an review.
@@ -239,10 +241,20 @@ class ReviewResource(Resource):
         Raises:
             404 Not Found: If the review ID doesn't exist.
         """
+        
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        review = facade.get_review(review_id)
+        if not review:
+            return {'error': 'Review not found'}, 404
+        # You need to check if the review that is getting deleted is the OG writer or Admin Only
+        if not is_admin and review.get('user_id') is not current_user_id:
+            return {'error': 'Unauthorized action - not the review author'}, 403
+
         # Use facade to delete the review
         success = facade.delete_review(review_id)
-
-        # If review doesn't exist
         if not success:
             return {'error': 'review doesn\'t exist'}, 404
 
