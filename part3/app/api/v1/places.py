@@ -64,13 +64,30 @@ class PlaceResource(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def put(self, place_id):
-        """Update a place's information"""
+        """Update a place's information (For owner or admin only)"""
+        # Get ID and admin status (JWT) > Get place > Check if user is_admin > Update info
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        place = facade.get_place(place_id)
+        if place is None:
+            return {"error": "Place not found"}, 404
+        
+        if not is_admin and place.get('owner_id') is not current_user_id:
+            return {"error": "Unauthorized action - not the place owner"}, 403
+
         place_new_data = api.payload
+
+        # Non-Admin users cannot change owner_id information
+        if not is_admin and 'owner_id' in place_new_data and place_new_data['owner_id'] is not current_user_id:
+            return {"error": "Unauthorized action - cannot transfer ownership"}, 403
+
         try:
             updated_place = facade.update_place(place_id=place_id, place_data=place_new_data)
-            if updated_place is None:
-                return {"error": "Place not found"}, 404
             return updated_place, 200
         except ValueError:
             return {"error": "Invalid input data"}, 400
