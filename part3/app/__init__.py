@@ -8,6 +8,7 @@ from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.places import api as places_ns
+from app.api.v1.auth import api as auth_ns
 
 def create_app(config_class="app.config.DevelopmentConfig"):
     app = Flask(__name__)
@@ -15,13 +16,14 @@ def create_app(config_class="app.config.DevelopmentConfig"):
     # Apply configuration to the app
     app.config.from_object(config_class)
 
+    # Config JWT Specific Settings
+    app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY", "default-jwt-key")
+    # default-jwt-key is the "fall back key if no SECRET KEY is present"
+
     # Initialize Bcrypt with the app
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    # Config JWT Specific Settings
-    app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY", "default-jwt-key")
-    # default-jwt-key is the "fall back key if no SECRET KEY is present"
 
     api = Api(app, version=1.0, title='HBnB aPI', description='HBnb Application API')
 
@@ -30,5 +32,7 @@ def create_app(config_class="app.config.DevelopmentConfig"):
     api.add_namespace(amenities_ns, path='/api/v1/amenities')
     api.add_namespace(reviews_ns, path='/api/v1/reviews')
     api.add_namespace(places_ns, path='/api/v1/places')
+    api.add_namespace(auth_ns, path='/api/v1/auth')
+
 
     return app

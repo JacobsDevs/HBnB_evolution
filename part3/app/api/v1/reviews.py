@@ -10,9 +10,9 @@ api = Namespace('reviews', description='Review Operations')
 # Request validation and swagger documentation (web dev use later potentially)
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Leaving review comment'),
-    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5')
+    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5'),
     'place_id': fields.String(description='ID of the place being reviewed'),
-    'user_id': fields.String(description='ID of the user writing the review'),
+    'user_id': fields.String(description='ID of the user writing the review')
 })
 
 @api.route('/')
@@ -181,7 +181,7 @@ class ReviewResource(Resource):
 
         current_user_id = get_jwt_identity()
         claims = get_jwt()
-        is_admin = claims.get('is_admin' False)
+        is_admin = claims.get('is_admin', False)
 
         # Check if review exists
         review = facade.get_review(review_id)
