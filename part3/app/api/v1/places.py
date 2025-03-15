@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 api = Namespace('places', description='Place operations')
@@ -18,9 +19,24 @@ class PlaceList(Resource):
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def post(self):
-        """Creates a new place"""
+        """Creates a new place Authenticated users only"""
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin, False')
+
         place_data = api.payload
+
+        # Setting owner_id to current authenticated user unless admin is specifying another owner (Changing of hands you could say)
+        # Remember >> Only admins can create places for other users
+        if 'owner_id' in place_data:
+            if not is_admin and place_data['owner_id'] is not current_user_id:
+                return {"error": "Unauthorized action - cannot create place for another user"}, 403
+        else:
+            place_data['owner_id'] = current_user_id
+
         try:
             new_place = facade.create_place(place_data=place_data)
             return new_place.serialization(), 201
