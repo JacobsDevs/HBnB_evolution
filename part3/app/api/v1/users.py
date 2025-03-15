@@ -64,7 +64,6 @@ class UserList(Resource):
         if not is_admin:
             return {'error': 'Admin privileges required to view all users'}, 403
 
-
         query_args = parser.parse_args()
         clean_args = {k: v  for (k, v) in query_args.items() if v != None}
         if clean_args == {}:
@@ -77,7 +76,8 @@ class UserList(Resource):
                     'id': user.id,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
-                    'email': user.email
+                    'email': user.email,
+                    'is_admin': user.is_admin
                 }, 200
             else:
                 return {'error': 'User not found'}, 404
@@ -86,16 +86,30 @@ class UserList(Resource):
 class UserResource(Resource):
     @api.response(200, 'User details retrieves successfully')
     @api.response(404, 'User not found')
+    @jwt_required()
     def get(self, user_id):
-        """Retrieve a use by ID"""
+        """Retrieve a use by ID (Admin Only)"""
+        # Get current user ID and Admin Status to verify request
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        if not is_admin and current_user_id is not user_id:
+            return {'error': 'Unauthorized access to other user\'s data'}, 403
+
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
-        return {'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                }, 200
+
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'is_admin': user.is_admin
+        }, 200
+
+    
     def put(self, user_id):
         user_data = api.payload
         user = facade.update_user(user_id, user_data)
