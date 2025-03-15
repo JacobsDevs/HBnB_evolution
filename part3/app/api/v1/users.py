@@ -126,18 +126,20 @@ class UserResource(Resource):
             return {'error': 'Unauthorized action'}, 403
 
         user_data = api.payload
-        
-
+        # Non-admin users can still update their own information
+        if not is_admin:
+            if 'email' in user_data or 'password' in user_data or 'is_admin' in user_data:
+                return {'error': 'Regular useres cannot modify email, password or admin status'}, 403
+            
         user = facade.update_user(user_id, user_data)
         if user is None:
             return {'error': 'User not found'}, 404
         elif user is False:
             return {'error': 'Input data invalid'}, 400
-        else:
-            u = user
-            return {
-                'id': u.id,
-                'first_name': u.first_name,
-                'last_name': u.last_name,
-                'email': u.email
-            }, 200
+        
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email
+        }, 200
