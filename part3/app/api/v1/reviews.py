@@ -117,7 +117,7 @@ class ReviewResource(Resource):
     """
 
     @api.response(200, 'review details retrieved successfully')
-    @api.response(400, 'review not found')
+    @api.response(404, 'review not found')
     def get(self, review_id):
         """
         Get review details via ID (UUID)
@@ -137,26 +137,28 @@ class ReviewResource(Resource):
         """
 
         # Use the facade to get the review by ID
-        view_review = facade.get_review(review_id)
+        review = facade.get_review(review_id)
 
-        if not view_review:
-            return {'error': 'review not found'}, 404
+        if not review:
+            return {'error': 'Review not found'}, 404
 
         # Return the review data with status code
         return {
-            'id': view_review.id,
-            'created_at': view_review.created_at,
-            'updated_at': view_review.updated_at,
-            'text': view_review.text,
-            'rating': view_review.rating,
-            'place_id': view_review.place.id,
-            'user_id': view_review.user.id
+            'id': review.id,
+            'created_at': review.created_at,
+            'updated_at': review.updated_at,
+            'text': review.text,
+            'rating': review.rating,
+            'place_id': review.place.id,
+            'user_id': review.user.id
         }, 200
 
     @api.expect(review_model, validate=True)
     @api.response(200,'review Updated Successfully')
     @api.response(404,'review not found')
     @api.response(400,'Invalid Data input')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def put(self, review_id):
         """
         Update review data
@@ -177,13 +179,28 @@ class ReviewResource(Resource):
             400 Bad request: If input validation fails
         """
 
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin' False)
+
         # Check if review exists
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'review doesn\'t exist'}, 404
 
+        # Need to check if the review is the original writer (author) or has admin priv's
+        # Non-admins cannot edit the review and or info
+        if not is_admin and review.get('user_id') is not current_user_id:
+            return {'error': 'Unauthorized action - not the review creator'}, 403
+
         # Extract the updated data from the request
         update_data = api.payload
+
+        if not is_admin:
+            if 'user_id' in update_data and update_data['user_id'] != current_user_id:
+                return {'error': 'Unauthorized action - cannot change review author'}, 403
+            if 'place_id' in update_data and update_data['place_id'] != review.get('place_id'):
+                return {'error': 'Unauthorized action - cannot change reviewed place'}, 403
 
         try:
             # Use facade to update review
