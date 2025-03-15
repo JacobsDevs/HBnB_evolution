@@ -92,6 +92,29 @@ class PlaceResource(Resource):
         except ValueError:
             return {"error": "Invalid input data"}, 400
 
+    @api.response(204, 'Place successfully deleted')
+    @api.response(404, 'Place not found')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
+    def delete(self, place_id):
+        """Delete a place (Owner or admin only)"""
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+        
+        place = facade.get_place(place_id)
+        if place is None:
+            return {"error": "Place not found"}, 404
+            
+        if not is_admin and place.get('owner_id') is not current_user_id:
+            return {"error": "Unauthorized action - not the place owner"}, 403
+            
+        success = facade.delete_place(place_id)
+        if not success:
+            return {"error": "Place not found"}, 404
+            
+        return '', 204
+
 @api.route('/<place_id>/amenities')
 class PlaceAmenityResource(Resource):
     """
