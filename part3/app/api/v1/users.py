@@ -109,9 +109,25 @@ class UserResource(Resource):
             'is_admin': user.is_admin
         }, 200
 
-    
+    @api.expect(user_update_model)
+    @api.response(200, 'User updated successfully')
+    @api.response(404, 'User not found')
+    @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def put(self, user_id):
+        """Update user information (Authorized user or Admin Only)"""
+        # Admin check and authorization check
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        if not is_admin and current_user_id is not user_id:
+            return {'error': 'Unauthorized action'}, 403
+
         user_data = api.payload
+        
+
         user = facade.update_user(user_id, user_data)
         if user is None:
             return {'error': 'User not found'}, 404
