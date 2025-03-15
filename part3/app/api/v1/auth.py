@@ -12,7 +12,7 @@ login_model = api.model('Login', {
 })
 
 # Model for Token Response when created
-token_model = api.mode('Token', {
+token_model = api.model('Token', {
     'access_token': fields.String(description='JWT access token'),
     'user_id': fields.String(description='User ID')
 })
@@ -59,7 +59,7 @@ class Login(Resource):
 #           privileges being "is_admin, TRUE" )
 #       *args = Captures positional arguments as tuples '()'
 #       **kwargs = Captures keyword arguments as dictionaries '{}'
-def admin_password():
+def admin_required():
     """
     Custom decorator to check if the authenticated user is an admin
 

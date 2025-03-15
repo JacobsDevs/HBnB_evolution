@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource, fields, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx.postman import clean
 from app.services import facade
-from app.api.v1.auth import admin_password
+from app.api.v1.auth import admin_required
 import json
 
 
@@ -35,6 +35,8 @@ class UserList(Resource):
     @api.response(201, 'User succesfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    # This prevents a public viewer to create a user however the task says that only admins can ONLY create users.
+    @admin_required() 
     def post(self):
         """Register a new user"""
         user_data = api.payload
@@ -43,12 +45,16 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         new_user = facade.create_user(user_data)
-        return {'id': new_user.id,
-                'first_name': new_user.first_name,
-                'last_name': new_user.last_name,
-                'email': new_user.email,
-                }, 201
+        return {
+            'id': new_user.id,
+            'first_name': new_user.first_name,
+            'last_name': new_user.last_name,
+            'email': new_user.email,
+            'is_admin': new_user.is_admin
+        }, 201
+
     @api.expect(parser)
+    @jwt_required()
     def get(self):
         """Get a list of all users"""
         query_args = parser.parse_args()
