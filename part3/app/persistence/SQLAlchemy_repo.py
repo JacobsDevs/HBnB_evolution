@@ -1,6 +1,7 @@
 from app.extensions import db # extensions.py is the central instance location
 from app.models import User, Place, Review, Amenity
-from app.persistence import Repository
+from app.persistence.repository import Repository
+import logging
 
 class SQLAlchemyRepository(Repository):
     def __init__(self, model):
@@ -14,8 +15,7 @@ class SQLAlchemyRepository(Repository):
             return obj
         except Exception as e:
             db.session.rollback()
-            logging.error(f"Error adding object: {str(e)}")
-            raise
+            raise ValueError (f"Error adding object: {str(e)}")
 
     def get(self, obj_id):
         return self.model.query.get(obj_id)
@@ -26,9 +26,16 @@ class SQLAlchemyRepository(Repository):
     def update(self, obj_id, data):
         obj = self.get(obj_id)
         if obj:
-            for key, value in data.items():
-                setattr(obj, key, value)
-            db.session.commit()
+            try:
+                for key, value in data.items():
+                    if hasattr(obj, key):
+                        setattr(obj, key, value)
+                db.session.commit()
+                return obj
+            except Exception as e:
+                db.session.rollback()
+                raise ValueError(f"Error updating object: {str(e)}")
+        return None
 
     def delete(self, obj_id): 
         obj = self.get(obj_id)
