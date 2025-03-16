@@ -6,4 +6,3 @@ flask-bcrypt
 flask-jwt-extended
 SQLAlchemy
 Flask-SQLAlchemy
-mysqlclient

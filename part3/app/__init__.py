@@ -17,13 +17,14 @@ def create_app(config_class="app.config.DevelopmentConfig"):
     # Apply configuration to the app
     app.config.from_object(config_class)
 
-    # Config JWT Specific Settings
+    # Set JWT Specific Settings
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY", "default-jwt-key")
     # default-jwt-key is the "fall back key if no SECRET KEY is present"
 
-    # Initialize Bcrypt with the app
+    # Initialize extensions with the app
     bcrypt.init_app(app)
     jwt.init_app(app)
+    db.init_app(app)
 
 
     api = Api(app, version=1.0, title='HBnB aPI', description='HBnb Application API')
