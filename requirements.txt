@@ -5,3 +5,5 @@ email-validator
 pytest
 flask-bcrypt
 flask-jwt-extended
+sqlalchemy
+flask-sqlalchemy
