@@ -2,6 +2,7 @@ flask
 flask-restx
 pytest
 email-validator
-pytest
 flask-bcrypt
 flask-jwt-extended
+sqlalchemy
+flask-sqlalchemy
