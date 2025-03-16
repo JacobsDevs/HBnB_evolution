@@ -7,3 +7,6 @@ flask-bcrypt
 flask-jwt-extended
 sqlalchemy
 flask-sqlalchemy
+flask-migrate
+psycopg2-binary
+pymysql

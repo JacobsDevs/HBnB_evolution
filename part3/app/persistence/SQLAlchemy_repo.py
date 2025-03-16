@@ -1,4 +1,4 @@
-from app import db # DB object instantiated in __init__.py app
+from app.extensions import db # extensions.py is the central instance location
 from app.models import User, Place, Review, Amenity
 from app.persistence import Repository
 
@@ -30,5 +30,5 @@ class SQLAlchemyRepository(Repository):
             db.session.commit()
 
     def get_by_attribute(self, attr_name, attr_value):
-        return self.model.query.filter(getattr(self.mdoel, attr_name) == attr_value).first()
+        return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
 
