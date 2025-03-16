@@ -7,8 +7,15 @@ class SQLAlchemyRepository(Repository):
         self.model = model
 
     def add(self, obj):
-        db.session.add(obj)
-        db.session.commit()
+        """Add new object to the database"""
+        try:
+            db.session.add(obj)
+            db.session.commit()
+            return obj
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"Error adding object: {str(e)}")
+            raise
 
     def get(self, obj_id):
         return self.model.query.get(obj_id)
