@@ -11,12 +11,74 @@ class SQLAlchemyRepository(Repository):
     This repository uses SQLAlchemy ORM to interact with a relational database,
     replacing the in-memory storage with persistent database storage.
     """
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, model_class):
+        self.model = model_class
 
     def add(self, obj):
-        db.session.add(obj)
-        db.session.commit()
+        """
+        Add an object to the DB
+        Could be any class of object (User, Place, Amenity, Review)
+        """
+        try:
+            # Create a new instance of the model class with data from the object
+            if self.model_class == User:
+                db_obj = User(
+                    id=obj.id,
+                    first_name=obj.first_name,
+                    last_name=obj.last_name,
+                    email=obj.email,
+                    password=obj.password,
+                    is_admin=obj.is_admin,
+                    created_at=obj.created_at,
+                    updated_at=obj.updated_at
+                )
+            elif self.model_class == Place:
+                db_obj = Place(
+                    id=obj.id,
+                    title=obj.title,
+                    description=obj.description,
+                    price=obj.price,
+                    latitude=obj.latitude,
+                    longitude=obj.longitude,
+                    owner_id=obj.owner_id,
+                    created_at=obj.created_at,
+                    updated_at=obj.updated_at
+                )
+                # Add amenities if they exist
+                if hasattr(obj, 'amenities') and obj.amenities:
+                    for amenity_id in obj.amenities:
+                        amenity = db.session.query(Amenity).get(amenity_id)
+                        if amenity:
+                            db_obj.amenities.append(amenity)
+            elif self.model_class == Amenity:
+                db_obj = Amenity(
+                    id=obj.id,
+                    name=obj.name,
+                    description=obj.description,
+                    created_at=obj.created_at,
+                    updated_at=obj.updated_at
+                )
+            elif self.model_class == Review:
+                db_obj = Review(
+                    id=obj.id,
+                    text=obj.text,
+                    rating=obj.rating,
+                    place_id=obj.place_id,
+                    user_id=obj.user_id,
+                    created_at=obj.created_at,
+                    updated_at=obj.updated_at
+                )
+            else:
+                raise ValueError(f"Unsupported model class: {self.model_class}")
+                
+            db.session.add(db_obj)
+            db.session.commit()
+            
+            return obj
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            logging.error(f"Database error during add: {str(e)}")
+            raise
 
     def get(self, obj_id):
         return self.model.query.get(obj_id)
