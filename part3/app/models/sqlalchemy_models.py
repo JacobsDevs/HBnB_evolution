@@ -23,8 +23,8 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
-    # Place  > owner
-    # review > user
+    places = db.relationship('Place', backref='owner', lazy=True)
+    reviews = db.relationship('Review', backref='user', lazy=True)
 
 class Place(db.Model):
     __tablename__ = 'places'
@@ -40,8 +40,9 @@ class Place(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     # Relationships
-    # Amenity > place
-    # Reviews > place
+    amenities = db.relationship('Amenity', secondary=place_amenity, lazy='subquery',
+                                backref=db.backref('places', lazy=True))
+    reviews = db.relationship('Review', backref='place', lazy=True)
 
 class Amenity(db.Model):
     __tablename__ = 'amenities'
