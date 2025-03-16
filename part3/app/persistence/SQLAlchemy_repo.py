@@ -1,7 +1,6 @@
 from app.extensions import db # extensions.py is the central instance location
 from app.models import User, Place, Review, Amenity
 from app.persistence.repository import Repository
-import logging
 
 class SQLAlchemyRepository(Repository):
     def __init__(self, model):
@@ -40,8 +39,14 @@ class SQLAlchemyRepository(Repository):
     def delete(self, obj_id): 
         obj = self.get(obj_id)
         if obj:
-            db.session.delete(obj)
-            db.session.commit()
+            try:
+                db.session.delete(obj)
+                db.session.commit()
+                return True
+            except Exception as e:
+                db.session.rollback()
+                raise ValueError(f"Error deleting object: {str(e)}")
+        return False
 
     def get_by_attribute(self, attr_name, attr_value):
         return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
