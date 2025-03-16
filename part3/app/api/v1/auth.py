@@ -3,7 +3,6 @@ from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 from app.extensions import bcrypt
-from app.api.v1.users import user_model
 
 api = Namespace('auth', description='Authentication operations')
 
@@ -56,7 +55,7 @@ class Login(Resource):
 
 @api.route('/bootstrap')
 class BootstrapAdmin(Resource):
-    @api.expect(user_model)
+    @api.expect(token_model)
     @api.response(201, 'Admin user created')
     @api.response(400, 'Invalid input data')
     @api.response(409, 'Admin user already exists')
