@@ -49,5 +49,9 @@ class SQLAlchemyRepository(Repository):
         return False
 
     def get_by_attribute(self, attr_name, attr_value):
-        return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
-
+        try:
+            return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
+        except Exception as e:
+            # This uses ValueError instead of returning None to be consistent with other errors
+            # This is a design decision - we could also choose to return None here if it errors out we can see what we want to do.
+            raise ValueError(f"Error retrieving object by attribute: {str(e)}")
