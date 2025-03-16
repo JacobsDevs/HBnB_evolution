@@ -35,8 +35,6 @@ class UserList(Resource):
     @api.response(201, 'User succesfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
-    # This prevents a public viewer to create a user however the task says that only admins can ONLY create users.
-    @admin_required() 
     def post(self):
         """Register a new user"""
         user_data = api.payload
