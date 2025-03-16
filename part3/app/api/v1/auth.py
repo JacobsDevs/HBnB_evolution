@@ -1,8 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 from app.extensions import bcrypt
+from app.api.v1.users import user_model
 
 api = Namespace('auth', description='Authentication operations')
 
@@ -16,6 +17,8 @@ token_model = api.model('Token', {
     'access_token': fields.String(description='JWT access token'),
     'user_id': fields.String(description='User ID')
 })
+
+
 
 @api.route('/login')
 class Login(Resource):
@@ -51,6 +54,35 @@ class Login(Resource):
 
         return {'error': 'Invalid email or password'}, 401
 
+@api.route('/bootstrap')
+class BootstrapAdmin(Resource):
+    @api.expect(user_model)
+    @api.response(201, 'Admin user created')
+    @api.response(400, 'Invalid input data')
+    @api.response(409, 'Admin user already exists')
+    def post(self):
+        """Bootstrap the first admin user (one-time operation)"""
+        # Basically check if there is an admin already created if not set first user creation to admin
+
+        all_users = facade.get_all_users()
+        admin_exists = any(user.get('is_admin', False) for user in all_users)
+
+        if admin_exists:
+            return {'error': 'Admin user already exists. User regular login'}, 409
+        
+        user_data = api.payload
+
+        user_data['is_admin'] = True
+
+        try:
+            new_user = facade.create_user(user_data)
+            return {
+                'message': 'Admin user created successfully',
+                'id': new_user.id,
+                'email': new_user.email
+            }, 201
+        except ValueError as e:
+            return{'error': str(e)}, 400
 
 # Check if user is an admin or not (boolean)
 # Utility Function (Decorator)
