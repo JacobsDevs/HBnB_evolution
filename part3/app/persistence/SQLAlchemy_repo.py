@@ -1,5 +1,8 @@
 from app.extensions import db # extensions.py is the central instance location
-from app.models import User, Place, Review, Amenity
+from app.models.user import User
+from app.models.place import Place
+from app.models.review import Review
+from app.models.amenity import Amenity
 from app.persistence.repository import Repository
 
 class SQLAlchemyRepository(Repository):
