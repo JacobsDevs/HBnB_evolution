@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -20,10 +20,10 @@ class HBnBFacade:
         Initialize repositories for each entity type.
         Each repository is responsible for storing and retrieving a specific entity type.
         """
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
 # === User operations ===
     def create_user(self, user_data):
@@ -38,6 +38,10 @@ class HBnBFacade:
             password=user_data.get('password'),
             is_admin=user_data.get('is_admin', False)
         )
+
+        # Hash the password once provided
+        if 'password' in user_data:
+            user.hash_password(user_data['password'])
 
         # Store in repository
         self.user_repo.add(user)
@@ -74,9 +78,32 @@ class HBnBFacade:
         user = self.user_repo.get(user_id)
         if user == None:
             return None
-        if any(x not in user.serialize() for x in user_data.keys()):
+        # Check all available fields when updating
+        if any(x not in ['first_name', 'last_name', 'email', 'password', 'is_admin'] for x in user_data.keys()):
             return False
+        # process password separate due to hashing requirement
+        if 'password' in user_data:
+            password = user_data.pop('password')
+            user.hash_password(password)
+
         user.update(user_data)
+        return user
+
+    def delete_user(self, user_id):
+        """
+        Delete a user by ID
+
+        Args: user_id (str): ID of the user to delete
+
+        Returns:
+            bool: True if user was deleted, False if user not found
+        """
+
+        user = self.user_repo.get(user_id)
+        if not user:
+            return False
+
+        self.user_repo.delete(user_id)
         return True
       
 # === Place Operations ===
@@ -132,6 +159,13 @@ class HBnBFacade:
         new_data = self.place_repo.update(place_id, place_data)
         return new_data.serialization()
 
+    def delete_place(self, place_id):
+        place = self.get_place(place_id)
+        if not place:
+            return False
+
+        self.place_repo.delete(place_id)
+        return True
 
 # === Amenity ===
 
@@ -412,6 +446,22 @@ class HBnBFacade:
                 'updated_at': review.updated_at
             } for review in place.reviews
         ]
+
+    def has_user_reviewed_place(self, user_id, place_id):
+        """
+        Check if the user has already reviewed a place
+
+        Args:   user_id (str): ID of user
+                place_id (str): ID of the place
+        
+        Returns:
+                bool: True if the user has already reviewed the place, False otherwise
+        """
+        reviews = self.review_repo.get_all()
+        for review in reviews:
+            if review.user_id is user_id and review.place_id is place_id:
+                return True
+            return False
 
 
 facade = HBnBFacade()

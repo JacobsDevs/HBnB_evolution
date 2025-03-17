@@ -2,4 +2,4 @@
 python = "3.13"
 
 [env]
-PYTHONPATH = "/home/jacob/Code/Holberton/HBnB_Evolution/part2"
+PYTHONPATH = "/home/jacob/Code/Holberton/HBnB_Evolution/part3"

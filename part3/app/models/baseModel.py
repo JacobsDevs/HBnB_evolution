@@ -1,17 +1,9 @@
+from app.extensions import db
 import uuid
 from datetime import datetime, timezone
-# to comment or delete as jacob most likely did it already
-from app import db
-import uuid
-#
 
 class BaseModel(db.Model):
-    __abstract__ = True
-
-    id = db.Column(db.string(36), primary_key = True, default=lambda: str(uuid.uuid4()))
-    created_at = db.Column(db.Datetime, default=datetime.now(timezone.utc)) 
-    updated_at = db.Column(db.Datetime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-
+    __abstract__ = True # Ensures SQLAlchemy doesn't use this for a table
     """
     Base class for all entities in the HBnB application.
     
@@ -20,6 +12,9 @@ class BaseModel(db.Model):
     - created_at: Timestamp when the entity is created
     - updated_at: Timestamp when the entity is last updated
     """
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     def __init__(self):
         """

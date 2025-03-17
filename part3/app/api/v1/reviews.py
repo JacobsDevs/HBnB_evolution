@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 
 # Create a namespace for reviews-related endpoints
@@ -9,16 +10,15 @@ api = Namespace('reviews', description='Review Operations')
 # Request validation and swagger documentation (web dev use later potentially)
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Leaving review comment'),
-    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5')
+    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5'),
+    'place_id': fields.String(description='ID of the place being reviewed'),
+    'user_id': fields.String(description='ID of the user writing the review')
 })
 
 @api.route('/')
 class ReviewList(Resource):
     """
-    'Resource' class for operations on collection reviews (GET)
-    Handles operations that don't require a specific review ID:
-    - GET: Retrieve ALL reviews
-    - POST: Create a new review
+    'Resource' class for operations on collection reviews
     """
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
@@ -39,6 +39,8 @@ class ReviewList(Resource):
     @api.expect(review_model, validate=True)
     @api.response(201,'review successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def post(self):
         """
         Create a new review.
@@ -57,8 +59,34 @@ class ReviewList(Resource):
         Raises:
             400 Bad Request: If input validation fails
         """
+        # Always get JWT status
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
         # Extract data from the request payload
         review_data = api.payload
+
+        # If user_id is current user set it, unless Admin authorized if no, set it to the current approved user
+        if 'user_id' in review_data:
+            if not is_admin and review_data['user_id'] is not current_user_id:
+                return {'error': 'Unauthorized action - cannot create review as another user'}, 403
+        else:
+            review_data['user_id'] = current_user_id
+
+        # See the place being reviewed and make sure the owner isn't reviewing their own place.
+        place_id = review_data.get('place_id')
+        place = facade.get_place(place_id)
+
+        if not place:
+            return {'error': 'Place not found'}, 404
+
+        if not is_admin and place.get('owner_id') is current_user_id:
+            return {'error': 'You cannot review your own place'}, 400
+
+        if not is_admin and facade.has_user_reviewed_place(current_user_id, place_id):
+            return {'error': 'You have already reviewed this place'}, 400
+
 
         try:
             # Use the facade (controller) to create new review
@@ -89,7 +117,7 @@ class ReviewResource(Resource):
     """
 
     @api.response(200, 'review details retrieved successfully')
-    @api.response(400, 'review not found')
+    @api.response(404, 'review not found')
     def get(self, review_id):
         """
         Get review details via ID (UUID)
@@ -109,26 +137,28 @@ class ReviewResource(Resource):
         """
 
         # Use the facade to get the review by ID
-        view_review = facade.get_review(review_id)
+        review = facade.get_review(review_id)
 
-        if not view_review:
-            return {'error': 'review not found'}, 404
+        if not review:
+            return {'error': 'Review not found'}, 404
 
         # Return the review data with status code
         return {
-            'id': view_review.id,
-            'created_at': view_review.created_at,
-            'updated_at': view_review.updated_at,
-            'text': view_review.text,
-            'rating': view_review.rating,
-            'place_id': view_review.place.id,
-            'user_id': view_review.user.id
+            'id': review.id,
+            'created_at': review.created_at,
+            'updated_at': review.updated_at,
+            'text': review.text,
+            'rating': review.rating,
+            'place_id': review.place.id,
+            'user_id': review.user.id
         }, 200
 
     @api.expect(review_model, validate=True)
     @api.response(200,'review Updated Successfully')
     @api.response(404,'review not found')
     @api.response(400,'Invalid Data input')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def put(self, review_id):
         """
         Update review data
@@ -149,13 +179,28 @@ class ReviewResource(Resource):
             400 Bad request: If input validation fails
         """
 
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
         # Check if review exists
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'review doesn\'t exist'}, 404
 
+        # Need to check if the review is the original writer (author) or has admin priv's
+        # Non-admins cannot edit the review and or info
+        if not is_admin and review.get('user_id') is not current_user_id:
+            return {'error': 'Unauthorized action - not the review creator'}, 403
+
         # Extract the updated data from the request
         update_data = api.payload
+
+        if not is_admin:
+            if 'user_id' in update_data and update_data['user_id'] != current_user_id:
+                return {'error': 'Unauthorized action - cannot change review author'}, 403
+            if 'place_id' in update_data and update_data['place_id'] != review.get('place_id'):
+                return {'error': 'Unauthorized action - cannot change reviewed place'}, 403
 
         try:
             # Use facade to update review
@@ -177,6 +222,8 @@ class ReviewResource(Resource):
 
     @api.response(204, 'review successfully deleted')
     @api.response(404, 'review not found')
+    @api.response(403, 'Unauthorized Action')
+    @jwt_required()
     def delete(self, review_id):
         """
         Delete an review.
@@ -194,10 +241,20 @@ class ReviewResource(Resource):
         Raises:
             404 Not Found: If the review ID doesn't exist.
         """
+        
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        review = facade.get_review(review_id)
+        if not review:
+            return {'error': 'Review not found'}, 404
+        # You need to check if the review that is getting deleted is the OG writer or Admin Only
+        if not is_admin and review.get('user_id') is not current_user_id:
+            return {'error': 'Unauthorized action - not the review author'}, 403
+
         # Use facade to delete the review
         success = facade.delete_review(review_id)
-
-        # If review doesn't exist
         if not success:
             return {'error': 'review doesn\'t exist'}, 404
 
