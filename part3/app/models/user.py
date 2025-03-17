@@ -3,6 +3,7 @@ from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
 from app.extensions import bcrypt, db
 import uuid
+from sqlalchemy.orm import validates
 
 class User(BaseModel):
     """User Model
@@ -59,17 +60,6 @@ class User(BaseModel):
             return False
         return bcrypt.check_password_hash(self.password, password)
 
-    @email.setter
-    def email(self, value):
-        """Validates the email requirements from __init__ docstring"""
-        if value == None:
-            raise ValueError("Email is required")
-        # elif facade.user_repo.get_by_attribute('email', value) != None:
-        #     raise ValueError("Email is not unique")
-        # elif self.validate_email(value) is False:
-        #     raise EmailNotValidError("Email is not valid")
-        else:
-            self.__email = value
 
     def validate_password(self, password):
         """Checks a password is sufficiently secure"""
