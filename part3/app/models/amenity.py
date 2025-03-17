@@ -1,4 +1,5 @@
-from .baseModel import BaseModel
+from app.models.baseModel import BaseModel
+from app import db
 
 
 class Amenity(BaseModel):
@@ -9,6 +10,12 @@ class Amenity(BaseModel):
         name (str): Name of the amenity (e.g., "Wi-Fi", "Parking")
         description (str): Detailed description of the amenity
     """
+
+    __tablename__ = "amenities"
+
+    # id = db.Column(db.Integer, nullable = False) 
+    name = db.Column(db.String(50), nullable = False) 
+
 
     def __init__(self, name, description=None):
         """

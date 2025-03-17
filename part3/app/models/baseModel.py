@@ -1,7 +1,17 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
+# to comment or delete as jacob most likely did it already
+from app import db
+import uuid
+#
 
-class BaseModel:
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    id = db.Column(db.string(36), primary_key = True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.Datetime, default=datetime.now(timezone.utc)) 
+    updated_at = db.Column(db.Datetime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
     """
     Base class for all entities in the HBnB application.
     

@@ -1,5 +1,6 @@
 from app.models.baseModel import BaseModel
 from app.models.user import User
+from app import db
 
 
 class Review(BaseModel):
@@ -12,6 +13,13 @@ class Review(BaseModel):
         place (Place): Place being reviewed
         user (User): User who wrote the review
     """
+
+    __tablename__ = "reviews"
+
+    # id = db.Column(db.Integer, nullable = False) 
+    text = db.Column(db.String(100), nullable = False) 
+    longitude = db.Column(db.Integer, nullable = False) 
+
 
     def __init__(self, text, rating, place_id=None, user_id=None, place=None, user=None):
         """

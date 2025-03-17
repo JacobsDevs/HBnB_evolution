@@ -6,6 +6,10 @@ from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.places import api as places_ns
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 # """This class is to convert the DateTime object into a string,
 # because Flask's JSON Serialization does not automatically handle
@@ -18,7 +22,9 @@ from app.api.v1.places import api as places_ns
 #             return obj.isoformat()
 #         return super().default(obj)
 
-def create_app():
+def create_app(config_class=config.DevelopmentConfig):
+    
+    db.init_app(app)
     app = Flask(__name__)
     api = Api(app, version=1.0, title='HBnB aPI', description='HBnb Application API')
 
