@@ -96,17 +96,23 @@ class HBnBFacade:
 
     def create_place(self, place_data):
         """Create a Place Object with optional amenities"""
-        
+
         # Extract amenity IDs from the request
         amenity_ids = place_data.get('amenities', [])
         amenities = []
-        
+
         # Get actual amenity objects from the repository
         for amenity_id in amenity_ids:
             amenity = self.amenity_repo.get(amenity_id)
             if amenity:
                 amenities.append(amenity)
-        
+
+        # Verify owner exists (This is JWT (Authorization) Related)
+        owner_id = place_data.get('owner_id')
+        owner = self.user_repo.get(owner_id)
+        if not owner:
+            raise ValueError(f"User with ID {owner_id} not found")
+
         place = Place(
             title=place_data.get('title'),
             description=place_data.get('description'),
@@ -115,6 +121,7 @@ class HBnBFacade:
             longitude=place_data.get('longitude'),
             amenities=amenities,
             owner_id=place_data.get('owner_id'),
+            amenities=amenities
         )
 
         self.place_repo.add(place)
@@ -152,6 +159,40 @@ class HBnBFacade:
 
         self.place_repo.delete(place_id)
         return True
+    
+    def get_places_by_user(self, user_id):
+        """
+        Get all places owned by a specific user.
+        
+        Args:
+            user_id (str): ID of the user
+            
+        Returns:
+            list: List of places owned by the user
+        """
+        user = self.user_repo.get(user_id)
+        if not user:
+            return None
+        
+        # Return serialized places (This will be used for the API methods)
+        return [place.serialization() for place in user.places]
+    
+    def get_reviews_by_user(self, user_id):
+        """
+        Get all reviews written by a specific user.
+        
+        Args:
+            user_id (str): ID of the user
+            
+        Returns:
+            list: List of reviews written by the user
+        """
+        user = self.user_repo.get(user_id)
+        if not user:
+            return None
+        
+        # Return serialized reviews (This will be used for the API methods)
+        return [review.serialize() for review in user.reviews]
 
 # === Amenity ===
 
@@ -289,10 +330,46 @@ class HBnBFacade:
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return False
-            
-        place.add_amenity(amenity)
+
+        # Fail safe check for the user not to review or rate more than once
+        for place_amenity in place.amenities:
+            if place_amenity.id == amenity.id:
+                return True  # Already linked
+        
+        # Add the amenity to the place's amenities
+        place.amenities.append(amenity)
+        self.place_repo.update(place_id, {})
+
         return True
 
+    def remove_amenity_from_place(self, place_id, amenity_id):
+        """
+        Remove an amenity from a place.
+        
+        Args:
+            place_id (str): ID of the place
+            amenity_id (str): ID of the amenity
+                
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        place = self.place_repo.get(place_id)
+        if not place:
+            return False
+        
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return False
+        
+        # Find and remove the amenity
+        for i, place_amenity in enumerate(place.amenities):
+            if place_amenity.id == amenity.id:
+                place.amenities.remove(place_amenity)
+                self.place_repo.update(place_id, {})  # Save changes
+                return True
+                
+        return False  # Amenity not found in place's amenities
+    
 # === Review ===
 
     def create_review(self, review_data):
@@ -327,16 +404,13 @@ class HBnBFacade:
         review = Review(
             text=review_data.get('text'),
             rating=review_data.get('rating'),
-            place=place_obj,
-            user=user_obj
+            place_id=place_id,
+            user_id=user_id
         )
 
         # Store in repository
         self.review_repo.add(review)
-        
-        # Add the review to the place's reviews list
-        place_obj.add_review(review)
-        
+
         return review
 
     def delete_review(self, review_id):

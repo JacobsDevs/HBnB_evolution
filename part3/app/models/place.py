@@ -23,12 +23,18 @@ class Place(BaseModel):
     """
     __tablename__ = "places"
 
-    # id = db.Column(db.Integer, primary_key = True) 
-    title = db.Column(db.String(100), nullable = False) 
-    description = db.Column(db.String(1000)) 
-    price = db.Column(db.Float, nullable = False) 
-    latitude = db.Column(db.Float, nullable = False) 
-    longitude = db.Column(db.Float, nullable = False) 
+    # id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(100), nullable = False)
+    description = db.Column(db.String(1000))
+    price = db.Column(db.Float, nullable = False)
+    latitude = db.Column(db.Float, nullable = False)
+    longitude = db.Column(db.Float, nullable = False)
+
+    # Add relationships back to the above place_amenity outside of the class
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    reviews = db.relationship('Review', backref='place', lazy=True, cascade="all, delete-orphan")
+    amenities = db.relationship('Amenity', secondary=place_amenity, lazy='subquery', 
+                         backref=db.backref('places', lazy=True))
 
 
 

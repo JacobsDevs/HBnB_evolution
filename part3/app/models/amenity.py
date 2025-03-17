@@ -1,5 +1,5 @@
 from app.models.baseModel import BaseModel
-from app import db
+from app.extensions import db
 
 
 class Amenity(BaseModel):
@@ -13,8 +13,9 @@ class Amenity(BaseModel):
 
     __tablename__ = "amenities"
 
-    # id = db.Column(db.Integer, nullable = False) 
-    name = db.Column(db.String(50), nullable = False) 
+    # id = db.Column(db.Integer, nullable = False)
+    name = db.Column(db.String(50), nullable = False)
+    description = db.Column(db.String(200))
 
 
     def __init__(self, name, description=None):

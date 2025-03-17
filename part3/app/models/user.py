@@ -3,8 +3,7 @@ from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
 from app.extensions import bcrypt, db
 import uuid
-from sqlalchemy.orm import validates, relationship
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy.orm import validates
 
 class User(BaseModel):
     """User Model

@@ -1,6 +1,6 @@
 from app.models.baseModel import BaseModel
 from app.models.user import User
-from app import db
+from app.extensions import db
 
 
 class Review(BaseModel):
@@ -16,10 +16,13 @@ class Review(BaseModel):
 
     __tablename__ = "reviews"
 
-    # id = db.Column(db.Integer, nullable = False) 
-    text = db.Column(db.String(100), nullable = False) 
-    longitude = db.Column(db.Integer, nullable = False) 
+    # id = db.Column(db.Integer, nullable = False)
+    text = db.Column(db.String(500), nullable=False)
+    longitude = db.Column(db.Integer, nullable=False)
 
+    # Relationship for Authorization (Foreign Keys)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, text, rating, place_id=None, user_id=None, place=None, user=None):
         """
