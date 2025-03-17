@@ -1,6 +1,5 @@
 from app.extensions import db
-from app.models import User, Place, Review, Amenity
-from app.persistence import Repository
+from app.persistence.repository import Repository
 
 class SQLAlchemyRepository(Repository):
     def __init__(self, model):
@@ -22,12 +21,15 @@ class SQLAlchemyRepository(Repository):
             for key, value in data.items():
                 setattr(obj, key, value)
             db.session.commit()
+        return obj
 
-    def delete(self, obj_id): 
+    def delete(self, obj_id):
         obj = self.get(obj_id)
         if obj:
             db.session.delete(obj)
             db.session.commit()
+            return True
+        return False
 
     def get_by_attribute(self, attr_name, attr_value):
         return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
