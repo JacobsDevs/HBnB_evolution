@@ -14,10 +14,14 @@ def create_app(config_name="development"):
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY", "default-jwt-key")
     # default-jwt-key is the "fall back key if no SECRET KEY is present"
 
+
     # Initialize extensions with the app
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+
+    with app.app_context():
+        db.create_all()
 
     # Import namespaces after app is created to avoid circular imports
     from app.api.v1.users import api as users_ns
