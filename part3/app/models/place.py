@@ -1,6 +1,12 @@
 from app.models.baseModel import BaseModel
-from app import db
-fuck me thank okky
+from app.extensions import db
+
+# Relationship Association Table (Place > Amenity)
+place_amenity = db.Table('place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
+
 class Place(BaseModel):
     """
     Place class representing accommodation listings in the HBnB application.
