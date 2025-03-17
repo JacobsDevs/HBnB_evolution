@@ -21,12 +21,11 @@ class Place(BaseModel):
         amenities (list): List of Amenity instances available at the place
         reviews (list): List of Review instances for the place
     """
-
     __tablename__ = "places"
 
     # id = db.Column(db.Integer, primary_key = True) 
-    title = db.Column(db.string(100), nullable = False) 
-    description = db.Column(db.string) 
+    title = db.Column(db.String(100), nullable = False) 
+    description = db.Column(db.String(1000)) 
     price = db.Column(db.Float, nullable = False) 
     latitude = db.Column(db.Float, nullable = False) 
     longitude = db.Column(db.Float, nullable = False) 
