@@ -1,5 +1,7 @@
-from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
-from app.services.repositories.userRepository import UserRepository
+from app.services.repositories.UserRepository import UserRepository
+from app.services.repositories.PlaceRepository import PlaceRepository
+from app.services.repositories.ReviewRepository import ReviewRepository
+from app.services.repositories.AmenityRepository import AmenityRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -22,9 +24,9 @@ class HBnBFacade:
         Each repository is responsible for storing and retrieving a specific entity type.
         """
         self.user_repo = UserRepository()
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
 # === User operations ===
     def create_user(self, user_data):
@@ -152,6 +154,16 @@ class HBnBFacade:
 
         self.place_repo.delete(place_id)
         return True
+    
+    def get_place_by_title(self, title):
+        return self.place_repo.get_place_by_title(title)
+
+    def get_place_by_id(self, id):
+        return self.place_repo.get_place_by_id(id)
+
+    def get_place_by_location(self, latitude, longitude):
+        return self.place_repo.get_place_by_location(latitude, longitude)
+    
 
 # === Amenity ===
 
@@ -291,7 +303,13 @@ class HBnBFacade:
             return False
             
         place.add_amenity(amenity)
-        return True
+            
+    def get_amenity_by_name(self, name):
+        return self.amenity_repo.get_amenity_by_name(name)
+
+    def get_amenity_by_id(self, id):
+        return self.amenity_repo.get_amenity_by_id(id)
+
 
 # === Review ===
 
@@ -448,6 +466,12 @@ class HBnBFacade:
             if review.user_id is user_id and review.place_id is place_id:
                 return True
             return False
+        
+    def get_review_by_id(self, id):
+        return self.review_repo.get_review_by_id(id)
+    
+    def get_review_by_rating(self, rating):
+        return self.review_repo.get_review_by_rating(rating)
 
 
 facade = HBnBFacade()

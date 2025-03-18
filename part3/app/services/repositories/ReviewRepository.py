@@ -9,7 +9,7 @@ class ReviewRepository(SQLAlchemyRepository):
     def get_review_by_id(self, id):
         return self.model.query.filter_by(id=id).first()
     
-    def get_review_by_rating(self, rating ):
+    def get_review_by_rating(self, rating):
         return self.model.query.filter_by(rating=rating).all()
 
     # def get_reviews_by_placeID(self, place_id):
