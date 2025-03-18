@@ -32,8 +32,15 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    def __init__(self, first_name, last_name, email, password):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+        super().__init__()
+
     @validates("password")
-    def hash_password(self, password):
+    def hash_password(self, key, password):
         """Hashes the password before storing it
         Args: password (str): plaintext password to hash
         Note: bcrypt is used to securely hash the password

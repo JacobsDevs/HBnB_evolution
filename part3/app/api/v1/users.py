@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx.postman import clean
-from app.services import facade
+from app.services.facade import facade
 from app.api.v1.auth import admin_required
 import json
 
@@ -38,10 +38,6 @@ class UserList(Resource):
     def post(self):
         """Register a new user"""
         user_data = api.payload
-        existing_user = facade.get_user_by_email(user_data['email'])
-        if existing_user:
-            return {'error': 'Email already registered'}, 400
-
         new_user = facade.create_user(user_data)
         return {
             'id': new_user.id,

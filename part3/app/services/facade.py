@@ -1,4 +1,5 @@
 from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
+from app.services.repositories.userRepository import UserRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -20,7 +21,7 @@ class HBnBFacade:
         Initialize repositories for each entity type.
         Each repository is responsible for storing and retrieving a specific entity type.
         """
-        self.user_repo = SQLAlchemyRepository(User)
+        self.user_repo = UserRepository()
         self.place_repo = SQLAlchemyRepository(Place)
         self.review_repo = SQLAlchemyRepository(Review)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
@@ -30,27 +31,12 @@ class HBnBFacade:
         """
         Create a new user and store it in the repository.
         """
-        # Create a new user instance
-        user = User(
-            first_name=user_data.get('first_name'),
-            last_name=user_data.get('last_name'),
-            email=user_data.get('email'),
-            password=user_data.get('password'),
-            is_admin=user_data.get('is_admin', False)
-        )
-
-        # Hash the password once provided
-        if 'password' in user_data:
-            user.hash_password(user_data['password'])
-
-        # Store in repository
+        # Create the User
+        print(user_data)
+        user = User(**user_data)
+        # Store the User
         self.user_repo.add(user)
-        
-        # Verify user was added
-        print(f"Added user with ID: {user.id}")
-        all_users = self.user_repo.get_all()
-        print(f"Users in repository after adding: {[u.id for u in all_users]}")
-
+        # Return the User
         return user
 
     def get_user(self, user_id):
