@@ -303,6 +303,7 @@ class HBnBFacade:
             return False
             
         place.add_amenity(amenity)
+        return True
             
     def get_amenity_by_name(self, name):
         return self.amenity_repo.get_amenity_by_name(name)
