@@ -1,6 +1,7 @@
 from app.models.baseModel import BaseModel
 from app import db
-fuck me thank okky
+
+
 class Place(BaseModel):
     """
     Place class representing accommodation listings in the HBnB application.
@@ -18,7 +19,7 @@ class Place(BaseModel):
 
     __tablename__ = "places"
 
-    # id = db.Column(db.Integer, primary_key = True) 
+    id = db.Column(db.Integer, primary_key = True) 
     title = db.Column(db.string(100), nullable = False) 
     description = db.Column(db.string) 
     price = db.Column(db.Float, nullable = False) 

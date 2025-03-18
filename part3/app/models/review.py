@@ -16,9 +16,9 @@ class Review(BaseModel):
 
     __tablename__ = "reviews"
 
-    # id = db.Column(db.Integer, nullable = False) 
+    id = db.Column(db.Integer, primary_key = True) 
     text = db.Column(db.String(100), nullable = False) 
-    longitude = db.Column(db.Integer, nullable = False) 
+    rating = db.Column(db.Integer, nullable = False) 
 
 
     def __init__(self, text, rating, place_id=None, user_id=None, place=None, user=None):
