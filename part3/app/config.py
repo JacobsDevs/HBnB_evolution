@@ -8,8 +8,11 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/try_1'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    TESTING = True
+
 
 config = {
     'development': DevelopmentConfig,
-    'default': DevelopmentConfig
+    'default': DevelopmentConfig,
+    'testing': TestingConfig
 }

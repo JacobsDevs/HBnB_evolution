@@ -1,8 +1,6 @@
-from typing import Tuple
 from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from app.extensions import bcrypt, db
-import uuid
+from app import bcrypt, db
 from sqlalchemy.orm import validates
 
 class User(BaseModel):
@@ -81,3 +79,16 @@ class User(BaseModel):
             return (True, True)
         else:
             return (False, ValueError("Password must be at least 8 characters"))
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    @property
+    def serialized(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'is_admin':self.is_admin
+        }
