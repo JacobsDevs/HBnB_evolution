@@ -16,9 +16,8 @@ class Review(BaseModel):
 
     __tablename__ = "reviews"
 
-    # id = db.Column(db.Integer, nullable = False)
-    text = db.Column(db.String(500), nullable=False)
-    longitude = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.String(100), nullable = False)
+    rating = db.Column(db.Integer, nullable = False)
 
     # Relationship for Authorization (Foreign Keys)
     place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)

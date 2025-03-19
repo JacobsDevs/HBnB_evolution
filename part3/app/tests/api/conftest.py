@@ -40,12 +40,8 @@ def review_data(user, place):
 
 @pytest.fixture()
 def user():
-  return {
-        "first_name": "John",
-        "last_name": "Smith",
-        "email": "john@smith.com",
-        "password": "abcd1234!"
-    }
+    user = User("John", "Smith", "Johnny_smith@email.com", "G00dP455!")
+    return user
 
 @pytest.fixture()
 def place():

@@ -40,11 +40,11 @@ class UserList(Resource):
         user_data = api.payload
         new_user = facade.create_user(user_data)
         return {
-            'id': new_user.id,
-            'first_name': new_user.first_name,
-            'last_name': new_user.last_name,
-            'email': new_user.email,
-            'is_admin': new_user.is_admin
+            'id': new_user['id'],
+            'first_name': new_user['first_name'],
+            'last_name': new_user['last_name'],
+            'email': new_user['email'],
+            'is_admin': new_user['is_admin']
         }, 201
 
     @api.expect(parser)
@@ -80,17 +80,8 @@ class UserList(Resource):
 class UserResource(Resource):
     @api.response(200, 'User details retrieves successfully')
     @api.response(404, 'User not found')
-    @jwt_required()
     def get(self, user_id):
-        """Retrieve a use by ID (Admin Only)"""
-        # Get current user ID and Admin Status to verify request
-        current_user_id = get_jwt_identity()
-        claims = get_jwt()
-        is_admin = claims.get('is_admin', False)
-
-        if not is_admin and current_user_id is not user_id:
-            return {'error': 'Unauthorized access to other user\'s data'}, 403
-
+        """Retrieve a user by ID"""
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
@@ -141,11 +132,15 @@ class UserResource(Resource):
     @api.response(204, 'User deleted successfully')
     @api.response(404, 'User not found')
     @api.response(403, 'Unauthorized action')
-    @admin_required()
+    @jwt_required()
     def delete(self, user_id):
+        current_user_id = get_jwt_identity()
         """Delete a user (Admin Only)"""
-        success = facade.delete_user(user_id)
-        if not success:
-            return {'error': 'User not found'}, 404
 
-        return '', 204
+        if current_user_id == user_id:
+            success = facade.delete_user(user_id)
+            if not success:
+                return {'error': 'User not found'}, 404
+
+            return 'User Deleted', 204
+        return {'error': 'Insufficient Priveleges'}, 403

@@ -1,5 +1,7 @@
-from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
-from app.services.repositories.userRepository import UserRepository
+from app.services.repositories.UserRepository import UserRepository
+from app.services.repositories.PlaceRepository import PlaceRepository
+from app.services.repositories.ReviewRepository import ReviewRepository
+from app.services.repositories.AmenityRepository import AmenityRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -22,9 +24,9 @@ class HBnBFacade:
         Each repository is responsible for storing and retrieving a specific entity type.
         """
         self.user_repo = UserRepository()
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
 # === User operations ===
     def create_user(self, user_data):
@@ -32,12 +34,11 @@ class HBnBFacade:
         Create a new user and store it in the repository.
         """
         # Create the User
-        print(user_data)
         user = User(**user_data)
         # Store the User
         self.user_repo.add(user)
         # Return the User
-        return user
+        return user.serialized
 
     def get_user(self, user_id):
         print(f"Looking for user with ID: {user_id}")
@@ -160,39 +161,15 @@ class HBnBFacade:
         self.place_repo.delete(place_id)
         return True
     
-    def get_places_by_user(self, user_id):
-        """
-        Get all places owned by a specific user.
-        
-        Args:
-            user_id (str): ID of the user
-            
-        Returns:
-            list: List of places owned by the user
-        """
-        user = self.user_repo.get(user_id)
-        if not user:
-            return None
-        
-        # Return serialized places (This will be used for the API methods)
-        return [place.serialization() for place in user.places]
+    def get_place_by_title(self, title):
+        return self.place_repo.get_place_by_title(title)
+
+    def get_place_by_id(self, id):
+        return self.place_repo.get_place_by_id(id)
+
+    def get_place_by_location(self, latitude, longitude):
+        return self.place_repo.get_place_by_location(latitude, longitude)
     
-    def get_reviews_by_user(self, user_id):
-        """
-        Get all reviews written by a specific user.
-        
-        Args:
-            user_id (str): ID of the user
-            
-        Returns:
-            list: List of reviews written by the user
-        """
-        user = self.user_repo.get(user_id)
-        if not user:
-            return None
-        
-        # Return serialized reviews (This will be used for the API methods)
-        return [review.serialize() for review in user.reviews]
 
 # === Amenity ===
 
@@ -341,6 +318,13 @@ class HBnBFacade:
         self.place_repo.update(place_id, {})
 
         return True
+            
+    def get_amenity_by_name(self, name):
+        return self.amenity_repo.get_amenity_by_name(name)
+
+    def get_amenity_by_id(self, id):
+        return self.amenity_repo.get_amenity_by_id(id)
+
 
     def remove_amenity_from_place(self, place_id, amenity_id):
         """
@@ -522,6 +506,12 @@ class HBnBFacade:
             if review.user_id is user_id and review.place_id is place_id:
                 return True
             return False
+        
+    def get_review_by_id(self, id):
+        return self.review_repo.get_review_by_id(id)
+    
+    def get_review_by_rating(self, rating):
+        return self.review_repo.get_review_by_rating(rating)
 
 
 facade = HBnBFacade()

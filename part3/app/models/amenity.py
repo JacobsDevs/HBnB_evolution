@@ -13,9 +13,9 @@ class Amenity(BaseModel):
 
     __tablename__ = "amenities"
 
-    # id = db.Column(db.Integer, nullable = False)
     name = db.Column(db.String(50), nullable = False)
-    description = db.Column(db.String(200))
+    description = db.Column(db.String(512))
+
 
 
     def __init__(self, name, description=None):
