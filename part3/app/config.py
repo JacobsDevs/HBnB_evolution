@@ -6,7 +6,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/try_1'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 config = {

@@ -1,6 +1,6 @@
 from app.models.baseModel import BaseModel
 from app import db
-
+from sqlalchemy.orm import validates
 
 class Place(BaseModel):
     """
@@ -20,8 +20,8 @@ class Place(BaseModel):
     __tablename__ = "places"
 
     id = db.Column(db.Integer, primary_key = True) 
-    title = db.Column(db.string(100), nullable = False) 
-    description = db.Column(db.string) 
+    title = db.Column(db.String(100), nullable = False) 
+    description = db.Column(db.String(128)) 
     price = db.Column(db.Float, nullable = False) 
     latitude = db.Column(db.Float, nullable = False) 
     longitude = db.Column(db.Float, nullable = False) 
@@ -47,9 +47,9 @@ class Place(BaseModel):
         super().__init__()  # Initialize BaseEntity attributes
 
         # Validate and set attributes
-        self.title=title
-        self.description= description
-        self.price= price
+        self.title = title
+        self.description = description
+        self.price = price
         self.latitude= latitude
         self.longitude= longitude
         self.owner_id= owner_id
@@ -57,52 +57,33 @@ class Place(BaseModel):
         # Initialize lists for relationships
         self.amenities = amenities
         self.reviews = []
-
-    @property
-    def title(self):
-        """Title Setter and Getter"""
-        return self.__title
     
-    @title.setter
-    def title(self, value):
+    @validates("title")
+    def validate_title(self, value):
         if value is None:
             raise ValueError("Place title is required")
         elif not self.valid_string_length(value, 100):
             raise ValueError("Place title must be less than 100 characters")
         else:
-            self.__title = value
+            return value
     
-    @property
-    def description(self):
-        """ Description Setter and Getter
-            Optional parameter """
-        return self.__description
-    
-    @description.setter
-    def description(self, value):
-        self.__description = value if value else ""
+        
+    @validates("description")
+    def validate_description(self, value):
+        description = value if value else ""
+        return description
 
     
-    @property
-    def price(self):
-        """Price Setter and Getter"""
-        return self.__price
-
-    @price.setter
-    def price(self, value):
+    @validates("price")
+    def validate_price(self, value):
         if value is None:
             raise ValueError("Price is required")
         elif value < 0:
             raise ValueError("Price must be a positive value")
-        self.__price = float(value)
+        return float(value)
 
-    @property
-    def latitude(self):
-        """Latitud and longitude Setter and Getter"""
-        return self.__latitude
-
-    @latitude.setter
-    def latitude(self, value):
+    @validates("latitude")
+    def validate_latitude(self, value):
         """
         Set and validate the latitude.
         
@@ -116,14 +97,10 @@ class Place(BaseModel):
             raise ValueError("Latitude is required")
         elif not -90.0 <= value <= 90.0:
             raise ValueError("Latitude must be within the range of -90.0 to 90.0")
-        self.__latitude = float(value)
+        return float(value)
 
-    @property
-    def longitude(self):
-        return self.__longitude
-
-    @longitude.setter
-    def longitude(self, value):
+    @validates("longitude")
+    def validate_longitude(self, value):
         """
         Set and validate the longitude.
         
@@ -137,14 +114,10 @@ class Place(BaseModel):
             raise ValueError("Longitude is required")
         if not -180.0 <= value <= 180.0:
             raise ValueError("Longitude must be within the range of -180.0 to 180.0")
-        self.__longitude = float(value)
-       
-    @property
-    def owner_id(self):
-        return self.__owner_id
-    
-    @owner_id.setter
-    def owner_id(self, value):
+        return float(value)
+           
+    @validates("owner_id")
+    def validate_owner_id(self, value):
         """
         Set and validate the owner.
         
@@ -162,15 +135,12 @@ class Place(BaseModel):
         
         # if not owner:
         #     raise ValueError("User does not exist")
-        self.__owner_id = value
+        return value
 
-    @property
-    def amenities(self):
-        return self.__amenities
-
-    @amenities.setter
+    @validates("amenities")
     def amenities(self, value):
-        self.__amenities = value if value else []
+        amenities = value if value else []
+        return amenities
 
     def add_review(self, review):
         """ Add a review to the place """
