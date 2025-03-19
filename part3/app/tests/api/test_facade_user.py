@@ -74,5 +74,5 @@ class TestUserEndpoints(TestCase):
         got_user = facade.get_user_by_parameter("first_name", "Test")
         credentials = {'email': 'test@user.com', 'password': 'Testpass1!'}
         login = self.client.post("/api/v1/auth/login", json=credentials)
-        assert login.json == []
-        response = self.client.delete()
+        response = self.client.delete("/api/v1/users/{}".format(got_user.id), data=credentials)
+        assert response.status_code == 200

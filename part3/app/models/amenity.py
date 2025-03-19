@@ -13,9 +13,8 @@ class Amenity(BaseModel):
 
     __tablename__ = "amenities"
 
-    id = db.Column(db.Integer, primary_key = True) 
-    name = db.Column(db.String(50), nullable = False) 
-    description = db.Column(db.String) 
+    name = db.Column(db.String(50), nullable = False)
+    description = db.Column(db.String(512))
 
 
 

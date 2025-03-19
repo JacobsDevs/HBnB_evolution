@@ -1,8 +1,6 @@
-from typing import Tuple
 from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from app.extensions import bcrypt, db
-import uuid
+from app import bcrypt, db
 from sqlalchemy.orm import validates
 
 class User(BaseModel):

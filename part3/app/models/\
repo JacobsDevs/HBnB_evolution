@@ -1,5 +1,5 @@
 from app.models.baseModel import BaseModel
-from app import db
+from app.extensions import db
 
 
 class Place(BaseModel):
@@ -16,13 +16,16 @@ class Place(BaseModel):
         amenities (list): List of Amenity instances available at the place
         reviews (list): List of Review instances for the place
     """
-    __tablename__ = 'places'
 
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable = False)
-    latitude = db.Column(db.Float, nullable = False)
-    longitude = db.Column(db.Float, nullable = False)
+    __tablename__ = "places"
+
+    title = db.Column(db.String(100), nullable = False) 
+    description = db.Column(db.String(100), nullable = False) 
+    price = db.Column(db.Float, nullable = False) 
+    latitude = db.Column(db.Float, nullable = False) 
+    longitude = db.Column(db.Float, nullable = False) 
+
+
 
     def __init__(self, title, description, price, latitude, longitude, owner_id, amenities):
         """
@@ -42,7 +45,7 @@ class Place(BaseModel):
         """
 
         # Validate and set attributes
-        self._title=title
+        self.title=title
         self.description= description
         self.price= price
         self.latitude= latitude

@@ -21,6 +21,10 @@ def create_app(config_name="development"):
     jwt.init_app(app)
 
     with app.app_context():
+        from app.models.place import Place
+        from app.models.user import User
+        from app.models.amenity import Amenity
+        from app.models.review import Review
         db.create_all()
 
     # Import namespaces after app is created to avoid circular imports
