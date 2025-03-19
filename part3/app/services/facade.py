@@ -32,12 +32,11 @@ class HBnBFacade:
         Create a new user and store it in the repository.
         """
         # Create the User
-        print(user_data)
         user = User(**user_data)
         # Store the User
         self.user_repo.add(user)
         # Return the User
-        return user
+        return user.serialized
 
     def get_user(self, user_id):
         print(f"Looking for user with ID: {user_id}")
