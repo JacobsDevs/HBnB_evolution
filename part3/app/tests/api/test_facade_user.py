@@ -4,6 +4,7 @@ from flask_testing import TestCase
 from app import config, create_app, db
 from app.models.user import User
 from app.services.facade import facade
+from werkzeug.datastructures import headers
 
 
 class TestUserEndpoints(TestCase):
@@ -73,6 +74,8 @@ class TestUserEndpoints(TestCase):
     def testDeleteUserEndpoint(self):
         got_user = facade.get_user_by_parameter("first_name", "Test")
         credentials = {'email': 'test@user.com', 'password': 'Testpass1!'}
-        login = self.client.post("/api/v1/auth/login", json=credentials)
-        response = self.client.delete("/api/v1/users/{}".format(got_user.id), data=credentials)
-        assert response.status_code == 200
+        login = self.client.post("/api/v1/auth/login", json=credentials).json['access_token']
+        response = self.client.delete("/api/v1/users/{}".format(got_user.id), headers={'Authorization': "Bearer {}".format(login)})
+        assert response.status_code == 204
+        got_user = facade.get_user_by_parameter("first_name", "Test")
+        assert got_user == None
