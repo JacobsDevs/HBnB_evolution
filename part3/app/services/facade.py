@@ -122,7 +122,6 @@ class HBnBFacade:
             longitude=place_data.get('longitude'),
             amenities=amenities,
             owner_id=place_data.get('owner_id'),
-            amenities=amenities
         )
 
         self.place_repo.add(place)

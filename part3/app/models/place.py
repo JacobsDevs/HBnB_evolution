@@ -24,7 +24,6 @@ class Place(BaseModel):
     """
     __tablename__ = "places"
 
-<<<<<<< HEAD
     # id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)
     description = db.Column(db.String(1000))
@@ -37,13 +36,6 @@ class Place(BaseModel):
     reviews = db.relationship('Review', backref='place', lazy=True, cascade="all, delete-orphan")
     amenities = db.relationship('Amenity', secondary=place_amenity, lazy='subquery', 
                          backref=db.backref('places', lazy=True))
-=======
-    title = db.Column(db.string(100), nullable = False) 
-    description = db.Column(db.string) 
-    price = db.Column(db.Float, nullable = False) 
-    latitude = db.Column(db.Float, nullable = False) 
-    longitude = db.Column(db.Float, nullable = False) 
->>>>>>> origin/part3_task7
 
 
 
