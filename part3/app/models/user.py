@@ -1,8 +1,6 @@
-from typing import Tuple
 from app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from app.extensions import bcrypt, db
-import uuid
+from app import bcrypt, db
 from sqlalchemy.orm import validates
 
 class User(BaseModel):
@@ -32,8 +30,15 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    def __init__(self, first_name, last_name, email, password):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+        super().__init__()
+
     @validates("password")
-    def hash_password(self, password):
+    def hash_password(self, key, password):
         """Hashes the password before storing it
         Args: password (str): plaintext password to hash
         Note: bcrypt is used to securely hash the password
@@ -74,3 +79,16 @@ class User(BaseModel):
             return (True, True)
         else:
             return (False, ValueError("Password must be at least 8 characters"))
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    @property
+    def serialized(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'is_admin':self.is_admin
+        }
