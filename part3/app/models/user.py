@@ -89,7 +89,7 @@ class User(BaseModel):
         return getattr(self, key)
 
     @property
-    def serialized(self, key):
+    def serialized(self):
         return {
             'id': self.id,
             'first_name': self.first_name,

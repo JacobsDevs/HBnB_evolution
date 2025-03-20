@@ -144,3 +144,19 @@ class UserResource(Resource):
 
             return 'User Deleted', 204
         return {'error': 'Insufficient Priveleges'}, 403
+    
+    @api.route('/<user_id>/places')
+    class UserPlacesResource(Resource):
+        @api.response(200, 'User places retrieved successfully')
+        @api.response(404, 'User not found')
+        def get(self, user_id):
+            """Retrieve all places owned by a specific user"""
+            # First check if the user exists
+            user = facade.get_user(user_id)
+            if not user:
+                return {'error': 'User not found'}, 404
+                
+            # Get places for this user
+            places = facade.get_places_by_user(user_id)
+            
+            return places, 200

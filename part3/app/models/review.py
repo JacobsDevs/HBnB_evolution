@@ -41,17 +41,16 @@ class Review(BaseModel):
         self.set_text(text)
         self.set_rating(rating)
 
-        # If place_id is provided, fetch the place object
+        # Just store the IDs directly, don't fetch the objects
         if place_id:
-            from app.services import facade
-            place = facade.get_place(place_id)
-        self.set_place(place)
-
-        # If user_id is provided, fetch the user object
+            self.place_id = place_id
+        elif place:
+            self.place = place
+            
         if user_id:
-            from app.services import facade
-            user = facade.get_user(user_id)
-        self.set_user(user)
+            self.user_id = user_id
+        elif user:
+            self.user = user
 
     def set_text(self, text):
         """
@@ -144,3 +143,17 @@ class Review(BaseModel):
         # Update remaining fields using the base method
         super().update(data)
         return self
+    
+    def serialize(self):
+        """
+        Convert the review to a dictionary for API responses.
+        """
+        return {
+            'id': self.id,
+            'text': self.text,
+            'rating': self.rating,
+            'place_id': self.place_id,
+            'user_id': self.user_id,
+            'created_at': str(self.created_at),  # Convert to string
+            'updated_at': str(self.updated_at)   # Convert to string
+        }

@@ -181,6 +181,16 @@ class HBnBFacade:
     def get_place_by_location(self, latitude, longitude):
         return self.place_repo.get_place_by_location(latitude, longitude)
     
+    def get_places_by_user(self, user_id):
+        """Get all places owned by a specific user"""
+        user = self.get_user(user_id)
+        if not user:
+            return None
+            
+        # Get all places from this user
+        places = [place.serialization() for place in user.places]
+        return places
+    
 
 # === Amenity ===
 
@@ -340,7 +350,6 @@ class HBnBFacade:
     def get_amenity_by_id(self, id):
         return self.amenity_repo.get_amenity_by_id(id)
 
-
     def remove_amenity_from_place(self, place_id, amenity_id):
         """
         Remove an amenity from a place.
@@ -379,6 +388,12 @@ class HBnBFacade:
         # Get place and user objects first
         place_id = review_data.get('place_id')
         user_id = review_data.get('user_id')
+
+        # Add direct duplicate check here
+        all_reviews = self.review_repo.get_all()
+        for review in all_reviews:
+            if str(review.user_id) == str(user_id) and str(review.place_id) == str(place_id):
+                raise ValueError(f"User {user_id} has already reviewed place {place_id}")
         
         # Debug all repository data
         print(f"Looking for user with ID: {user_id}")
@@ -490,10 +505,15 @@ class HBnBFacade:
         Returns:
             list: List of reviews for the place
         """
-        place = self.get_place(place_id)
-        if not place:
+        place_dict = self.get_place(place_id)
+        if not place_dict:
             return None
 
+        # I need to get the place object to parse
+        place_obj = self.place_repo.get(place_id)
+        if not place_obj:
+            return None
+        
         # Return the reviews from the place object
         return [
             {
@@ -501,9 +521,9 @@ class HBnBFacade:
                 'text': review.text,
                 'rating': review.rating,
                 'user_id': review.user.id,
-                'created_at': review.created_at,
-                'updated_at': review.updated_at
-            } for review in place.reviews
+                'created_at': str(review.created_at) if hasattr(review, 'created_at') else None,
+                'updated_at': str(review.updated_at) if hasattr(review, 'updated_at') else None
+            } for review in place_obj.reviews
         ]
 
     def has_user_reviewed_place(self, user_id, place_id):

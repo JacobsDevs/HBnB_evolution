@@ -81,7 +81,7 @@ class ReviewList(Resource):
         if not place:
             return {'error': 'Place not found'}, 404
 
-        if not is_admin and place.get('owner_id') is current_user_id:
+        if not is_admin and place.get('owner_id') == current_user_id:
             return {'error': 'You cannot review your own place'}, 400
 
         if not is_admin and facade.has_user_reviewed_place(current_user_id, place_id):
@@ -95,12 +95,12 @@ class ReviewList(Resource):
             # Return created review_data with a 201 status code(Created Success)
             return {
                 'id': new_review.id,
-                'created_at': new_review.created_at,
-                'updated_at': new_review.updated_at,
+                'created_at': str(new_review.created_at),
+                'updated_at': str(new_review.updated_at),
                 'text': new_review.text,
                 'rating': new_review.rating,
-                'place_id': new_review.place.id,
-                'user_id': new_review.user.id
+                'place_id': new_review.place_id,
+                'user_id': new_review.user_id
             }, 201
         except ValueError as err_msg_create:
             # Handle validation errors from the model
@@ -145,8 +145,8 @@ class ReviewResource(Resource):
         # Return the review data with status code
         return {
             'id': review.id,
-            'created_at': review.created_at,
-            'updated_at': review.updated_at,
+            'created_at': review.created_at.isoformat() if hasattr(review.created_at, 'isoformat') else str(review.created_at),
+            'updated_at': review.updated_at.isoformat() if hasattr(review.updated_at, 'isoformat') else str(review.updated_at),
             'text': review.text,
             'rating': review.rating,
             'place_id': review.place.id,
