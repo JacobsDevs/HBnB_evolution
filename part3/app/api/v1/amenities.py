@@ -1,7 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt
 from app.services.facade import facade
-print(dir(facade))
 from app.api.v1.auth import admin_required
 
 # Create a namespace for amenities-related endpoints
