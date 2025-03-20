@@ -33,11 +33,23 @@ class HBnBFacade:
         """
         Create a new user and store it in the repository.
         """
-        # Create the User
-        user = User(**user_data)
-        # Store the User
+        # Extract is_admin if present, default to False if not
+        is_admin = user_data.pop('is_admin', False) if 'is_admin' in user_data else False
+        
+        # Create user with core attributes
+        user = User(
+            first_name=user_data.get('first_name'),
+            last_name=user_data.get('last_name'),
+            email=user_data.get('email'),
+            password=user_data.get('password')
+        )
+        
+        # Set the admin status separately
+        user.is_admin = is_admin
+        
+        # Store and return
         self.user_repo.add(user)
-        # Return the User
+
         return user.serialized
 
     def get_user(self, user_id):
@@ -241,8 +253,8 @@ class HBnBFacade:
             'id': a.id,
             'name': a.name,
             'description': a.description if hasattr(a, 'description') else "",
-            'created_at': a.created_at,
-            'updated_at': a.updated_at
+            'created_at': a.created_at.isoformat() if hasattr(a, 'created_at') and a.created_at else None,
+            'updated_at': a.updated_at.isoformat() if hasattr(a, 'updated_at') and a.updated_at else None
         } for a in amenities]
 
     def update_amenity(self, amenity_id, amenity_data):
@@ -306,6 +318,10 @@ class HBnBFacade:
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return False
+        
+        # Debug statement
+        print(f"place.amenities type: {type(place.amenities)}")
+        print(f"place.amenities: {place.amenities}")
 
         # Fail safe check for the user not to review or rate more than once
         for place_amenity in place.amenities:
@@ -502,9 +518,10 @@ class HBnBFacade:
         """
         reviews = self.review_repo.get_all()
         for review in reviews:
-            if review.user_id is user_id and review.place_id is place_id:
+            if review.user_id == user_id and review.place_id == place_id:
                 return True
-            return False
+            
+        return False
         
     def get_review_by_id(self, id):
         return self.review_repo.get_review_by_id(id)

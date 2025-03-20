@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from app.services import facade
+from app.services.facade import facade
 
 # Create a namespace for reviews-related endpoints
 # Easier to read and identify the page / endpoint
@@ -69,7 +69,7 @@ class ReviewList(Resource):
 
         # If user_id is current user set it, unless Admin authorized if no, set it to the current approved user
         if 'user_id' in review_data:
-            if not is_admin and review_data['user_id'] is not current_user_id:
+            if not is_admin and review_data['user_id'] != current_user_id:
                 return {'error': 'Unauthorized action - cannot create review as another user'}, 403
         else:
             review_data['user_id'] = current_user_id
@@ -190,7 +190,7 @@ class ReviewResource(Resource):
 
         # Need to check if the review is the original writer (author) or has admin priv's
         # Non-admins cannot edit the review and or info
-        if not is_admin and review.get('user_id') is not current_user_id:
+        if not is_admin and review.get('user_id') != current_user_id:
             return {'error': 'Unauthorized action - not the review creator'}, 403
 
         # Extract the updated data from the request
@@ -250,7 +250,7 @@ class ReviewResource(Resource):
         if not review:
             return {'error': 'Review not found'}, 404
         # You need to check if the review that is getting deleted is the OG writer or Admin Only
-        if not is_admin and review.get('user_id') is not current_user_id:
+        if not is_admin and review.get('user_id') != current_user_id:
             return {'error': 'Unauthorized action - not the review author'}, 403
 
         # Use facade to delete the review

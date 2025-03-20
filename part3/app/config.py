@@ -6,7 +6,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:apple123@localhost/hbnb'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:apple123@localhost/hbnb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = True
 

@@ -69,7 +69,7 @@ class Place(BaseModel):
         self.reviews = []
     
     @validates("title")
-    def validate_title(self, value):
+    def validate_title(self, key, value):
         if value is None:
             raise ValueError("Place title is required")
         elif not self.valid_string_length(value, 100):
@@ -79,13 +79,13 @@ class Place(BaseModel):
     
         
     @validates("description")
-    def validate_description(self, value):
+    def validate_description(self, key, value):
         description = value if value else ""
         return description
 
     
     @validates("price")
-    def validate_price(self, value):
+    def validate_price(self, key, value):
         if value is None:
             raise ValueError("Price is required")
         elif value < 0:
@@ -93,7 +93,7 @@ class Place(BaseModel):
         return float(value)
 
     @validates("latitude")
-    def validate_latitude(self, value):
+    def validate_latitude(self, key, value):
         """
         Set and validate the latitude.
         
@@ -110,7 +110,7 @@ class Place(BaseModel):
         return float(value)
 
     @validates("longitude")
-    def validate_longitude(self, value):
+    def validate_longitude(self, key, value):
         """
         Set and validate the longitude.
         
@@ -127,7 +127,7 @@ class Place(BaseModel):
         return float(value)
            
     @validates("owner_id")
-    def validate_owner_id(self, value):
+    def validate_owner_id(self, key, value):
         """
         Set and validate the owner.
         
@@ -148,7 +148,7 @@ class Place(BaseModel):
         return value
 
     @validates("amenities")
-    def amenities(self, value):
+    def validate_amenities(self, key, value):
         amenities = value if value else []
         return amenities
 
@@ -226,8 +226,8 @@ class Place(BaseModel):
                         'id': review.id,
                         'text': review.text,
                         'rating': review.rating,
-                        'created_at': review.created_at,
-                        'updated_at': review.updated_at
+                        'created_at': str(review.created_at),
+                        'updated_at': str(review.updated_at)
                     }
                     if hasattr(review, 'user') and review.user:
                         review_data['user_id'] = review.user.id
@@ -235,8 +235,8 @@ class Place(BaseModel):
         
         return {
             "id": self.id,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at),
             "title": self.title,
             "description": self.description,
             "price": self.price,

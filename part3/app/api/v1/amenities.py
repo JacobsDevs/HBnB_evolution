@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt
-from app.services import facade
+from app.services.facade import facade
+print(dir(facade))
 from app.api.v1.auth import admin_required
 
 # Create a namespace for amenities-related endpoints
@@ -69,8 +70,8 @@ class AmenityList(Resource):
                 'id': new_amenity.id,
                 'name': new_amenity.name,
                 'description': new_amenity.description,
-                'created_at':new_amenity.created_at,
-                'updated_at': new_amenity.updated_at
+                'created_at': str(new_amenity.created_at) if hasattr(new_amenity, 'created_at') else None,
+                'updated_at': str(new_amenity.updated_at) if hasattr(new_amenity, 'updated_at') else None
             }, 201
         except ValueError as err_msg_create:
             # Handle validation errors from the model

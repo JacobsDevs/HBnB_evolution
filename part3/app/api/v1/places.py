@@ -32,7 +32,7 @@ class PlaceList(Resource):
         # Setting owner_id to current authenticated user unless admin is specifying another owner (Changing of hands you could say)
         # Remember >> Only admins can create places for other users
         if 'owner_id' in place_data:
-            if not is_admin and place_data['owner_id'] is not current_user_id:
+            if not is_admin and place_data['owner_id'] != current_user_id:
                 return {"error": "Unauthorized action - cannot create place for another user"}, 403
         else:
             place_data['owner_id'] = current_user_id
@@ -77,13 +77,13 @@ class PlaceResource(Resource):
         if place is None:
             return {"error": "Place not found"}, 404
         
-        if not is_admin and place.get('owner_id') is not current_user_id:
+        if not is_admin and place.get('owner_id') != current_user_id:
             return {"error": "Unauthorized action - not the place owner"}, 403
 
         place_new_data = api.payload
 
         # Non-Admin users cannot change owner_id information
-        if not is_admin and 'owner_id' in place_new_data and place_new_data['owner_id'] is not current_user_id:
+        if not is_admin and 'owner_id' in place_new_data and place_new_data['owner_id'] != current_user_id:
             return {"error": "Unauthorized action - cannot transfer ownership"}, 403
 
         try:
@@ -106,7 +106,7 @@ class PlaceResource(Resource):
         if place is None:
             return {"error": "Place not found"}, 404
 
-        if not is_admin and place.get('owner_id') is not current_user_id:
+        if not is_admin and place.get('owner_id') != current_user_id:
             return {"error": "Unauthorized action - not the place owner"}, 403
 
         success = facade.delete_place(place_id)
@@ -150,7 +150,7 @@ class PlaceAmenityResource(Resource):
         if not place_obj:
             return  {'error': 'Place not found'}, 404
         
-        if not is_admin and place_obj.get('owner_id') is not current_user_id:
+        if not is_admin and place_obj.get('owner_id') != current_user_id:
             return {"error": "Unauthorized action - not the place owner"}, 403
 
         # Extract amenity ID from the request body
