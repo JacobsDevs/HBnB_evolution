@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 from app.models.user import User
+from app.models.place import Place
 from app.models.amenity import Amenity
 
 
@@ -45,15 +46,7 @@ def user():
 
 @pytest.fixture()
 def place():
-    place = {
-        "title": "Holberton",
-        "description": "Melbourne School",
-        "price": 100,
-        "latitude": -37.81712,
-        "longitude": 144.95926,
-        "owner_id": "12345",
-        "amenities": [],
-    }
+    place = Place( "Holberton", "Melbourne School", 100, -37.81712, 144.95926, "12345", [])
     return place
 
 @pytest.fixture()

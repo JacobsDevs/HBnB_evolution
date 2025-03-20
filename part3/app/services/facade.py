@@ -54,7 +54,7 @@ class HBnBFacade:
         return self.user_repo.get_by_attribute(key, value)
     
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         users = self.user_repo.get_all()

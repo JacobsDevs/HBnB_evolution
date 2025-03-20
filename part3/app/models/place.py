@@ -19,8 +19,8 @@ class Place(BaseModel):
 
     __tablename__ = "places"
 
-    title = db.Column(db.string(100), nullable = False) 
-    description = db.Column(db.string) 
+    title = db.Column(db.String(100), nullable = False) 
+    description = db.Column(db.String(500)) 
     price = db.Column(db.Float, nullable = False) 
     latitude = db.Column(db.Float, nullable = False) 
     longitude = db.Column(db.Float, nullable = False) 
@@ -57,23 +57,22 @@ class Place(BaseModel):
         self.reviews = []
     
     @validates("title")
-    def validate_title(self, value):
+    def validate_title(self, key, value):
         if value is None:
             raise ValueError("Place title is required")
-        elif not self.valid_string_length(value, 100):
+        elif not Place.valid_string_length(string=value, length=100):
             raise ValueError("Place title must be less than 100 characters")
-        else:
-            return value
+        return value
     
         
     @validates("description")
-    def validate_description(self, value):
+    def validate_description(self, key, value):
         description = value if value else ""
         return description
 
     
     @validates("price")
-    def validate_price(self, value):
+    def validate_price(self, key, value):
         if value is None:
             raise ValueError("Price is required")
         elif value < 0:
@@ -81,7 +80,7 @@ class Place(BaseModel):
         return float(value)
 
     @validates("latitude")
-    def validate_latitude(self, value):
+    def validate_latitude(self, key, value):
         """
         Set and validate the latitude.
         
@@ -98,7 +97,7 @@ class Place(BaseModel):
         return float(value)
 
     @validates("longitude")
-    def validate_longitude(self, value):
+    def validate_longitude(self, key, value):
         """
         Set and validate the longitude.
         
@@ -185,7 +184,7 @@ class Place(BaseModel):
         
         return self
 
-    def valid_string_length(self, string, length):
+    def valid_string_length(string, length):
         return len(string) <= length
     
     def serialization(self):

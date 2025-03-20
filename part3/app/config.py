@@ -6,13 +6,18 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/try_1'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/hbnb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = True
 
+class TestConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:@localhost/testing'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    TESTING = True
 
 config = {
     'development': DevelopmentConfig,
     'default': DevelopmentConfig,
-    'testing': TestingConfig
+    'testing': TestConfig
 }
