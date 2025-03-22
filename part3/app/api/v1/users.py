@@ -1,8 +1,8 @@
 from flask_restx import Namespace, Resource, fields, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx.postman import clean
-from app.services.facade import facade
-from app.api.v1.auth import admin_required
+from part3.app.services.facade import facade
+from part3.app.api.v1.auth import admin_required
 import json
 
 
@@ -107,7 +107,7 @@ class UserResource(Resource):
         claims = get_jwt()
         is_admin = claims.get('is_admin', False)
 
-        if not is_admin and current_user_id is not user_id:
+        if not is_admin and current_user_id != user_id:
             return {'error': 'Unauthorized action'}, 403
 
         user_data = api.payload

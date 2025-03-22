@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
-from app.extensions import db, bcrypt, jwt
-from app.config import config
+from part3.app.extensions import db, bcrypt, jwt
+from part3.app.config import config
 
 def create_app(config_name="development"):
     app = Flask(__name__)
@@ -21,18 +21,18 @@ def create_app(config_name="development"):
     jwt.init_app(app)
 
     with app.app_context():
-        from app.models.place import Place
-        from app.models.user import User
-        from app.models.amenity import Amenity
-        from app.models.review import Review
+        from part3.app.models.place import Place
+        from part3.app.models.user import User
+        from part3.app.models.amenity import Amenity
+        from part3.app.models.review import Review
         db.create_all()
 
     # Import namespaces after app is created to avoid circular imports
-    from app.api.v1.users import api as users_ns
-    from app.api.v1.amenities import api as amenities_ns
-    from app.api.v1.reviews import api as reviews_ns
-    from app.api.v1.places import api as places_ns
-    from app.api.v1.auth import api as auth_ns
+    from part3.app.api.v1.users import api as users_ns
+    from part3.app.api.v1.amenities import api as amenities_ns
+    from part3.app.api.v1.reviews import api as reviews_ns
+    from part3.app.api.v1.places import api as places_ns
+    from part3.app.api.v1.auth import api as auth_ns
 
     api = Api(app, version=1.0, title='HBnB API', description='HBnb Application API')
 

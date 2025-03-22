@@ -1,6 +1,6 @@
-from app.models.baseModel import BaseModel
-from app.models.user import User
-from app.extensions import db
+from part3.app.models.baseModel import BaseModel
+from part3.app.models.user import User
+from part3.app.extensions import db
 
 
 class Review(BaseModel):
@@ -99,7 +99,7 @@ class Review(BaseModel):
             raise ValueError("Place is required")
 
         # Import Place here to avoid circular imports
-        from app.models.place import Place
+        from part3.app.models.place import Place
         if not isinstance(place, Place):
             raise TypeError("Place must be a Place instance")
 

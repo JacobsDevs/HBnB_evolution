@@ -1,7 +1,7 @@
 import pytest
-from app import create_app
-from app.models.user import User
-from app.models.amenity import Amenity
+from part3.app import create_app
+from part3.app.models.user import User
+from part3.app.models.amenity import Amenity
 
 
 @pytest.fixture()

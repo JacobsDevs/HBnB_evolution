@@ -1,9 +1,9 @@
-from app.models import amenity
-from app.models.place import Place
-from app.models.user import User
-# from app.models.review import Review
-# from app.models.amenity import Amenity
-# from app.services.facade import HBnBFacade
+from part3.app.models import amenity
+from part3.app.models.place import Place
+from part3.app.models.user import User
+# from part3.app.models.review import Review
+# from part3.app.models.amenity import Amenity
+# from part3.app.services.facade import HBnBFacade
 
 import pytest
 

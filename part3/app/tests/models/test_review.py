@@ -1,9 +1,9 @@
-from app.services import facade
+from part3.app.services import facade
 import pytest
-from app.models.review import Review
-from app.models.user import User
-from app.models.place import Place
-from app.services.facade import HBnBFacade
+from part3.app.models.review import Review
+from part3.app.models.user import User
+from part3.app.models.place import Place
+from part3.app.services.facade import HBnBFacade
 
 
 class TestClass():

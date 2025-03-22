@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from app.services.facade import facade
+from part3.app.services.facade import facade
 
 api = Namespace('places', description='Place operations')
 

@@ -1,9 +1,9 @@
 from dns.resolver import query
 import pytest
 from flask_testing import TestCase
-from app import config, create_app, db
-from app.models.user import User
-from app.services.facade import facade
+from part3.app import config, create_app, db
+from part3.app.models.user import User
+from part3.app.services.facade import facade
 from werkzeug.datastructures import headers
 
 

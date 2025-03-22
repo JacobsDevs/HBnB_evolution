@@ -1,5 +1,5 @@
-from app.models.baseModel import BaseModel
-from app.extensions import db
+from part3.app.models.baseModel import BaseModel
+from part3.app.extensions import db
 
 
 class Amenity(BaseModel):

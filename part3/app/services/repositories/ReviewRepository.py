@@ -1,6 +1,6 @@
-from app.models.review import Review
-from app import db
-from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
+from part3.app.models.review import Review
+from part3.app import db
+from part3.app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
 
 class ReviewRepository(SQLAlchemyRepository):
     def __init__(self):

@@ -1,8 +1,8 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
-from app.services.facade import facade
-from app.extensions import bcrypt
+from part3.app.services.facade import facade
+from part3.app.extensions import bcrypt
 
 api = Namespace('auth', description='Authentication operations')
 

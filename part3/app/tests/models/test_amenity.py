@@ -1,6 +1,6 @@
 import pytest
-from app.models.amenity import Amenity
-from app.services.facade import HBnBFacade
+from part3.app.models.amenity import Amenity
+from part3.app.services.facade import HBnBFacade
 
 
 class TestClass():

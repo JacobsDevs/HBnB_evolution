@@ -1,5 +1,5 @@
-from app.extensions import db
-from app.persistence.repository import Repository
+from part3.app.extensions import db
+from part3.app.persistence.repository import Repository
 
 class SQLAlchemyRepository(Repository):
     def __init__(self, model):

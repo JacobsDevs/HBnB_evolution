@@ -1,6 +1,6 @@
-from app.models.baseModel import BaseModel
+from part3.app.models.baseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from app import bcrypt, db
+from part3.app import bcrypt, db
 from sqlalchemy.orm import validates
 
 class User(BaseModel):

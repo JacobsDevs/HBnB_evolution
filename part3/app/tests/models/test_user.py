@@ -1,7 +1,7 @@
 from email_validator import EmailNotValidError
 import pytest
-from app.models.user import User
-from app.services.facade import HBnBFacade
+from part3.app.models.user import User
+from part3.app.services.facade import HBnBFacade
 
 class TestClass():
     """Pytest fixtures can be used as below to setup things for testing.

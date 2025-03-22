@@ -1,4 +1,4 @@
-from app.extensions import db
+from part3.app.extensions import db
 import uuid
 from datetime import datetime, timezone
 

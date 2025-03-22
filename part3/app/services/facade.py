@@ -1,11 +1,11 @@
-from app.services.repositories.UserRepository import UserRepository
-from app.services.repositories.PlaceRepository import PlaceRepository
-from app.services.repositories.ReviewRepository import ReviewRepository
-from app.services.repositories.AmenityRepository import AmenityRepository
-from app.models.user import User
-from app.models.place import Place
-from app.models.review import Review
-from app.models.amenity import Amenity
+from part3.app.services.repositories.UserRepository import UserRepository
+from part3.app.services.repositories.PlaceRepository import PlaceRepository
+from part3.app.services.repositories.ReviewRepository import ReviewRepository
+from part3.app.services.repositories.AmenityRepository import AmenityRepository
+from part3.app.models.user import User
+from part3.app.models.place import Place
+from part3.app.models.review import Review
+from part3.app.models.amenity import Amenity
 
 class HBnBFacade:
     """

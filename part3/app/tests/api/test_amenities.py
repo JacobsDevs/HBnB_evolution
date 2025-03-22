@@ -1,6 +1,6 @@
 import pytest
-from app.models.amenity import Amenity
-from app.services import facade
+from part3.app.models.amenity import Amenity
+from part3.app.services import facade
 
 class TestAmenities():
     def test_amenity_post(self, client, amenity_data):

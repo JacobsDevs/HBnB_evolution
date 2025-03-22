@@ -1,6 +1,6 @@
-from app.models.amenity import Amenity
-from app import db
-from app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
+from part3.app.models.amenity import Amenity
+from part3.app import db
+from part3.app.persistence.SQLAlchemy_repository import SQLAlchemyRepository
 
 class AmenityRepository(SQLAlchemyRepository):
     def __init__(self):
