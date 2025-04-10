@@ -17,8 +17,13 @@ function App() {
 
   return (
     <div>
-
-    </div>
+      {data.map((x, i) => (
+        <p id={i}>{x.name}
+          <br></br>
+          {x.id}</p>
+      ))
+      }
+    </div >
   )
 }
 
