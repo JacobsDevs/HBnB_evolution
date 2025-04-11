@@ -53,12 +53,9 @@ class HBnBFacade:
         return user.serialized
 
     def get_user(self, user_id):
-        print(f"Looking for user with ID: {user_id}")
         all_users = self.user_repo.get_all()
-        print(f"Available users: {[u.id for u in all_users]}")
         
         user = self.user_repo.get(user_id)
-        print(f"Found user: {user}")
         
         return user
 
