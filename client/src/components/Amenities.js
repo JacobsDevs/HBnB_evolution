@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-function App() {
+function Amenities() {
 
   const [data, setData] = useState([{}])
   useEffect(() => {
@@ -18,8 +18,8 @@ function App() {
   return (
     <div>
       {data.map((x, i) => (
-        <p id={i}>{x.name}
-          <br></br>
+        <p key={i}>{x.name}
+          <br />
           {x.id}</p>
       ))
       }
@@ -27,4 +27,5 @@ function App() {
   )
 }
 
-export default App
+export default Amenities;
+
