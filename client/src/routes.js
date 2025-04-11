@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
-import Amenities from "./components/Amenities.js"
-import AmenitiesSearch from "./components/AmenitiesSearch.js"
+import Amenities from "./components/Amenities"
+import AmenitiesNew from "./components/AmenitiesNew";
+import RegisterUser from "./components/Login"
 import Root from "./components/Root.js"
 
 const router = createBrowserRouter([
@@ -10,11 +11,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/amenities",
-    Component: Amenities
+    Component: Amenities,
   },
   {
-    path: "/amenities/search",
-    Component: AmenitiesSearch
+    path: "/amenities/new",
+    Component: AmenitiesNew
+  },
+  {
+    path: "/users/register",
+    Component: RegisterUser
   }
 ]);
 

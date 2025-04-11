@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-function Amenities() {
+export default function Amenities() {
 
   const [data, setData] = useState([{}])
   useEffect(() => {
@@ -26,6 +26,4 @@ function Amenities() {
     </div >
   )
 }
-
-export default Amenities;
 

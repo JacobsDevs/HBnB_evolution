@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Outlet } from 'react-router'
 
 function Root() {
 
@@ -17,10 +18,6 @@ function Root() {
 
   return (
     <>
-      <div>
-        <label>Search</label>
-        <input type="text" />
-      </div>
       <div>
         <p>Welcome to HBnB</p>
       </div>

@@ -1,3 +1,4 @@
+from flask_cors import cross_origin
 from flask_restx import Namespace, Resource, fields, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx.postman import clean
@@ -29,15 +30,16 @@ parser.add_argument('first_name', location='args')
 parser.add_argument('last_name', location='args')
 parser.add_argument('email', location='args')
 
-@api.route('/')
+@api.route('/', methods=['GET', 'POST'])
 class UserList(Resource):
+    @cross_origin()
     @api.expect(user_model, validate=True)
     @api.response(201, 'User succesfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
     def post(self):
-        """Register a new user"""
         user_data = api.payload
+        """Register a new user"""
         new_user = facade.create_user(user_data)
         return {
             'id': new_user['id'],
