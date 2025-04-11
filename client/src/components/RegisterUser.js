@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 function register(formData) {
-  const request = new Request("/api/v1/users", { headers: { "Content-Type": "application/json" }, method: "post", body: `{ "first_name": "${formData.get('first_name')}", "last_name": "${formData.get('last_name')}", "email": "${formData.get('email')}", "password": "${formData.get('password')}"}` })
+  const request = new Request("/api/v1/users", {
+    headers: { "Content-Type": "application/json" },
+    method: "post",
+    body: `{ "first_name": "${formData.get('first_name')}", "last_name": "${formData.get('last_name')}", "email": "${formData.get('email')}", "password": "${formData.get('password')}"}`
+  })
   fetch(request)
   console.log(formData)
 };
-
-async function handleSubmit(event) {
-  event.preventDefault();
-
-  const form = event.target;
-  const first_name = form.first_name.value;
-}
 
 export default function RegisterUser() {
   return (

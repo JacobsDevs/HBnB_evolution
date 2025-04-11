@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
-import Amenities from "./components/Amenities"
+import Amenities from "./components/Amenities";
 import AmenitiesNew from "./components/AmenitiesNew";
-import RegisterUser from "./components/Login"
-import Root from "./components/Root.js"
+import RegisterUser from "./components/RegisterUser";
+import Root from "./components/Root";
 
 const router = createBrowserRouter([
   {
