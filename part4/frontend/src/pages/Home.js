@@ -1,3 +1,5 @@
+import FeaturedPlaces from '../components/FeaturedPlaces';
+import BlogSection from '../components/BlogSection';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
@@ -39,20 +41,14 @@ const Home = () => {
         </div>
       </section>
       
-      <section className="featured-places">
+      <section className="featured-places-section">
         <h2>Featured Places</h2>
-        <div className="places-grid">
-          {/* Featured places will go here */}
-          <p>Loading featured places...</p>
-        </div>
+        <FeaturedPlaces />
       </section>
       
       <section className="blog-section">
         <h2>From Our Blog</h2>
-        <div className="blog-posts">
-          {/* Blog posts will go here */}
-          <p>Coming soon...</p>
-        </div>
+        <BlogSection />
       </section>
     </div>
   );

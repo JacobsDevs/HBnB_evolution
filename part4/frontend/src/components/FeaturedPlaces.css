@@ -89,6 +89,9 @@
   
   .place-details {
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 200px;
   }
   
   .place-details h3 {
@@ -105,14 +108,16 @@
   }
   
   .place-description {
-    color: #666;
+    flex-grow: 1;
+    /* color: #666;
     margin-bottom: 1rem;
     font-size: 0.85rem;
-    line-height: 1.4;
+    line-height: 1.4; */
+    overflow: hidden;
   }
   
   .view-details-btn {
-    display: inline-block;
+    display: block;
     background-color: #ff5a5f;
     color: white;
     text-decoration: none;
@@ -121,7 +126,9 @@
     font-size: 0.9rem;
     text-align: center;
     transition: background-color 0.3s;
-    width: calc(100% - 2rem);
+    width: calc(100% - 2em);
+    margin: 0 auto;
+    margin-top: auto;
   }
   
   .view-details-btn:hover {
