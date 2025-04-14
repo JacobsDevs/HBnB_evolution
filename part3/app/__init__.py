@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from part3.app.extensions import db, bcrypt, jwt
 from part3.app.config import config
 
 def create_app(config_name="development"):
     app = Flask(__name__)
+
+    # Enable CORS for all routes
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Apply configuration to the app
     app.config.from_object(config[config_name])
