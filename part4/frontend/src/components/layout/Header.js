@@ -1,13 +1,22 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
-  const isAuthenticated = !!localStorage.getItem('token');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+  
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    setIsAuthenticated(false);
     navigate('/');
   };
 
