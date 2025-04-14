@@ -126,9 +126,8 @@
     font-size: 0.9rem;
     text-align: center;
     transition: background-color 0.3s;
-    width: calc(100% - 2em);
+    width: auto;
     margin: 0 auto;
-    margin-top: auto;
   }
   
   .view-details-btn:hover {
