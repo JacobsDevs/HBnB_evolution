@@ -1,0 +1,55 @@
+.place-description-page {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .place-description-page h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .place-gallery {
+    margin-bottom: 2rem;
+    background-color: #f8f8f8;
+    height: 300px;
+    border-radius: 8px;
+  }
+  
+  .place-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .place-info {
+    background-color: #f8f8f8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    min-height: 200px;
+  }
+  
+  .reservation-panel {
+    background-color: #f8f8f8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    min-height: 200px;
+  }
+  
+  .amenities-section, .reviews-section, .owner-profile {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+  }
+  
+  .amenities-section h2, .reviews-section h2, .owner-profile h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    .place-content {
+      grid-template-columns: 1fr;
+    }
+  }

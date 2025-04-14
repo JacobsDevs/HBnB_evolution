@@ -1,0 +1,22 @@
+.place-results-page {
+    padding: 1rem;
+  }
+  
+  .place-results-page h1 {
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .filter-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+  }
+  
+  .places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
