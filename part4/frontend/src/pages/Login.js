@@ -80,13 +80,13 @@ const Login = () => {
           </button>
         </form>
         <div className="login-options">
-          <button 
-            className="create-account-btn"
-            onClick={() => navigate('/register')}
-            disabled={loading}
-          >
-            Create Account
-          </button>
+        <button 
+          className="create-account-btn"
+          onClick={() => navigate('/register')}
+          disabled={loading}
+        >
+          Create Account
+        </button>
           <button 
             className="forgot-password-btn"
             onClick={() => navigate('/forgot-password')}
