@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import registerNewUser, { getPlaceById } from '../services/api'
 
 export default function RegisterUser() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   // const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    // Placeholder for API call
-    console.log('Login attempted with:', email, password);
-    // We'll implement the actual API call later
+  async function register() {
+    const request = new Request("http://localhost:5000/api/v1/users",
+      {
+        headers: { "Content-Type": "application/json" },
+        method: "post",
+        body: `{"first_name": "${firstName}", "last_name": "${lastName}", "email": "${email}", "password": "${password}"}`
+      })
+    const data = await fetch(request).then(
+      (response) => response.json());
   };
 
   return (
@@ -22,12 +27,35 @@ export default function RegisterUser() {
       <div className="login-container">
         <h2>Register new User</h2>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form action={register}>
+          <div className="form-group">
+            <label htmlFor="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -38,6 +66,7 @@ export default function RegisterUser() {
             <input
               type="password"
               id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

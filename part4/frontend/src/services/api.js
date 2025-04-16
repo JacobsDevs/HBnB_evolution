@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'http://localhost:5000/api/v1';
 
 // Create axios instance with base URL
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   },
 });
 
@@ -43,7 +44,7 @@ export const getAllPlaces = async (searchQuery = '') => {
   try {
     // If your API supports search parameters, you can add them here
     // const response = await api.get(`/places?search=${searchQuery}`);
-    
+
     // If not, we'll fetch all places and filter in the component
     const response = await api.get('/places');
     return response.data;
@@ -84,6 +85,16 @@ export const getUserProfile = async (id) => {
     throw error;
   }
 };
+
+export const registerNewUser = async (email, password) => {
+  try {
+    const response = await api.post('/users', { email, password });
+    return response.data;
+  } catch (error) {
+    console.error('Error registering new user: ', error)
+    throw error;
+  }
+}
 
 // Export other API services as needed
 export default api;
