@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,7 +13,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     // Placeholder for API call
     console.log('Login attempted with:', email, password);
     // We'll implement the actual API call later
@@ -46,8 +48,8 @@ const Login = () => {
           <button type="submit" className="login-button">Login</button>
         </form>
         <div className="login-options">
-          <button className="create-account-btn">Create Account</button>
-          <button className="forgot-password-btn">Forgot Password?</button>
+          <button className="create-account-btn" onClick={() => navigate("/register")}>Create Account</button>
+          <button className="forgot-password-btn" onClick={() => navigate("/forgot-password")}>Forgot Password?</button>
         </div>
       </div>
     </div>

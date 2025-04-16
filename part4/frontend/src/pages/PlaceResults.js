@@ -8,7 +8,7 @@ const PlaceResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  
+
   // Extract search query from URL parameters
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search');
@@ -47,17 +47,17 @@ const PlaceResults = () => {
   return (
     <div className="place-results-page">
       <h1>
-        {searchQuery 
+        {searchQuery
           ? `Places matching "${searchQuery}"`
           : 'All Available Places'}
       </h1>
-      
+
       <div className="filter-section">
         <p>Filter options will be added here</p>
       </div>
 
       {error && <div className='error-message'>{error}</div>}
-      
+
       <div className="places-grid">
         {loading ? (
           <p className="loading-message">Searching for places...</p>

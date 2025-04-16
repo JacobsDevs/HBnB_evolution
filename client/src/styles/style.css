@@ -1,0 +1,21 @@
+body {
+  background-color: lightgray;
+  padding-left: 30px;
+}
+
+.user-container {
+  display: flex;
+  flex-direction: row;
+  width: 400px;
+  justify-content: space-between;
+}
+
+.user-info {
+  background-color: lightskyblue;
+}
+
+.square {
+  height: 150px;
+  width: 150px;
+  background-color: pink;
+}

@@ -7,7 +7,7 @@ const FeaturedPlaces = () => {
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('new');
-  
+
   const categories = [
     { id: 'new', name: 'Newly Added' },
     { id: 'top-rated', name: 'Top Rated' },
@@ -23,9 +23,9 @@ const FeaturedPlaces = () => {
         // For now, we'll use the same endpoint and filter/sort client-side
         const response = await api.get('/places');
         let places = response.data;
-        
+
         // Apply different sorting/filtering based on category
-        switch(activeCategory) {
+        switch (activeCategory) {
           case 'new':
             // Sort by creation date (newest first)
             places = places.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -51,7 +51,7 @@ const FeaturedPlaces = () => {
           default:
             break;
         }
-        
+
         // Limit to 6 places
         setFeaturedPlaces(places.slice(0, 6));
         setLoading(false);
@@ -77,7 +77,7 @@ const FeaturedPlaces = () => {
           </button>
         ))}
       </div>
-      
+
       <div className="carousel-container">
         {loading ? (
           <p className="loading-message">Loading featured places...</p>

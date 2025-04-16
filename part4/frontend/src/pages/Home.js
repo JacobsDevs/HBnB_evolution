@@ -22,13 +22,13 @@ const Home = () => {
         <div className="hero-content">
           <h1>Welcome to HBnB</h1>
           <p>Find your perfect place to stay</p>
-          
+
           {/* Search Bar */}
           <div className="search-container">
             <form onSubmit={handleSearch} className="search-form">
-              <input 
-                type="text" 
-                placeholder="Search for places..." 
+              <input
+                type="text"
+                placeholder="Search for places..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="search-input"
@@ -40,12 +40,12 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
+
       <section className="featured-places-section">
         <h2>Featured Places</h2>
         <FeaturedPlaces />
       </section>
-      
+
       <section className="blog-section">
         <h2>From Our Blog</h2>
         <BlogSection />
