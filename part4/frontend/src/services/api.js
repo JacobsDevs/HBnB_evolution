@@ -41,7 +41,7 @@ export const getAllPlaces = async (searchQuery = '') => {
 
 export const getPlaceById = async (id) => {
   try {
-    const response = await api.get(`/places/${id}`);
+    const response = await api.get(`/places/${id}/`);
     return response.data;
   } catch (error) {
     console.error('Error fetching place details:', error);
@@ -63,7 +63,7 @@ export const login = async (email, password) => {
 // Add the register function
 export const register = async (userData) => {
   try {
-    const response = await api.post('/users/', userData);
+    const response = await api.post('/users', userData);
     return response.data;
   } catch (error) {
     console.error('Error registering user:', error);
