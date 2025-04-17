@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import './ProfilePage.css';
+import { useLoaderData } from 'react-router';
 
 const ProfilePage = () => {
   const { id } = useParams();
+  const userData = useLoaderData()
 
   return (
     <div className="profile-page">
@@ -12,8 +14,8 @@ const ProfilePage = () => {
           {/* Profile picture will go here */}
         </div>
         <div className="profile-info">
-          <h1>User Profile</h1>
-          <p>Loading profile for ID: {id}</p>
+          <h1>{userData.first_name} {userData.last_name}</h1>
+          <p>{userData.email}</p>
         </div>
       </div>
       <div className="profile-content">

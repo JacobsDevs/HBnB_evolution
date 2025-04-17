@@ -16,21 +16,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Add request interceptor to add authentication token to requests
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token.replace(/[""]+/g, '')}`;
     }
     return config;
   },
@@ -46,7 +32,7 @@ export const getAllPlaces = async (searchQuery = '') => {
     // const response = await api.get(`/places?search=${searchQuery}`);
 
     // If not, we'll fetch all places and filter in the component
-    const response = await api.get('/places');
+    const response = await api.get('/places/');
     return response.data;
   } catch (error) {
     console.error('Error fetching places:', error);
@@ -68,6 +54,8 @@ export const getPlaceById = async (id) => {
 export const login = async (email, password) => {
   try {
     const response = await api.post('/auth/login', { email, password });
+    localStorage.setItem('token', JSON.stringify(response.data.access_token))
+    localStorage.setItem('user_id', JSON.stringify(response.data.user_id))
     return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
@@ -78,6 +66,7 @@ export const login = async (email, password) => {
 // User services
 export const getUserProfile = async (id) => {
   try {
+    id = id.replace(/[""]+/g, '')
     const response = await api.get(`/users/${id}`);
     return response.data;
   } catch (error) {

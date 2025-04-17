@@ -21,6 +21,7 @@ const PlaceResults = () => {
       try {
         // Fetch places from API
         const data = await getAllPlaces();
+        console.log(data)
 
         // Step Process:
         // If there's a search query, filter the results

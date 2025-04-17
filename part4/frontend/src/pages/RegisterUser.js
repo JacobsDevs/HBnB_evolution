@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import registerNewUser, { getPlaceById } from '../services/api'
+import registerNewUser, { getPlaceById, login } from '../services/api'
 
 export default function RegisterUser() {
   const [firstName, setFirstName] = useState('');
@@ -12,15 +12,19 @@ export default function RegisterUser() {
   // const navigate = useNavigate();
 
   async function register() {
-    const request = new Request("http://localhost:5000/api/v1/users",
+    let request = new Request("http://localhost:5000/api/v1/users/",
       {
         headers: { "Content-Type": "application/json" },
         method: "post",
         body: `{"first_name": "${firstName}", "last_name": "${lastName}", "email": "${email}", "password": "${password}"}`
       })
-    const data = await fetch(request).then(
-      (response) => response.json());
-  };
+    let data = await fetch(request).then(
+      (response) => response.json())
+    if (data.id) {
+      const res = await login(email, password);
+    }
+  }
+
 
   return (
     <div className="login-page">

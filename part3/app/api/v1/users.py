@@ -80,21 +80,25 @@ class UserList(Resource):
 
 @api.route('/<user_id>')
 class UserResource(Resource):
+    @cross_origin()
     @api.response(200, 'User details retrieves successfully')
     @api.response(404, 'User not found')
+    @jwt_required()
     def get(self, user_id):
         """Retrieve a user by ID"""
+        claims = get_jwt()
+        jwt_user = get_jwt_identity()
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
-
-        return {
-            'id': user.id,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
-            'is_admin': user.is_admin
-        }, 200
+        if user.id == jwt_user:
+            return {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'is_admin': user.is_admin
+            }, 200
 
     @api.expect(user_update_model)
     @api.response(200, 'User updated successfully')
