@@ -9,6 +9,7 @@ import Footer from './components/layout/Footer';
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import PlaceResults from './pages/PlaceResults';
 import PlaceDescription from './pages/PlaceDescription';
 import ProfilePage from './pages/ProfilePage';
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/places" element={<PlaceResults />} />
             <Route path="/places/:id" element={<PlaceDescription />} />
             <Route path="/profile/:id" element={<ProfilePage />} />

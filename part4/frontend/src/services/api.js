@@ -24,20 +24,6 @@ api.interceptors.request.use(
   }
 );
 
-// Add request interceptor to add authentication token to requests
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
 // Places services
 export const getAllPlaces = async (searchQuery = '') => {
   try {
@@ -70,6 +56,17 @@ export const login = async (email, password) => {
     return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
+    throw error;
+  }
+};
+
+// Add the register function
+export const register = async (userData) => {
+  try {
+    const response = await api.post('/users/', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user:', error);
     throw error;
   }
 };
