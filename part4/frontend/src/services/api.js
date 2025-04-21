@@ -85,6 +85,16 @@ export const getAllAmenities = async () => {
   }
 };
 
+export const createAmenity = async (amenityData) => {
+  try {
+    const response = await api.post('/amenities', amenityData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating amenity:', error);
+    throw error;
+  }
+};
+
 
 // ============================== //
 // =========== Users ============ //

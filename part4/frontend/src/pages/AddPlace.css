@@ -168,3 +168,46 @@
       flex-direction: column;
     }
   }
+
+  .amenities-section {
+    margin-top: 1rem;
+  }
+  
+  .amenities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .add-new-amenity-btn {
+    background-color: transparent;
+    color: #ff5a5f;
+    border: 1px solid #ff5a5f;
+    border-radius: 4px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .add-new-amenity-btn:hover {
+    background-color: #fff0f0;
+  }
+  
+  .add-new-amenity-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }

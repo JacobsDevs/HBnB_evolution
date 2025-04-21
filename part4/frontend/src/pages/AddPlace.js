@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPlace, getAllAmenities } from '../services/api';
+import { createPlace, getAllAmenities, getUserProfile } from '../services/api';
+import AddAmenityForm from '../components/AddAmenityForm';
 import './AddPlace.css';
 
 const AddPlace = () => {
@@ -10,6 +11,7 @@ const AddPlace = () => {
   const [success, setSuccess] = useState('');
   const [amenities, setAmenities] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [showAddAmenityForm, setShowAddAmenityForm] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -23,10 +25,28 @@ const AddPlace = () => {
   useEffect(() => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login?redirect=add-place'); // Redirect to login if not authenticated
+    const userId = localStorage.getItem('userId');
+    
+    if (!token || !userId) {
+      navigate('/login?redirect=add-place');
       return;
     }
+  
+    const checkAuth = async () => {
+      try {
+        // Use the stored userId to verify token is valid
+        await getUserProfile(userId);
+      } catch (err) {
+        // If token is invalid (401 error), redirect to login
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          navigate('/login?redirect=add-place&message=session_expired');
+        }
+      }
+    };
+  
+    checkAuth();
 
     // Fetch available amenities
     const fetchAmenities = async () => {
@@ -41,6 +61,17 @@ const AddPlace = () => {
 
     fetchAmenities();
   }, [navigate]);
+
+  const handleNewAmenity = (newAmenity) => {
+    // Add the new amenity to the amenities list
+    setAmenities([...amenities, newAmenity]);
+    
+    // Automatically select the newly added amenity
+    setSelectedAmenities([...selectedAmenities, newAmenity.id]);
+    
+    // Hide the add amenity form
+    setShowAddAmenityForm(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -188,26 +219,44 @@ const AddPlace = () => {
           </div>
           
           <div className="form-group amenities-section">
-            <label>Select Amenities</label>
-            <div className="amenities-grid">
-              {amenities.length > 0 ? (
-                amenities.map(amenity => (
-                  <div className="amenity-item" key={amenity.id}>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={selectedAmenities.includes(amenity.id)}
-                        onChange={() => handleAmenityToggle(amenity.id)}
-                        disabled={loading}
-                      />
-                      <span>{amenity.name}</span>
-                    </label>
-                  </div>
-                ))
-              ) : (
-                <p className="no-amenities">Loading amenities...</p>
-              )}
+            <div className="amenities-header">
+              <label>Select Amenities</label>
+              <button 
+                type="button" 
+                className="add-new-amenity-btn"
+                onClick={() => setShowAddAmenityForm(!showAddAmenityForm)}
+                disabled={loading}
+              >
+                {showAddAmenityForm ? 'Cancel' : '+ Add New Amenity'}
+              </button>
             </div>
+            
+            {showAddAmenityForm ? (
+              <AddAmenityForm 
+                onAmenityAdded={handleNewAmenity} 
+                onCancel={() => setShowAddAmenityForm(false)} 
+              />
+            ) : (
+              <div className="amenities-grid">
+                {amenities.length > 0 ? (
+                  amenities.map(amenity => (
+                    <div className="amenity-item" key={amenity.id}>
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={selectedAmenities.includes(amenity.id)}
+                          onChange={() => handleAmenityToggle(amenity.id)}
+                          disabled={loading}
+                        />
+                        <span>{amenity.name}</span>
+                      </label>
+                    </div>
+                  ))
+                ) : (
+                  <p className="no-amenities">Loading amenities...</p>
+                )}
+              </div>
+            )}
           </div>
           
           <div className="form-actions">

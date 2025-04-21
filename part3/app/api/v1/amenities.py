@@ -39,7 +39,7 @@ class AmenityList(Resource):
     @api.response(201,'Amenity successfully created')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Admin privileges required')
-    @admin_required()
+    @jwt_required()
     def post(self):
         """
         Create a new amenity.

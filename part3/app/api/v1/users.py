@@ -75,6 +75,27 @@ class UserList(Resource):
                 }, 200
             else:
                 return {'error': 'User not found'}, 404
+            
+
+@api.route('/me')
+class CurrentUser(Resource):
+    @jwt_required()
+    @api.response(200, 'Current user details retrieved successfully')
+    def get(self):
+        """Get current authenticated user details"""
+        current_user_id = get_jwt_identity()
+        user = facade.get_user(current_user_id)
+        
+        if not user:
+            return {'error': 'User not found'}, 404
+            
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'is_admin': user.is_admin
+        }, 200
 
 @api.route('/<user_id>')
 class UserResource(Resource):
