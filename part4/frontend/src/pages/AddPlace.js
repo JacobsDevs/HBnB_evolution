@@ -1,3 +1,7 @@
+// This component provides a form for users to create a new place listing.
+// It handles form state, user input, amenity selection, and API submission.
+// The component also includes authentication checks to ensure only logged-in users can add places.
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPlace, getAllAmenities, getUserProfile } from '../services/api';
@@ -5,33 +9,40 @@ import AddAmenityForm from '../components/AddAmenityForm';
 import './AddPlace.css';
 
 const AddPlace = () => {
+  // React Router's navigation hook for redirection
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [amenities, setAmenities] = useState([]);
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [showAddAmenityForm, setShowAddAmenityForm] = useState(false);
   
+  // State management variables
+  const [loading, setLoading] = useState(false);  // Controls loading state during API calls
+  const [error, setError] = useState('');  // Stores error messages
+  const [success, setSuccess] = useState('');  // Stores success messages
+  const [amenities, setAmenities] = useState([]);  // All available amenities
+  const [selectedAmenities, setSelectedAmenities] = useState([]);  // User's selected amenities
+  const [showAddAmenityForm, setShowAddAmenityForm] = useState(false);  // Controls visibility of add amenity form
+  
+  // Form data state for the new place
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     price: '',
     latitude: '',
     longitude: '',
-    amenities: []
+    amenities: []  // This is replaced by selectedAmenities when submitting
   });
 
+  // Authentication and amenities loading effect
   useEffect(() => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     
+    // If not logged in, redirect to login page with return URL
     if (!token || !userId) {
       navigate('/login?redirect=add-place');
       return;
     }
   
+    // Verify that the stored token is valid by making an API call
     const checkAuth = async () => {
       try {
         // Use the stored userId to verify token is valid
@@ -48,7 +59,7 @@ const AddPlace = () => {
   
     checkAuth();
 
-    // Fetch available amenities
+    // Fetch available amenities for the selection list
     const fetchAmenities = async () => {
       try {
         const amenitiesData = await getAllAmenities();
@@ -60,8 +71,9 @@ const AddPlace = () => {
     };
 
     fetchAmenities();
-  }, [navigate]);
+  }, [navigate]);  // Only run on initial render and when navigate changes
 
+  // Handle adding a new amenity
   const handleNewAmenity = (newAmenity) => {
     // Add the new amenity to the amenities list
     setAmenities([...amenities, newAmenity]);
@@ -73,6 +85,7 @@ const AddPlace = () => {
     setShowAddAmenityForm(false);
   };
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -81,6 +94,7 @@ const AddPlace = () => {
     });
   };
 
+  // Handle amenity selection toggling
   const handleAmenityToggle = (amenityId) => {
     if (selectedAmenities.includes(amenityId)) {
       // Remove amenity if already selected
@@ -91,6 +105,7 @@ const AddPlace = () => {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -99,12 +114,13 @@ const AddPlace = () => {
 
     try {
       // Prepare place data with selected amenities
+      // Convert string values to appropriate types
       const placeData = {
         ...formData,
-        price: parseFloat(formData.price),
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-        amenities: selectedAmenities
+        price: parseFloat(formData.price),  // Convert price to float
+        latitude: parseFloat(formData.latitude),  // Convert latitude to float
+        longitude: parseFloat(formData.longitude),  // Convert longitude to float
+        amenities: selectedAmenities  // Use the selectedAmenities array for submission
       };
 
       // Submit the place data to API
@@ -117,6 +133,7 @@ const AddPlace = () => {
       }, 2000);
     } catch (err) {
       console.error('Error creating place:', err);
+      // Display the error from the API if available
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
@@ -132,10 +149,13 @@ const AddPlace = () => {
       <div className="add-place-container">
         <h1>Add Your Place</h1>
         
+        {/* Error and success message display */}
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
         
+        {/* Place creation form */}
         <form onSubmit={handleSubmit} className="add-place-form">
+          {/* Title field */}
           <div className="form-group">
             <label htmlFor="title">Title</label>
             <input
@@ -150,6 +170,7 @@ const AddPlace = () => {
             />
           </div>
           
+          {/* Description field */}
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -164,6 +185,7 @@ const AddPlace = () => {
             />
           </div>
           
+          {/* Price field */}
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="price">Price per Night ($)</label>
@@ -182,6 +204,7 @@ const AddPlace = () => {
             </div>
           </div>
           
+          {/* Location fields (latitude/longitude) */}
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="latitude">Latitude</label>
@@ -218,6 +241,7 @@ const AddPlace = () => {
             </div>
           </div>
           
+          {/* Amenities selection section */}
           <div className="form-group amenities-section">
             <div className="amenities-header">
               <label>Select Amenities</label>
@@ -231,6 +255,7 @@ const AddPlace = () => {
               </button>
             </div>
             
+            {/* Conditionally show the add amenity form or the amenities selection grid */}
             {showAddAmenityForm ? (
               <AddAmenityForm 
                 onAmenityAdded={handleNewAmenity} 
@@ -259,6 +284,7 @@ const AddPlace = () => {
             )}
           </div>
           
+          {/* Form action buttons */}
           <div className="form-actions">
             <button 
               type="submit" 

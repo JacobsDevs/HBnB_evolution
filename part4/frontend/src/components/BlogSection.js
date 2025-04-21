@@ -1,17 +1,25 @@
+// This component displays a horizontally scrollable section of blog posts.
+// It simulates fetching blog data and displays it in a carousel format.
+// In a real application, this would fetch data from an API endpoint.
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './BlogSection.css';
 
 const BlogSection = () => {
+  // State for blog posts data
   const [blogPosts, setBlogPosts] = useState([]);
+  // Loading state for asynchronous operations
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Simulate API call with mock data
+    // In a real application, this would be replaced with an actual API call
     const fetchBlogPosts = () => {
       setLoading(true);
       
-      // Mock blog data
+      // Mock blog data - this simulates what would come from an API
+      // This approach is useful for development and testing before the backend is ready
       const mockBlogPosts = [
         {
           id: 1,
@@ -69,25 +77,30 @@ const BlogSection = () => {
         }
       ];
       
+      // Simulate network delay (500ms) to demonstrate loading state
+      // This is a common practice during development to test UI transitions
       setTimeout(() => {
         setBlogPosts(mockBlogPosts);
         setLoading(false);
-      }, 500); // Simulate network delay
+      }, 500);
     };
     
     fetchBlogPosts();
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on component mount (refresh of the page)
   
   return (
     <div className="blog-section-container">
       <div className="carousel-container">
         {loading ? (
+          // Show loading message while data is being "fetched"
           <p className="loading-message">Loading blog posts...</p>
         ) : (
+          // Display blog carousel once data is loaded
           <div className="blog-carousel">
             {blogPosts.map(post => (
               <div className="blog-card" key={post.id}>
                 <div className="blog-image">
+                  {/* Placeholder for blog image */}
                   <div className="blog-placeholder-image"></div>
                   <div className="blog-category">{post.category}</div>
                 </div>
@@ -98,6 +111,7 @@ const BlogSection = () => {
                     <span className="blog-author">{post.author}</span>
                     <span className="blog-date">{post.date}</span>
                   </div>
+                  {/* Link to individual blog post - would be implemented in a real app */}
                   <Link to={`/blog/${post.id}`} className="read-more-btn">
                     Read More
                   </Link>
@@ -107,6 +121,7 @@ const BlogSection = () => {
           </div>
         )}
       </div>
+      {/* Link to full blog page */}
       <div className="view-all-container">
         <Link to="/blog" className="view-all-btn">View All Articles</Link>
       </div>

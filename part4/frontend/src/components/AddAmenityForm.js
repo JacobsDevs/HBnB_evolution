@@ -1,16 +1,23 @@
-// AddAmenityForm.js - Update to avoid form nesting
+// This component provides a form for adding new amenities.
+// It's designed to be used inside other forms (particularly the AddPlace form)
+// and avoids form nesting issues by using button click handlers instead of form submission.
+
 import React, { useState } from 'react';
 import { createAmenity } from '../services/api';
 import './AddAmenityForm.css';
 
 const AddAmenityForm = ({ onAmenityAdded, onCancel }) => {
+  // State for form inputs
   const [formData, setFormData] = useState({
     name: '',
     description: ''
   });
+  
+  // State for loading and error handling
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -19,24 +26,28 @@ const AddAmenityForm = ({ onAmenityAdded, onCancel }) => {
     });
   };
 
+  // Handle form submission
+  // Note: This is triggered by a button click, not a form submit event
+  // This approach avoids issues with nested forms in the parent component
   const handleSubmit = async (e) => {
     e.preventDefault(); // Still needed for the button click
     setLoading(true);
     setError('');
 
     try {
-      // Validate
+      // Basic validation
       if (!formData.name.trim()) {
         throw new Error('Amenity name is required');
       }
 
-      // Submit to API
+      // Submit to API using the createAmenity function from our API service
       const newAmenity = await createAmenity(formData);
       
       // Call the callback with the new amenity
+      // This allows the parent component to update its state with the new amenity
       onAmenityAdded(newAmenity);
       
-      // Reset form
+      // Reset form to initial state
       setFormData({
         name: '',
         description: ''
@@ -54,10 +65,16 @@ const AddAmenityForm = ({ onAmenityAdded, onCancel }) => {
     <div className="add-amenity-form-container">
       <h3>Add New Amenity</h3>
       
+      {/* Display error message if there is one */}
       {error && <div className="amenity-error-message">{error}</div>}
       
-      {/* Use div instead of form to avoid nesting issues */}
+      {/* 
+        Important: This is using a div instead of a form element
+        This is intentional to avoid nesting form elements in the parent component
+        which can cause submission issues in browsers
+      */}
       <div className="amenity-form">
+        {/* Name input field */}
         <div className="amenity-form-group">
           <label htmlFor="amenity-name">Name</label>
           <input
@@ -72,6 +89,7 @@ const AddAmenityForm = ({ onAmenityAdded, onCancel }) => {
           />
         </div>
         
+        {/* Description input field */}
         <div className="amenity-form-group">
           <label htmlFor="amenity-description">Description</label>
           <textarea
@@ -85,6 +103,7 @@ const AddAmenityForm = ({ onAmenityAdded, onCancel }) => {
           />
         </div>
         
+        {/* Action buttons */}
         <div className="amenity-form-actions">
           <button 
             type="button" // Changed from submit to button
