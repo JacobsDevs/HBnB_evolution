@@ -230,3 +230,20 @@
     height: 200px;
   }
 }
+
+.host-details h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.host-email {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.review-author {
+  font-weight: bold;
+  color: #444;
+}

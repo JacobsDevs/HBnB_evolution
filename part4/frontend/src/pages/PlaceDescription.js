@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getPlaceById } from '../services/api';
+import { getPlaceById, getUserProfile } from '../services/api';
 import './PlaceDescription.css';
 
 const PlaceDescription = () => {
   const { id } = useParams();
   const [place, setPlace] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [reviewers, setReviewers] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -15,6 +17,34 @@ const PlaceDescription = () => {
         setLoading(true);
         const placeData = await getPlaceById(id);
         setPlace(placeData);
+        
+        // Fetch owner information
+        if (placeData.owner_id) {
+          try {
+            const ownerData = await getUserProfile(placeData.owner_id);
+            setOwner(ownerData);
+          } catch (ownerError) {
+            console.error('Error fetching owner details:', ownerError);
+          }
+        }
+        
+        // Fetch reviewer information for each review
+        if (placeData.reviews && placeData.reviews.length > 0) {
+          const uniqueReviewerIds = [...new Set(placeData.reviews.map(review => review.user_id))];
+          const reviewersData = {};
+          
+          await Promise.all(uniqueReviewerIds.map(async (userId) => {
+            try {
+              const userData = await getUserProfile(userId);
+              reviewersData[userId] = userData;
+            } catch (reviewerError) {
+              console.error(`Error fetching reviewer ${userId} details:`, reviewerError);
+            }
+          }));
+          
+          setReviewers(reviewersData);
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('Error fetching place details:', err);
@@ -96,18 +126,25 @@ const PlaceDescription = () => {
         <h2>Reviews</h2>
         {place.reviews && place.reviews.length > 0 ? (
           <div className="reviews-list">
-            {place.reviews.map(review => (
-              <div className="review-item" key={review.id}>
-                <div className="review-header">
-                  <div className="review-author">By: {review.user_id}</div>
-                  <div className="review-rating">
-                    Rating: {review.rating}/5
+            {place.reviews.map(review => {
+              const reviewer = reviewers[review.user_id];
+              const reviewerName = reviewer 
+                ? `${reviewer.first_name} ${reviewer.last_name}`
+                : 'Anonymous User';
+                
+              return (
+                <div className="review-item" key={review.id}>
+                  <div className="review-header">
+                    <div className="review-author">By: {reviewerName}</div>
+                    <div className="review-rating">
+                      Rating: {review.rating}/5
+                    </div>
                   </div>
+                  <p className="review-text">{review.text}</p>
+                  <div className="review-date">Posted on: {new Date(review.created_at).toLocaleDateString()}</div>
                 </div>
-                <p className="review-text">{review.text}</p>
-                <div className="review-date">Posted on: {new Date(review.created_at).toLocaleDateString()}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <p className="no-data-message">No reviews yet. Be the first to leave a review!</p>
@@ -120,7 +157,16 @@ const PlaceDescription = () => {
           <div className="host-info">
             <div className="host-placeholder-image"></div>
             <div className="host-details">
-              <p>Host ID: {place.owner_id}</p>
+              {owner ? (
+                <>
+                  <h3>{owner.first_name} {owner.last_name}</h3>
+                  {owner.email && (
+                    <p className="host-email">Contact: {owner.email}</p>
+                  )}
+                </>
+              ) : (
+                <p>Host ID: {place.owner_id}</p>
+              )}
               <Link to={`/profile/${place.owner_id}`} className="view-profile-btn">
                 View Host Profile
               </Link>

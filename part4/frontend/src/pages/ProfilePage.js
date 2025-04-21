@@ -74,7 +74,7 @@ const ProfilePage = () => {
           <h1>{user.first_name} {user.last_name}</h1>
           <p className="profile-email">{user.email}</p>
           {isCurrentUser && (
-            <button className="edit-profile-btn" onClick={() => navigate('/profile/edit')}>
+            <button className="edit-profile-btn" onClick={() => navigate('/profile/me')}>
               Edit Profile
             </button>
           )}

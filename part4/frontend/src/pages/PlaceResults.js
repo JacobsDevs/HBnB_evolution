@@ -15,11 +15,34 @@ const PlaceResults = () => {
     propertyType: '',
     amenities: []
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [placesPerPage] = useState(6);
   const [originalPlaces, setOriginalPlaces] = useState([]);
   
   // Extract search query from URL parameters
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search');
+
+  const indexOfLastPlace = currentPage * placesPerPage;
+  const indexOfFirstPlace = indexOfLastPlace - placesPerPage;
+  const currentPlaces = places.slice(indexOfFirstPlace, indexOfLastPlace);
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(places.length / placesPerPage);
+  
+  // Go to previous page
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  // Go to next page
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -250,8 +273,8 @@ const PlaceResults = () => {
       <div className="places-grid">
         {loading ? (
           <p className="loading-message">Searching for places...</p>
-        ) : places.length > 0 ? (
-          places.map(place => (
+        ) : currentPlaces.length > 0 ? (
+          currentPlaces.map(place => (
             <div key={place.id} className="place-card">
               <div className="place-image">
                 {/* Placeholder for place image */}
@@ -271,6 +294,30 @@ const PlaceResults = () => {
           <p className="no-results">No places found matching your search.</p>
         )}
       </div>
+      {/* Pagination controls */}
+      {!loading && places.length > 0 && (
+        <div className="pagination">
+          <button 
+            onClick={goToPreviousPage} 
+            disabled={currentPage === 1}
+            className="pagination-button"
+          >
+            &laquo; Previous
+          </button>
+          
+          <div className="pagination-info">
+            Page {currentPage} of {totalPages}
+          </div>
+          
+          <button 
+            onClick={goToNextPage} 
+            disabled={currentPage === totalPages}
+            className="pagination-button"
+          >
+            Next &raquo;
+          </button>
+          </div>
+          )}
     </div>
   );
 };

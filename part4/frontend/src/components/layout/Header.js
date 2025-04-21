@@ -1,17 +1,18 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Check authentication status whenever the component renders or location changes
   useEffect(() => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
-  }, []);
+  }, [location]); // Add location dependency to re-check when routes change
   
   const handleLogout = () => {
     localStorage.removeItem('token');
