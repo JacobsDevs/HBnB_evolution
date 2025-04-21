@@ -8,14 +8,6 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8000/api/v1';
 
 /**
- * WHY AXIOS INSTEAD OF FETCH?
- * ---------------------------
- * 1. Automatic JSON parsing (no need for .json() calls)
- * 2. Built-in request/response interceptors
- * 3. Better error handling structure
- * 4. Simpler syntax for common operations
- * 5. Automatic Content-Type headers
- * 6. Request cancellation support
  * 
  * FETCH EQUIVALENT:
  * ----------------
