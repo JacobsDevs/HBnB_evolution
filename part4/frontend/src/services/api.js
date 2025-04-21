@@ -24,7 +24,9 @@ api.interceptors.request.use(
   }
 );
 
-// Places services
+// ============================== //
+// =========== Places =========== //
+// ============================== //
 export const getAllPlaces = async (searchQuery = '') => {
   try {
     // If your API supports search parameters, you can add them here
@@ -49,7 +51,44 @@ export const getPlaceById = async (id) => {
   }
 };
 
-// Auth services
+export const createPlace = async (placeData) => {
+  try {
+    const response = await api.post('/places', placeData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating place:', error);
+    throw error;
+  }
+};
+
+
+// ============================== //
+// ========== Amenities ========= //
+// ============================== //
+export const addAmenityToPlace = async (placeId, amenityId) => {
+  try {
+    const response = await api.post(`/places/${placeId}/amenities`, { amenity_id: amenityId });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding amenity to place:', error);
+    throw error;
+  }
+};
+
+export const getAllAmenities = async () => {
+  try {
+    const response = await api.get('/amenities');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching amenities:', error);
+    throw error;
+  }
+};
+
+
+// ============================== //
+// =========== Users ============ //
+// ============================== //
 export const login = async (email, password) => {
   try {
     const response = await api.post('/auth/login', { email, password });
@@ -60,7 +99,6 @@ export const login = async (email, password) => {
   }
 };
 
-// Add the register function
 export const register = async (userData) => {
   try {
     const response = await api.post('/users', userData);
@@ -71,7 +109,6 @@ export const register = async (userData) => {
   }
 };
 
-// User services
 export const getUserProfile = async (id) => {
   try {
     const response = await api.get(`/users/${id}`);
@@ -81,6 +118,7 @@ export const getUserProfile = async (id) => {
     throw error;
   }
 };
+
 
 // Export other API services as needed
 export default api;
