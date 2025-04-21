@@ -33,6 +33,7 @@ const Header = () => {
           <li><Link to="/places">Places</Link></li>
           {isAuthenticated ? (
             <>
+              <li><Link to="/places/add">Add Place</Link></li>
               <li><Link to="/profile/me">Profile</Link></li>
               <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
             </>

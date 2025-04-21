@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import PlaceResults from './pages/PlaceResults';
 import PlaceDescription from './pages/PlaceDescription';
 import ProfilePage from './pages/ProfilePage';
+import AddPlace from './pages/AddPlace';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/places" element={<PlaceResults />} />
+            <Route path="/places/add" element={<AddPlace />} />
             <Route path="/places/:id" element={<PlaceDescription />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
           </Routes>
