@@ -129,6 +129,16 @@ export const getUserProfile = async (id) => {
   }
 };
 
+export const getPlacesByUser = async (userId) => {
+  try {
+    const response = await api.get(`/users/${userId}/places`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user places:', error);
+    throw error;
+  }
+};
+
 
 // Export other API services as needed
 export default api;
