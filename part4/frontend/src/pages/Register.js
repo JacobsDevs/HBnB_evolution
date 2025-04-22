@@ -17,11 +17,11 @@ const Register = () => {
     password: '',
     confirm_password: '' // This field is used for validation but not sent to the API
   });
-  
+
   // State for handling errors and loading status
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   // Navigation hook for redirecting after registration
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const Register = () => {
     e.preventDefault();
     // Reset error state
     setError('');
-    
+
     // Client-side validation before making API call
     // Password matching validation
     if (formData.password !== formData.confirm_password) {
@@ -59,16 +59,17 @@ const Register = () => {
       // Remove confirm_password before sending to API
       // This is a good example of data preparation before API submission
       const { confirm_password, ...userData } = formData;
-      
+
       // Call the registration API function
+      console.log(userData)
       await register(userData);
-      
+
       // Show success message and redirect to login page
       alert('Registration successful! Please login with your credentials.');
       navigate('/login');
     } catch (err) {
       console.error('Registration error:', err);
-      
+
       // Handle different error types based on API response
       if (err.response?.data?.error) {
         setError(err.response.data.error);
@@ -88,7 +89,7 @@ const Register = () => {
         <h2>Create Account</h2>
         {/* Display error message if there is one */}
         {error && <div className="error-message">{error}</div>}
-        
+
         {/* Registration form */}
         <form onSubmit={handleSubmit}>
           {/* First Name field */}
@@ -104,7 +105,7 @@ const Register = () => {
               disabled={loading}
             />
           </div>
-          
+
           {/* Last Name field */}
           <div className="form-group">
             <label htmlFor="last_name">Last Name</label>
@@ -118,7 +119,7 @@ const Register = () => {
               disabled={loading}
             />
           </div>
-          
+
           {/* Email field */}
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -132,7 +133,7 @@ const Register = () => {
               disabled={loading}
             />
           </div>
-          
+
           {/* Password field with requirements hint */}
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -150,7 +151,7 @@ const Register = () => {
               Password must be at least 8 characters long and include letters, numbers, and special characters.
             </small>
           </div>
-          
+
           {/* Confirm Password field */}
           <div className="form-group">
             <label htmlFor="confirm_password">Confirm Password</label>
@@ -164,17 +165,17 @@ const Register = () => {
               disabled={loading}
             />
           </div>
-          
+
           {/* Submit button with loading state */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="register-button"
             disabled={loading}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
-        
+
         {/* Link to login page for existing users */}
         <div className="login-link">
           Already have an account? <a href="/login">Login here</a>

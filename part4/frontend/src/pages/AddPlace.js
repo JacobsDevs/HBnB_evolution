@@ -7,11 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { createPlace, getAllAmenities, getUserProfile } from '../services/api';
 import AddAmenityForm from '../components/AddAmenityForm';
 import './AddPlace.css';
+import PlaceSearch from '../components/PlaceSearchComponent';
 
 const AddPlace = () => {
   // React Router's navigation hook for redirection
   const navigate = useNavigate();
-  
+
   // State management variables
   const [loading, setLoading] = useState(false);  // Controls loading state during API calls
   const [error, setError] = useState('');  // Stores error messages
@@ -19,7 +20,7 @@ const AddPlace = () => {
   const [amenities, setAmenities] = useState([]);  // All available amenities
   const [selectedAmenities, setSelectedAmenities] = useState([]);  // User's selected amenities
   const [showAddAmenityForm, setShowAddAmenityForm] = useState(false);  // Controls visibility of add amenity form
-  
+
   // Form data state for the new place
   const [formData, setFormData] = useState({
     title: '',
@@ -35,13 +36,13 @@ const AddPlace = () => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    
+
     // If not logged in, redirect to login page with return URL
     if (!token || !userId) {
       navigate('/login?redirect=add-place');
       return;
     }
-  
+
     // Verify that the stored token is valid by making an API call
     const checkAuth = async () => {
       try {
@@ -56,7 +57,7 @@ const AddPlace = () => {
         }
       }
     };
-  
+
     checkAuth();
 
     // Fetch available amenities for the selection list
@@ -77,10 +78,10 @@ const AddPlace = () => {
   const handleNewAmenity = (newAmenity) => {
     // Add the new amenity to the amenities list
     setAmenities([...amenities, newAmenity]);
-    
+
     // Automatically select the newly added amenity
     setSelectedAmenities([...selectedAmenities, newAmenity.id]);
-    
+
     // Hide the add amenity form
     setShowAddAmenityForm(false);
   };
@@ -105,6 +106,11 @@ const AddPlace = () => {
     }
   };
 
+  const api_key = async () => {
+    const data = await process.env.GOOGLE_API_KEY;
+    return data
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,7 +132,7 @@ const AddPlace = () => {
       // Submit the place data to API
       const response = await createPlace(placeData);
       setSuccess('Place created successfully!');
-      
+
       // Redirect to the newly created place after a short delay
       setTimeout(() => {
         navigate(`/places/${response.id}`);
@@ -148,11 +154,11 @@ const AddPlace = () => {
     <div className="add-place-page">
       <div className="add-place-container">
         <h1>Add Your Place</h1>
-        
+
         {/* Error and success message display */}
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
-        
+
         {/* Place creation form */}
         <form onSubmit={handleSubmit} className="add-place-form">
           {/* Title field */}
@@ -169,7 +175,7 @@ const AddPlace = () => {
               placeholder="Enter a catchy title for your place"
             />
           </div>
-          
+
           {/* Description field */}
           <div className="form-group">
             <label htmlFor="description">Description</label>
@@ -184,7 +190,7 @@ const AddPlace = () => {
               rows="5"
             />
           </div>
-          
+
           {/* Price field */}
           <div className="form-row">
             <div className="form-group">
@@ -203,7 +209,7 @@ const AddPlace = () => {
               />
             </div>
           </div>
-          
+
           {/* Location fields (latitude/longitude) */}
           <div className="form-row">
             <div className="form-group">
@@ -222,7 +228,7 @@ const AddPlace = () => {
                 placeholder="34.0522"
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="longitude">Longitude</label>
               <input
@@ -240,13 +246,15 @@ const AddPlace = () => {
               />
             </div>
           </div>
-          
+
+          <PlaceSearch />
+
           {/* Amenities selection section */}
           <div className="form-group amenities-section">
             <div className="amenities-header">
               <label>Select Amenities</label>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="add-new-amenity-btn"
                 onClick={() => setShowAddAmenityForm(!showAddAmenityForm)}
                 disabled={loading}
@@ -254,12 +262,12 @@ const AddPlace = () => {
                 {showAddAmenityForm ? 'Cancel' : '+ Add New Amenity'}
               </button>
             </div>
-            
+
             {/* Conditionally show the add amenity form or the amenities selection grid */}
             {showAddAmenityForm ? (
-              <AddAmenityForm 
-                onAmenityAdded={handleNewAmenity} 
-                onCancel={() => setShowAddAmenityForm(false)} 
+              <AddAmenityForm
+                onAmenityAdded={handleNewAmenity}
+                onCancel={() => setShowAddAmenityForm(false)}
               />
             ) : (
               <div className="amenities-grid">
@@ -283,18 +291,18 @@ const AddPlace = () => {
               </div>
             )}
           </div>
-          
+
           {/* Form action buttons */}
           <div className="form-actions">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="submit-button"
               disabled={loading}
             >
               {loading ? 'Creating Place...' : 'Create Place'}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="cancel-button"
               onClick={() => navigate('/places')}
               disabled={loading}

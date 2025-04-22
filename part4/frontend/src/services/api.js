@@ -3,6 +3,7 @@
 // Each function corresponds to a specific API endpoint and operation
 
 import axios from 'axios';
+import { Loader } from '@googlemaps/js-api-loader'
 
 // Base URL for the API - can be easily changed for different environments
 const API_URL = 'http://localhost:8000/api/v1';
@@ -97,7 +98,7 @@ export const getAllPlaces = async (searchQuery = '') => {
   try {
     // If your API supports search parameters, you can add them here
     // const response = await api.get(`/places?search=${searchQuery}`);
-    
+
     // If not, we'll fetch all places and filter in the component
     const response = await api.get('/places');
     return response.data; // Axios automatically parses JSON
@@ -321,7 +322,7 @@ export const login = async (email, password) => {
  */
 export const register = async (userData) => {
   try {
-    const response = await api.post('/users', userData);
+    const response = await api.post('/users/', userData);
     return response.data;
   } catch (error) {
     console.error('Error registering user:', error);
