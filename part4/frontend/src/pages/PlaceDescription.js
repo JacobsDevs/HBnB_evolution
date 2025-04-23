@@ -4,13 +4,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import PlaceMap from '../components/PlaceMap';
 import { getPlaceById, getUserProfile } from '../services/api';
 import './PlaceDescription.css';
 
 const PlaceDescription = () => {
   // Extract place ID from URL parameters
   const { id } = useParams();
-  
+
   // State variables
   const [place, setPlace] = useState(null);  // The place data
   const [owner, setOwner] = useState(null);  // Place owner information
@@ -23,11 +24,11 @@ const PlaceDescription = () => {
     const fetchPlaceDetails = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch the place data by ID
         const placeData = await getPlaceById(id);
         setPlace(placeData);
-        
+
         // After getting place data, fetch owner information
         if (placeData.owner_id) {
           try {
@@ -39,7 +40,7 @@ const PlaceDescription = () => {
             // This is a non-critical error that shouldn't prevent the user from viewing the place
           }
         }
-        
+
         // If the place has reviews, fetch reviewer information for each unique reviewer
         // This demonstrates client-side data enrichment - we're fetching related data to enhance
         // the user experience (showing reviewer names instead of just IDs)
@@ -47,7 +48,7 @@ const PlaceDescription = () => {
           // Get unique reviewer IDs to avoid duplicate API calls
           const uniqueReviewerIds = [...new Set(placeData.reviews.map(review => review.user_id))];
           const reviewersData = {};
-          
+
           // Use Promise.all to fetch all reviewer data in parallel
           // This is more efficient than sequential requests
           await Promise.all(uniqueReviewerIds.map(async (userId) => {
@@ -59,10 +60,10 @@ const PlaceDescription = () => {
               // Again, not a critical error - we can display reviews without reviewer details if needed
             }
           }));
-          
+
           setReviewers(reviewersData);
         }
-        
+
         setLoading(false);
       } catch (err) {
         console.error('Error fetching place details:', err);
@@ -107,12 +108,10 @@ const PlaceDescription = () => {
         <div className="place-info">
           <h2>Description</h2>
           <p>{place.description}</p>
-          
+
           <div className="location-info">
             <h3>Location</h3>
-            <p>
-              <i className="fas fa-map-marker-alt"></i> Coordinates: {place.latitude}, {place.longitude}
-            </p>
+            <PlaceMap lat={place.latitude} long={place.longitude} />
           </div>
         </div>
 
@@ -123,7 +122,7 @@ const PlaceDescription = () => {
             <span className="price-amount">${place.price}</span> per night
           </div>
           <button className="book-now-btn">Book Now</button>
-          
+
           <div className="reservation-details">
             <p>Contact the host for availability.</p>
             <p>Check-in time: 3:00 PM</p>
@@ -159,10 +158,10 @@ const PlaceDescription = () => {
             {place.reviews.map(review => {
               // Try to get reviewer information, fallback to "Anonymous" if not available
               const reviewer = reviewers[review.user_id];
-              const reviewerName = reviewer 
+              const reviewerName = reviewer
                 ? `${reviewer.first_name} ${reviewer.last_name}`
                 : 'Anonymous User';
-                
+
               return (
                 <div className="review-item" key={review.id}>
                   <div className="review-header">

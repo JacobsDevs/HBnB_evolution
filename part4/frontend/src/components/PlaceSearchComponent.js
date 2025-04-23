@@ -1,5 +1,5 @@
 import useScript from '../hooks/useScript'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, createRef } from 'react'
 import {
   APIProvider,
   ControlPosition,
@@ -13,9 +13,10 @@ import {
   useAdvancedMarkerRef
 } from '@vis.gl/react-google-maps'
 
-export default function PlaceSearch() {
+export default function PlaceSearch(props) {
   const position = { lat: -25.27, lng: 133.77 }
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedCoord, setSelectedCoord] = useState(null)
   const [markerRef, marker] = useAdvancedMarkerRef();
 
   return (
@@ -30,10 +31,32 @@ export default function PlaceSearch() {
           </div>
         </MapControl>
         <MapHandler place={selectedPlace} marker={marker} />
+        <Coorder marker={marker} props={props} />
       </div>
-    </APIProvider>
+    </APIProvider >
   );
 };
+
+const Coorder = ({ marker, props }) => {
+  const [coords, setCoords] = useState(null)
+
+  const getLocation = e => {
+    e.preventDefault()
+    if (!marker) return;
+
+    let coord = [marker.position.uC, marker.position.vC]
+    props.data.latitude = coord[0]
+    props.data.longitude = coord[1]
+    document.getElementById(props['latId']).value = Number(coord[0])
+    document.getElementById(props['longId']).value = Number(coord[1])
+    const event = new Event('input', { bubbles: true })
+    document.getElementById(props['latId']).dispatchEvent(event)
+    document.getElementById(props['longId']).dispatchEvent(event)
+  }
+  return (
+    <button onClick={getLocation}>Hi There</button>
+  )
+}
 
 const MapHandler = ({ place, marker }) => {
   const map = useMap();

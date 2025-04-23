@@ -247,7 +247,7 @@ const AddPlace = () => {
             </div>
           </div>
 
-          <PlaceSearch />
+          <PlaceSearch latId={'latitude'} longId={'longitude'} data={formData} />
 
           {/* Amenities selection section */}
           <div className="form-group amenities-section">
