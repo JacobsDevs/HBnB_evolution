@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import registerNewUser, { getPlaceById, login } from '../services/api'
 
@@ -9,7 +9,7 @@ export default function RegisterUser() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   async function register() {
     let request = new Request("http://localhost:5000/api/v1/users/",
@@ -23,6 +23,7 @@ export default function RegisterUser() {
     if (data.id) {
       const res = await login(email, password);
     }
+    navigate('/')
   }
 
 

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout.js";
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -6,6 +6,7 @@ import RegisterUser from './pages/RegisterUser'
 import PlaceResults from './pages/PlaceResults'
 import PlaceDescription from './pages/PlaceDescription.js'
 import ProfilePage from './pages/ProfilePage.js'
+import RegisterPlace from './pages/RegisterPlace.js'
 import { getUserProfile } from "./services/api.js";
 
 
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
           return getUserProfile(localStorage.getItem('user_id'))
         }, Component: ProfilePage
       },
+      { path: "/newplace", Component: RegisterPlace },
       { path: "/places", Component: PlaceResults },
       { path: "/places/:placeid", Component: PlaceDescription },
     ]

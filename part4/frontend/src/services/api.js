@@ -26,6 +26,20 @@ api.interceptors.request.use(
 );
 
 // Places services
+
+// Register a Place
+
+export const registerNewPlace = async (placeData) => {
+  try {
+    const response = await api.post('/places/', placeData);
+    return response.data;
+  }
+  catch (error) {
+    console.error('Error registering places', error);
+    throw error;
+  }
+}
+
 export const getAllPlaces = async (searchQuery = '') => {
   try {
     // If your API supports search parameters, you can add them here

@@ -7,3 +7,4 @@ flask-jwt-extended
 sqlalchemy
 flask-sqlalchemy
 mysqlclient
+react-icons
