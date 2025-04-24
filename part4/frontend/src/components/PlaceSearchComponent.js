@@ -21,30 +21,31 @@ export default function PlaceSearch(props) {
 
   return (
     <APIProvider apiKey={process.env.REACT_APP_GOOGLE_KEY}>
+      <div>
+        <label>Location</label>
+        <div className='form-row'>
+          <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
+          <Coorder marker={marker} props={props} />
+        </div>
+      </div>
       <div style={{ height: "500px" }}>
         <Map mapId={'69dd77c833e7557b'} defaultCenter={position} defaultZoom={4.2} disableDefaultUI={true}>
           <AdvancedMarker ref={markerRef} position={null} />
         </Map>
         <MapControl position={ControlPosition.TOP}>
-          <div>
-            <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
-          </div>
         </MapControl>
         <MapHandler place={selectedPlace} marker={marker} />
-        <Coorder marker={marker} props={props} />
       </div>
     </APIProvider >
   );
 };
 
 const Coorder = ({ marker, props }) => {
-  const [coords, setCoords] = useState(null)
-
   const getLocation = e => {
     e.preventDefault()
     if (!marker) return;
 
-    let coord = [marker.position.uC, marker.position.vC]
+    let coord = [marker.position.lat, marker.position.lng]
     props.data.latitude = coord[0]
     props.data.longitude = coord[1]
     document.getElementById(props['latId']).value = Number(coord[0])
@@ -54,7 +55,9 @@ const Coorder = ({ marker, props }) => {
     document.getElementById(props['longId']).dispatchEvent(event)
   }
   return (
-    <button onClick={getLocation}>Hi There</button>
+    <button onClick={getLocation} className='submit-button' style={{
+      width: 180, marginLeft: 'auto'
+    }}> Confirm Location</button >
   )
 }
 
@@ -96,7 +99,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
   }, [onPlaceSelect, placeAutocomplete]);
   return (
     <div className="autocomplete-containter">
-      <input ref={inputRef} />
+      <input ref={inputRef} style={{ width: '100%' }} />
     </div>
   );
 };

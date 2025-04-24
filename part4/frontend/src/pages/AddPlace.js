@@ -3,7 +3,7 @@
 // The component also includes authentication checks to ensure only logged-in users can add places.
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { createPlace, getAllAmenities, getUserProfile } from '../services/api';
 import AddAmenityForm from '../components/AddAmenityForm';
 import './AddPlace.css';
@@ -12,6 +12,7 @@ import PlaceSearch from '../components/PlaceSearchComponent';
 const AddPlace = () => {
   // React Router's navigation hook for redirection
   const navigate = useNavigate();
+  const data = useLoaderData()
 
   // State management variables
   const [loading, setLoading] = useState(false);  // Controls loading state during API calls
@@ -33,46 +34,16 @@ const AddPlace = () => {
 
   // Authentication and amenities loading effect
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-
     // If not logged in, redirect to login page with return URL
-    if (!token || !userId) {
+    if (!data.user) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
       navigate('/login?redirect=add-place');
       return;
     }
 
-    // Verify that the stored token is valid by making an API call
-    const checkAuth = async () => {
-      try {
-        // Use the stored userId to verify token is valid
-        await getUserProfile(userId);
-      } catch (err) {
-        // If token is invalid (401 error), redirect to login
-        if (err.response && err.response.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          navigate('/login?redirect=add-place&message=session_expired');
-        }
-      }
-    };
-
-    checkAuth();
-
-    // Fetch available amenities for the selection list
-    const fetchAmenities = async () => {
-      try {
-        const amenitiesData = await getAllAmenities();
-        setAmenities(amenitiesData);
-      } catch (err) {
-        console.error('Error fetching amenities:', err);
-        setError('Failed to load amenities. Please try again later.');
-      }
-    };
-
-    fetchAmenities();
-  }, [navigate]);  // Only run on initial render and when navigate changes
+    setAmenities(data.amenities)
+  }, [navigate, loading]);  // Only run on initial render and when navigate changes
 
   // Handle adding a new amenity
   const handleNewAmenity = (newAmenity) => {
@@ -247,7 +218,9 @@ const AddPlace = () => {
             </div>
           </div>
 
-          <PlaceSearch latId={'latitude'} longId={'longitude'} data={formData} />
+          <div className='form-group'>
+            <PlaceSearch latId={'latitude'} longId={'longitude'} data={formData} />
+          </div>
 
           {/* Amenities selection section */}
           <div className="form-group amenities-section">

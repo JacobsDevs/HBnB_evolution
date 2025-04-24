@@ -3,13 +3,13 @@
 // The component fetches user data and their places from the API.
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate, useLoaderData } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useLoaderData } from 'react-router';
 import { getUserProfile, getPlacesByUser } from '../services/api';
 import './ProfilePage.css';
 
-const ProfilePage = () => {
-  // Extract user ID from URL parameters - could be 'me' or a specific user ID
-  const { id } = useParams();
+const MyProfilePage = () => {
+  // Get user data from the loader
   const data = useLoaderData();
 
   // State variables
@@ -20,22 +20,22 @@ const ProfilePage = () => {
 
   const navigate = useNavigate();
 
+
   // Fetch user data and places when component mounts or ID changes
   useEffect(() => {
-    try {
-      if (data.error) {
-        setError(data.error)
-      }
-      setLoading(true);
-      setUser(data);
-      setPlaces(data.places);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching user data:', err);
-      setError('Failed to load user profile. Please try again later.');
-      setLoading(false);
+    // If data is empty, remove existing user token and prompt user to login
+    if (!data) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      navigate('/login');
     }
-  }, [id, navigate]); // Re-fetch when these dependencies change
+    //Set the User and Places data up
+    setLoading(true)
+    setUser(data);
+    setPlaces(data.places);
+    setLoading(false);
+  }, [navigate, data]); // Re-fetch when these dependencies change
+
 
   // Show loading state while data is being fetched
   if (loading) {
@@ -51,7 +51,6 @@ const ProfilePage = () => {
   if (!user) {
     return <div className="error-container">User not found</div>;
   }
-
   return (
     <div className="profile-page">
       {/* Profile header with user info */}
@@ -63,6 +62,11 @@ const ProfilePage = () => {
         <div className="profile-info">
           <h1>{user.first_name} {user.last_name}</h1>
           <p className="profile-email">{user.email}</p>
+
+          {/* Edit profile button - only visible on your own profile */}
+          <button className="edit-profile-btn" onClick={() => navigate('/profile/me')}>
+            Edit Profile
+          </button>
         </div>
       </div>
 
@@ -75,7 +79,7 @@ const ProfilePage = () => {
             <p>{user.bio}</p>
           ) : (
             <p className="no-data-message">
-              "This user hasn't added a bio yet."
+              "You haven't added a bio yet. Click 'Edit Profile' to add information about yourself."
             </p>
           )}
 
@@ -113,6 +117,10 @@ const ProfilePage = () => {
         <div className="places-section">
           <div className="section-header">
             <h2>My Places</h2>
+            {/* Add Place button - only visible on your own profile */}
+            <Link to="/places/add" className="add-place-btn">
+              + Add New Place
+            </Link>
           </div>
 
           {/* Display places or a message if none exist */}
@@ -148,7 +156,7 @@ const ProfilePage = () => {
             </div>
           ) : (
             <p className="no-data-message">
-              "This user hasn't listed any places yet."
+              "You haven't listed any places yet. Click 'Add New Place' to get started!"
             </p>
           )}
         </div>
@@ -164,6 +172,7 @@ const ProfilePage = () => {
               {places.flatMap(place =>
                 (place.reviews || []).map(review => (
                   <div className="review-item" key={review.id}>
+                : "This user's places haven't received any reviews yet."}
                     <div className="review-header">
                       <span className="review-place">
                         For: <Link to={`/places/${place.id}`}>{place.title}</Link>
@@ -182,13 +191,12 @@ const ProfilePage = () => {
             </div>
           ) : (
             <p className="no-data-message">
-              "This user's places haven't received any reviews yet."
+              "Your places haven't received any reviews yet."
             </p>
           )}
         </div>
       </div>
     </div>
-  );
-};
-
-export default ProfilePage;
+  )
+}
+export default MyProfilePage;

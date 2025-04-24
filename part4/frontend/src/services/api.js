@@ -386,5 +386,16 @@ export const getPlacesByUser = async (userId) => {
   }
 };
 
+
+export const validateUser = async () => {
+  try {
+    const response = await api.get('/users/me');
+    return response.data;
+  } catch (error) {
+    console.error('Error validating user: ', error);
+    throw error;
+  };
+};
+
 // Export the axios instance for use in other modules if needed
 export default api;

@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from part3.app.services.facade import facade
 from part3.app.api.v1.auth import admin_required
 
@@ -20,7 +20,9 @@ class AmenityList(Resource):
     'Resource' class for operations on collection amenities
     """
     @api.response(200, 'List of amenities retrieved successfully')
+    @jwt_required(optional=True)
     def get(self):
+        user = get_jwt_identity()
         """
         Get ALL amenities
 
@@ -33,7 +35,7 @@ class AmenityList(Resource):
         """
         # Use the facade to get all amenities (Abstraction later between API and data)
         amenities = facade.get_all_amenities()
-        return amenities, 200
+        return {'amenities': amenities, 'user': user}, 200
 
     @api.expect(amenity_model, validate=True)
     @api.response(201,'Amenity successfully created')

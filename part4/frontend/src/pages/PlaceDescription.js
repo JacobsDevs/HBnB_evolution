@@ -3,14 +3,14 @@
 // comprehensive view of the place with reviews and amenities.
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLoaderData } from 'react-router-dom';
 import PlaceMap from '../components/PlaceMap';
 import { getPlaceById, getUserProfile } from '../services/api';
 import './PlaceDescription.css';
 
 const PlaceDescription = () => {
-  // Extract place ID from URL parameters
-  const { id } = useParams();
+  // Get the component data from the loader
+  const data = useLoaderData()
 
   // State variables
   const [place, setPlace] = useState(null);  // The place data
@@ -21,59 +21,39 @@ const PlaceDescription = () => {
 
   // Fetch place details when component mounts or ID changes
   useEffect(() => {
-    const fetchPlaceDetails = async () => {
-      try {
-        setLoading(true);
+    setLoading(true);
 
-        // Fetch the place data by ID
-        const placeData = await getPlaceById(id);
-        setPlace(placeData);
+    setPlace(data);
+    setOwner(data.owner);
+    /* TODO: [ ] I think this has good value.  I just need to implement leaving reviews so I can
+     * see what the original response gives us already.  Might even be worth a custom API call to
+     * getReviewerNamesFromList.
 
-        // After getting place data, fetch owner information
-        if (placeData.owner_id) {
-          try {
-            const ownerData = await getUserProfile(placeData.owner_id);
-            setOwner(ownerData);
-          } catch (ownerError) {
-            console.error('Error fetching owner details:', ownerError);
-            // We don't set the main error state here because the place data loaded successfully
-            // This is a non-critical error that shouldn't prevent the user from viewing the place
-          }
+    // If the place has reviews, fetch reviewer information for each unique reviewer
+    // This demonstrates client-side data enrichment - we're fetching related data to enhance
+    // the user experience (showing reviewer names instead of just IDs)
+    if (placeData.reviews && placeData.reviews.length > 0) {
+      // Get unique reviewer IDs to avoid duplicate API calls
+      const uniqueReviewerIds = [...new Set(placeData.reviews.map(review => review.user_id))];
+      const reviewersData = {};
+
+      // Use Promise.all to fetch all reviewer data in parallel
+      // This is more efficient than sequential requests
+      await Promise.all(uniqueReviewerIds.map(async (userId) => {
+        try {
+          const userData = await getUserProfile(userId);
+          reviewersData[userId] = userData;
+        } catch (reviewerError) {
+          console.error(`Error fetching reviewer ${userId} details:`, reviewerError);
+          // Again, not a critical error - we can display reviews without reviewer details if needed
         }
+      }));
 
-        // If the place has reviews, fetch reviewer information for each unique reviewer
-        // This demonstrates client-side data enrichment - we're fetching related data to enhance
-        // the user experience (showing reviewer names instead of just IDs)
-        if (placeData.reviews && placeData.reviews.length > 0) {
-          // Get unique reviewer IDs to avoid duplicate API calls
-          const uniqueReviewerIds = [...new Set(placeData.reviews.map(review => review.user_id))];
-          const reviewersData = {};
+      setReviewers(reviewersData);
+    } */
 
-          // Use Promise.all to fetch all reviewer data in parallel
-          // This is more efficient than sequential requests
-          await Promise.all(uniqueReviewerIds.map(async (userId) => {
-            try {
-              const userData = await getUserProfile(userId);
-              reviewersData[userId] = userData;
-            } catch (reviewerError) {
-              console.error(`Error fetching reviewer ${userId} details:`, reviewerError);
-              // Again, not a critical error - we can display reviews without reviewer details if needed
-            }
-          }));
-
-          setReviewers(reviewersData);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching place details:', err);
-        setError('Failed to load place details. Please try again later.');
-        setLoading(false);
-      }
-    };
-
-    fetchPlaceDetails();
-  }, [id]); // Re-run when place ID changes
+    setLoading(false);
+  }, [data]); // Re-run when place ID changes
 
   // Show loading state while data is being fetched
   if (loading) {
