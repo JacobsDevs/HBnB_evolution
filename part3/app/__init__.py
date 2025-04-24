@@ -1,11 +1,21 @@
 from flask import Flask
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from datetime import timedelta
 from part3.app.extensions import db, bcrypt, jwt
 from part3.app.config import config
 
 def create_app(config_name="development"):
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
+
+    # Enable CORS for all routes
+    CORS(app, resources={r"/api/*": {
+    "origins": ["http://localhost:3000"],
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}}, supports_credentials=True)
 
     # Apply configuration to the app
     app.config.from_object(config[config_name])
@@ -13,6 +23,7 @@ def create_app(config_name="development"):
     # Config JWT Specific Settings
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY", "default-jwt-key")
     # default-jwt-key is the "fall back key if no SECRET KEY is present"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
 
     # Initialize extensions with the app

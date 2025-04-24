@@ -1,7 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
-from part3.app.services.facade import facade
-from part3.app.api.v1.auth import admin_required
+from app.services import facade
 
 # Create a namespace for amenities-related endpoints
 # Easier to read and identify the page / endpoint
@@ -17,12 +15,13 @@ amenity_model = api.model('Amenity', {
 @api.route('/')
 class AmenityList(Resource):
     """
-    'Resource' class for operations on collection amenities
+    'Resource' class for operations on collection amenities (GET)
+    Handles operations that don't require a specific amenity ID:
+    - GET: Retrieve ALL amenities
+    - POST: Create a new amenity
     """
     @api.response(200, 'List of amenities retrieved successfully')
-    @jwt_required(optional=True)
     def get(self):
-        user = get_jwt_identity()
         """
         Get ALL amenities
 
@@ -35,13 +34,11 @@ class AmenityList(Resource):
         """
         # Use the facade to get all amenities (Abstraction later between API and data)
         amenities = facade.get_all_amenities()
-        return {'amenities': amenities, 'user': user}, 200
+        return amenities, 200
 
     @api.expect(amenity_model, validate=True)
     @api.response(201,'Amenity successfully created')
     @api.response(400, 'Invalid input data')
-    @api.response(403, 'Admin privileges required')
-    @jwt_required()
     def post(self):
         """
         Create a new amenity.
@@ -71,8 +68,8 @@ class AmenityList(Resource):
                 'id': new_amenity.id,
                 'name': new_amenity.name,
                 'description': new_amenity.description,
-                'created_at': str(new_amenity.created_at) if hasattr(new_amenity, 'created_at') else None,
-                'updated_at': str(new_amenity.updated_at) if hasattr(new_amenity, 'updated_at') else None
+                'created_at':new_amenity.created_at,
+                'updated_at': new_amenity.updated_at
             }, 201
         except ValueError as err_msg_create:
             # Handle validation errors from the model
@@ -87,8 +84,9 @@ class AmenityResource(Resource):
     - PUT: Update a specific amenity
     - DELETE: Remove a specific amenity
     """
+
     @api.response(200, 'Amenity details retrieved successfully')
-    @api.response(404, 'Amenity not found')
+    @api.response(400, 'Amenity not found')
     def get(self, amenity_id):
         """
         Get amenity details via ID (UUID)
@@ -126,8 +124,6 @@ class AmenityResource(Resource):
     @api.response(200,'Amenity Updated Successfully')
     @api.response(404,'Amenity not found')
     @api.response(400,'Invalid Data input')
-    @api.response(403, 'Admin privileges required')
-    @admin_required()
     def put(self, amenity_id):
         """
         Update amenity data
@@ -160,21 +156,24 @@ class AmenityResource(Resource):
             # Use facade to update amenity
             updated_amenity = facade.update_amenity(amenity_id, update_data)
 
-            return {
-                'id': updated_amenity.id,
-                'name': updated_amenity.name,
-                'description': updated_amenity.description,
-                'created_at': updated_amenity.created_at,
-                'updated_at': updated_amenity.updated_at
+            # If update successful, return the updated data
+            if updated_amenity:
+                return {
+                    'id': updated_amenity.id,
+                    'name': updated_amenity.name,
+                    'description': updated_amenity.description,
+                    'created_at': updated_amenity.created_at,
+                    'updated_at': updated_amenity.updated_at
             }, 200
+            # else:
+            # # Fail safe return
+            #     return {'error': 'Amenity doesn\'t exist'}, 404
         except ValueError as e:
         # Handle validation errors from the 'model'
             return {'error': str(e)}, 400
 
     @api.response(204, 'Amenity successfully deleted')
     @api.response(404, 'Amenity not found')
-    @api.response(403, 'Admin privileges required')
-    @admin_required()
     def delete(self, amenity_id):
         """
         Delete an amenity.

@@ -1,0 +1,213 @@
+.add-place-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .add-place-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+  
+  .add-place-container h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+  }
+  
+  .error-message {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .success-message {
+    background-color: #dcfce7;
+    color: #166534;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .add-place-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  .amenities-section {
+    margin-top: 1rem;
+  }
+  
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .amenity-item {
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .checkbox-label input {
+    margin: 0;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .submit-button, 
+  .cancel-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+  }
+  
+  .submit-button {
+    background-color: #ff5a5f;
+    color: white;
+    flex: 2;
+  }
+  
+  .submit-button:hover {
+    background-color: #ff4146;
+  }
+  
+  .submit-button:disabled {
+    background-color: #ffb8bb;
+    cursor: not-allowed;
+  }
+  
+  .cancel-button {
+    background-color: #f2f2f2;
+    color: #333;
+    flex: 1;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .no-amenities {
+    color: #666;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .amenities-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+  }
+
+  .amenities-section {
+    margin-top: 1rem;
+  }
+  
+  .amenities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .add-new-amenity-btn {
+    background-color: transparent;
+    color: #ff5a5f;
+    border: 1px solid #ff5a5f;
+    border-radius: 4px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .add-new-amenity-btn:hover {
+    background-color: #fff0f0;
+  }
+  
+  .add-new-amenity-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }

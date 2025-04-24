@@ -58,6 +58,7 @@ class PlaceResource(Resource):
         place = facade.get_place(place_id)
         if place is None:
             return {"error": "Place not found"}, 404
+        place.update({'owner': facade.get_user(place['owner_id']).serialized})
         return place, 200
     
     @api.expect(place_model)

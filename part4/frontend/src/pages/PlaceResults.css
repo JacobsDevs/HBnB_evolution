@@ -1,0 +1,226 @@
+.place-results-page {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.place-results-page h1 {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #333;
+}
+
+.filter-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.loading-message, .no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.place-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.place-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.placeholder-image {
+  height: 180px;
+  background-color: #e0e0e0;
+}
+
+.place-details {
+  padding: 1.5rem;
+}
+
+.place-details h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.place-price {
+  font-weight: bold;
+  color: #ff5a5f;
+  margin-bottom: 0.5rem;
+}
+
+.place-description {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.view-details-btn {
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: calc(100% - 2em);
+}
+
+.view-details-btn:hover {
+  background-color: #ff4146;
+}
+
+.filter-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.filter-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.filter-group {
+  margin-bottom: 1rem;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-group select,
+.filter-group input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.price-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price-range input {
+  width: 45%;
+}
+
+.price-range span {
+  color: #666;
+}
+
+.amenities-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: normal;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.apply-filters-btn,
+.clear-filters-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.apply-filters-btn {
+  background-color: #ff5a5f;
+  color: white;
+}
+
+.apply-filters-btn:hover {
+  background-color: #ff4146;
+}
+
+.clear-filters-btn {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.clear-filters-btn:hover {
+  background-color: #e6e6e6;
+}
+
+@media (max-width: 768px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .amenities-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination-button {
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #ff4146;
+}
+
+.pagination-button:disabled {
+  background-color: #ffb8bb;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,249 @@
+.place-description-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.place-description-page h1 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 2.2rem;
+}
+
+.place-gallery {
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.placeholder-gallery {
+  height: 300px;
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.place-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.place-info, .reservation-panel, .amenities-section, .reviews-section, .owner-profile {
+  background-color: #f8f8f8;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.place-info h2, .reservation-panel h2, .amenities-section h2, .reviews-section h2, .owner-profile h2 {
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.location-info {
+  margin-top: 1.5rem;
+}
+
+.location-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.price-section {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.price-amount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff5a5f;
+}
+
+.book-now-btn {
+  width: 100%;
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 1.5rem;
+}
+
+.book-now-btn:hover {
+  background-color: #ff4146;
+}
+
+.reservation-details {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.amenities-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.amenity-item {
+  padding: 0.75rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.amenity-item i {
+  color: #ff5a5f;
+  margin-right: 0.5rem;
+}
+
+.amenity-description {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  margin-left: 1.5rem;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-item {
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.review-author {
+  font-weight: bold;
+  color: #444;
+}
+
+.review-rating {
+  color: #ff5a5f;
+}
+
+.review-text {
+  color: #444;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+}
+
+.host-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.host-placeholder-image {
+  width: 80px;
+  height: 80px;
+  background-color: #ddd;
+  border-radius: 50%;
+}
+
+.host-details {
+  flex-grow: 1;
+}
+
+.view-profile-btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #ff5a5f;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.view-profile-btn:hover {
+  background-color: #ff4146;
+}
+
+.no-data-message {
+  color: #666;
+  font-style: italic;
+}
+
+.loading-container, .error-container {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.error-container {
+  color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+  .place-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .place-description-page h1 {
+    font-size: 1.8rem;
+  }
+  
+  .price-amount {
+    font-size: 1.6rem;
+  }
+  
+  .amenities-list {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .placeholder-gallery {
+    height: 200px;
+  }
+}
+
+.host-details h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.host-email {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.review-author {
+  font-weight: bold;
+  color: #444;
+}

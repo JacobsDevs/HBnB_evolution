@@ -1,0 +1,85 @@
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-section {
+  background-color: #f8f8f8;
+  padding: 4rem 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/public/hero-background.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Search Bar Styles */
+.search-container {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.search-form {
+  display: flex;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 1rem;
+  border: none;
+  font-size: 1rem;
+}
+
+.search-button {
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  padding: 0 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #ff4146;
+}
+
+.featured-places, .blog-section {
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.featured-places h2, .blog-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
