@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLoaderData } from 'react-router-dom';
 import { getUserProfile, getPlacesByUser } from '../services/api';
 import './ProfilePage.css';
+import PlaceCard from '../components/PlaceCard'
 
 const ProfilePage = () => {
   // Extract user ID from URL parameters - could be 'me' or a specific user ID
@@ -119,16 +120,18 @@ const ProfilePage = () => {
           {places.length > 0 ? (
             <div className="places-grid">
               {places.map(place => (
-                <div className="profile-place-card" key={place.id}>
-                  <div className="place-image">
+                // <div className="profile-place-card" key={place.id}>
+                  
+                  <PlaceCard title={place.title} description={place.description} price={place.price} id={place.id}/>
+                  /* <div className="place-image">
                     <div className="placeholder-image"></div>
                   </div>
                   <div className="place-details">
                     <h3>{place.title}</h3>
                     <p className="place-price">${place.price} / night</p>
-                    <div className="place-stats">
-                      {/* Calculate and display average rating */}
-                      <span className="stat">
+                    <div className="place-stats"> */
+                      /* Calculate and display average rating */
+                      /* <span className="stat">
                         <i className="fas fa-star"></i>
                         {place.reviews?.length > 0
                           ? (place.reviews.reduce((sum, r) => sum + r.rating, 0) / place.reviews.length).toFixed(1)
@@ -141,9 +144,9 @@ const ProfilePage = () => {
                     </div>
                     <Link to={`/places/${place.id}`} className="view-details-btn">
                       View Details
-                    </Link>
-                  </div>
-                </div>
+                    </Link>/*
+                  </div> */
+                // </div>
               ))}
             </div>
           ) : (
