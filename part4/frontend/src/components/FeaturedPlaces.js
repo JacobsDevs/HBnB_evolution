@@ -102,19 +102,7 @@ const FeaturedPlaces = () => {
             {/* Map through the filtered featured places */}
             {featuredPlaces.map(place => (
               <div className="place-card" key={place.id}>
-                <div className="place-image">
-                  <div className="placeholder-image"></div>
-                </div>
-                <div className="place-details">
-                  <h3>{place.title}</h3>
-                  <p className="place-price">${place.price} / night</p>
-                  <p className="place-description">
-                    {place.description.substring(0, 60)}...
-                  </p>
-                  <Link to={`/places/${place.id}`} className="view-details-btn">
-                    View Details
-                  </Link>
-                </div>
+                <PlaceCard key={place.id} id={place.id} title={place.title} description={place.description} price={place.price} />
               </div>
             ))}
           </div>

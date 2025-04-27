@@ -1,7 +1,7 @@
 import React from "react";
 import "./PlaceCard.css"
 import { IoInformationCircleOutline } from "react-icons/io5";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function PlaceCard (props) {
   const title = props.title;
@@ -37,3 +37,19 @@ export default function PlaceCard (props) {
     </>
     )
 }
+
+
+
+//           <div className="place-stats">
+//             {/* Calculate and display average rating */}
+//             <span className="stat">
+//               <i className="fas fa-star"></i>
+//               {place.reviews?.length > 0
+//                 ? (place.reviews.reduce((sum, r) => sum + r.rating, 0) / place.reviews.length).toFixed(1)
+//                 : 'No ratings'}
+//             </span>
+//             <span className="stat">
+//               <i className="fas fa-comment"></i>
+//               {place.reviews?.length || 0} reviews
+//             </span>
+//           </div>

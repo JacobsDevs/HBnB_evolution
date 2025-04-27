@@ -3,9 +3,9 @@
 // The component fetches user data and their places from the API.
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLoaderData } from 'react-router';
-import { getUserProfile, getPlacesByUser } from '../services/api';
+import PlaceCard from '../components/PlaceCard'
 import './ProfilePage.css';
 
 const MyProfilePage = () => {
@@ -125,38 +125,16 @@ const MyProfilePage = () => {
 
           {/* Display places or a message if none exist */}
           {places.length > 0 ? (
-            <div className="places-grid">
-              {places.map(place => (
-                <div className="profile-place-card" key={place.id}>
-                  <div className="place-image">
-                    <div className="placeholder-image"></div>
+              <div className="places-carousel">
+                {places.map(place => (
+                  <div className="place-card" key={place.id}>
+                    <PlaceCard {...place} />
                   </div>
-                  <div className="place-details">
-                    <h3>{place.title}</h3>
-                    <p className="place-price">${place.price} / night</p>
-                    <div className="place-stats">
-                      {/* Calculate and display average rating */}
-                      <span className="stat">
-                        <i className="fas fa-star"></i>
-                        {place.reviews?.length > 0
-                          ? (place.reviews.reduce((sum, r) => sum + r.rating, 0) / place.reviews.length).toFixed(1)
-                          : 'No ratings'}
-                      </span>
-                      <span className="stat">
-                        <i className="fas fa-comment"></i>
-                        {place.reviews?.length || 0} reviews
-                      </span>
-                    </div>
-                    <Link to={`/places/${place.id}`} className="view-details-btn">
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
           ) : (
             <p className="no-data-message">
-              "You haven't listed any places yet. Click 'Add New Place' to get started!"
+              You haven't listed any places yet. Click 'Add New Place' to get started!
             </p>
           )}
         </div>

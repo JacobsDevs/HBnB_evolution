@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getAllPlaces } from '../services/api';
 import './PlaceResults.css';
+import PlaceCard from '../components/PlaceCard';
 
 const PlaceResults = () => {
   // State variables to manage component data and UI state
@@ -310,20 +311,9 @@ const PlaceResults = () => {
         ) : currentPlaces.length > 0 ? (
           // Map through the paginated places array to display place cards
           currentPlaces.map(place => (
-            <div key={place.id} className="place-card">
-              <div className="place-image">
-                {/* Placeholder for place image */}
-                <div className="placeholder-image"></div>
+            <div className="place-card" key={place.id}>
+                <PlaceCard key={place.id} id={place.id} title={place.title} description={place.description} price={place.price} />
               </div>
-              <div className="place-details">
-                <h3>{place.title}</h3>
-                <p className="place-price">${place.price} / night</p>
-                <p className="place-description">{place.description.substring(0, 100)}...</p>
-                <button className='view-details-btn' onClick={() => window.location.href = `/places/${place.id}`}>
-                  View Details
-                </button>
-              </div>
-            </div>
           ))
         ) : (
           <p className="no-results">No places found matching your search.</p>

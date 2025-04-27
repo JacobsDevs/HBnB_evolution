@@ -59,7 +59,7 @@
   
   .places-carousel::-webkit-scrollbar-track {
     background: #f0f0f0;
-    border-radius: 10px;
+    border-radius: px;
   }
   
   .places-carousel::-webkit-scrollbar-thumb {
@@ -68,13 +68,9 @@
   }
   
   .places-carousel .place-card {
-    flex: 0 0 300px;
+    flex: 0 0 auto;
     margin: 0 1rem;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    background-color: white;
+    border-radius: 1rem;
   }
   
   .places-carousel .place-card:hover {
