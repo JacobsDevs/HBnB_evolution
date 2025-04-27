@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './FeaturedPlaces.css';
 import api from '../services/api';
+import PlaceCard from './PlaceCard';
 
 const FeaturedPlaces = () => {
   // State management
