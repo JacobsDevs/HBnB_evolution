@@ -247,7 +247,7 @@ const AddPlace = () => {
             </div>
           </div>
 
-          <PlaceSearch />
+          {/* <PlaceSearch /> */}
 
           {/* Amenities selection section */}
           <div className="form-group amenities-section">
