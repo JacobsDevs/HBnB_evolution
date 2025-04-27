@@ -9,8 +9,8 @@ api = Namespace('reviews', description='Review Operations')
 # Define the review model(structure) for input validation and documentation
 # Request validation and swagger documentation (web dev use later potentially)
 review_model = api.model('Review', {
-    'text': fields.String(required=True, description='Leaving review comment'),
-    'rating': fields.Integer(required=True, description='Rating must be between 1 and 5'),
+    'text': fields.String(required=True, description='Review Text'),
+    'rating': fields.Integer(required=True, description='Rating (1-5)'),
     'place_id': fields.String(description='ID of the place being reviewed'),
     'user_id': fields.String(description='ID of the user writing the review')
 })
@@ -190,7 +190,7 @@ class ReviewResource(Resource):
 
         # Need to check if the review is the original writer (author) or has admin priv's
         # Non-admins cannot edit the review and or info
-        if not is_admin and review.get('user_id') != current_user_id:
+        if not is_admin and review.user_id != current_user_id:
             return {'error': 'Unauthorized action - not the review creator'}, 403
 
         # Extract the updated data from the request
@@ -250,7 +250,7 @@ class ReviewResource(Resource):
         if not review:
             return {'error': 'Review not found'}, 404
         # You need to check if the review that is getting deleted is the OG writer or Admin Only
-        if not is_admin and review.get('user_id') != current_user_id:
+        if not is_admin and review.user_id != current_user_id:
             return {'error': 'Unauthorized action - not the review author'}, 403
 
         # Use facade to delete the review

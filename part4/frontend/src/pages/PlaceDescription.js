@@ -1,16 +1,15 @@
-// This component displays detailed information about a specific place listing.
-// It fetches place data, owner information, and reviewer details to create a
-// comprehensive view of the place with reviews and amenities.
-
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLoaderData } from 'react-router-dom';
+import { useParams, Link, useLoaderData, useNavigate } from 'react-router-dom';
 import PlaceMap from '../components/PlaceMap';
+import ReviewForm from '../components/ReviewForm';
+import ReviewItem from '../components/ReviewItem';
 import { getPlaceById, getUserProfile } from '../services/api';
 import './PlaceDescription.css';
 
 const PlaceDescription = () => {
   // Get the component data from the loader
-  const data = useLoaderData()
+  const data = useLoaderData();
+  const navigate = useNavigate();
 
   // State variables
   const [place, setPlace] = useState(null);  // The place data
@@ -18,42 +17,125 @@ const PlaceDescription = () => {
   const [reviewers, setReviewers] = useState({});  // Map of user IDs to reviewer information
   const [loading, setLoading] = useState(true);  // Loading state
   const [error, setError] = useState(null);  // Error state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth state
+  const [currentUserId, setCurrentUserId] = useState(null); // Current user ID
+  const [reviewToEdit, setReviewToEdit] = useState(null); // Review being edited
 
-  // Fetch place details when component mounts or ID changes
+  // Fetch place details and reviewer information when component mounts or data changes
   useEffect(() => {
-    setLoading(true);
-
-    setPlace(data);
-    setOwner(data.owner);
-    /* TODO: [ ] I think this has good value.  I just need to implement leaving reviews so I can
-     * see what the original response gives us already.  Might even be worth a custom API call to
-     * getReviewerNamesFromList.
-
-    // If the place has reviews, fetch reviewer information for each unique reviewer
-    // This demonstrates client-side data enrichment - we're fetching related data to enhance
-    // the user experience (showing reviewer names instead of just IDs)
-    if (placeData.reviews && placeData.reviews.length > 0) {
-      // Get unique reviewer IDs to avoid duplicate API calls
-      const uniqueReviewerIds = [...new Set(placeData.reviews.map(review => review.user_id))];
-      const reviewersData = {};
-
-      // Use Promise.all to fetch all reviewer data in parallel
-      // This is more efficient than sequential requests
-      await Promise.all(uniqueReviewerIds.map(async (userId) => {
+    const fetchPlaceData = async () => {
+      setLoading(true);
+      
+      // Check if user is authenticated and get user ID
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      setIsAuthenticated(!!token);
+      setCurrentUserId(userId || null);
+  
+      setPlace(data);
+      setOwner(data.owner);
+      
+      // If the place has reviews, fetch reviewer information for each unique reviewer
+      if (data.reviews && data.reviews.length > 0) {
         try {
-          const userData = await getUserProfile(userId);
-          reviewersData[userId] = userData;
-        } catch (reviewerError) {
-          console.error(`Error fetching reviewer ${userId} details:`, reviewerError);
-          // Again, not a critical error - we can display reviews without reviewer details if needed
+          // Get unique reviewer IDs to avoid duplicate API calls
+          const uniqueReviewerIds = [...new Set(data.reviews.map(review => review.user_id))];
+          const reviewersData = {};
+  
+          // Use Promise.all to fetch all reviewer data in parallel
+          await Promise.all(uniqueReviewerIds.map(async (userId) => {
+            try {
+              const userData = await getUserProfile(userId);
+              reviewersData[userId] = userData;
+            } catch (reviewerError) {
+              console.error(`Error fetching reviewer ${userId} details:`, reviewerError);
+              // Not a critical error - we can display reviews without reviewer details if needed
+            }
+          }));
+  
+          setReviewers(reviewersData);
+        } catch (error) {
+          console.error('Error fetching reviewer details:', error);
+          // This error shouldn't prevent the component from rendering
         }
-      }));
+      }
+  
+      setLoading(false);
+    };
 
-      setReviewers(reviewersData);
-    } */
+    fetchPlaceData();
+  }, [data]); // Re-run when place data changes
 
-    setLoading(false);
-  }, [data]); // Re-run when place ID changes
+  // Handle after a new review is added
+  const handleReviewAdded = async (newReview) => {
+    try {
+      // Fetch updated place data to get the new review included
+      const placeId = place.id;
+      const updatedPlaceData = await getPlaceById(placeId);
+      setPlace(updatedPlaceData);
+      
+      // Fetch reviewer information for the new review
+      if (newReview.user_id && !reviewers[newReview.user_id]) {
+        try {
+          const userData = await getUserProfile(newReview.user_id);
+          setReviewers(prevReviewers => ({
+            ...prevReviewers,
+            [newReview.user_id]: userData
+          }));
+        } catch (error) {
+          console.error(`Error fetching new reviewer ${newReview.user_id} details:`, error);
+        }
+      }
+    } catch (err) {
+      console.error('Error refreshing place data after review:', err);
+    }
+  };
+
+  // Handle after a review is updated
+  const handleReviewUpdated = async (updatedReview) => {
+    // If updatedReview is null, it means edit was canceled
+    if (updatedReview === null) {
+      setReviewToEdit(null);
+      return;
+    }
+    
+    try {
+      // Fetch updated place data
+      const placeId = place.id;
+      const updatedPlaceData = await getPlaceById(placeId);
+      setPlace(updatedPlaceData);
+      
+      // Clear the edit state
+      setReviewToEdit(null);
+    } catch (err) {
+      console.error('Error refreshing place data after review update:', err);
+    }
+  };
+
+  // Handle when a review is deleted
+  const handleReviewDeleted = async (deletedReviewId) => {
+    try {
+      // Fetch updated place data
+      const placeId = place.id;
+      const updatedPlaceData = await getPlaceById(placeId);
+      setPlace(updatedPlaceData);
+    } catch (err) {
+      console.error('Error refreshing place data after review deletion:', err);
+    }
+  };
+
+  // Handle edit button click for a review
+  const handleEditClick = (review) => {
+    setReviewToEdit(review);
+    
+    // Scroll to the review form for better UX
+    setTimeout(() => {
+      const reviewFormElement = document.querySelector('.review-form-container.edit-mode');
+      if (reviewFormElement) {
+        reviewFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  };
 
   // Show loading state while data is being fetched
   if (loading) {
@@ -143,21 +225,36 @@ const PlaceDescription = () => {
                 : 'Anonymous User';
 
               return (
-                <div className="review-item" key={review.id}>
-                  <div className="review-header">
-                    <div className="review-author">By: {reviewerName}</div>
-                    <div className="review-rating">
-                      Rating: {review.rating}/5
-                    </div>
-                  </div>
-                  <p className="review-text">{review.text}</p>
-                  <div className="review-date">Posted on: {new Date(review.created_at).toLocaleDateString()}</div>
-                </div>
+                <ReviewItem
+                  key={review.id}
+                  review={review}
+                  reviewerName={reviewerName}
+                  currentUserId={currentUserId}
+                  onEditClick={handleEditClick}
+                  onReviewDeleted={handleReviewDeleted}
+                />
               );
             })}
           </div>
         ) : (
           <p className="no-data-message">No reviews yet. Be the first to leave a review!</p>
+        )}
+        
+        {/* Only show the review form if not in edit mode */}
+        {!reviewToEdit && (
+          <ReviewForm 
+            placeId={place.id} 
+            onReviewAdded={handleReviewAdded}
+          />
+        )}
+        
+        {/* Show edit form if a review is being edited */}
+        {reviewToEdit && (
+          <ReviewForm 
+            placeId={place.id}
+            reviewToEdit={reviewToEdit}
+            onReviewUpdated={handleReviewUpdated}
+          />
         )}
       </div>
 

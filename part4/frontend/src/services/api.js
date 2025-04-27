@@ -397,5 +397,75 @@ export const validateUser = async () => {
   };
 };
 
+
+// ============================== //
+// =========== Reviews ========== //
+// ============================== //
+
+/**
+ * Get reviews for a specific place
+ * 
+ * @param {string} placeId - The place ID
+ * @returns {Promise<Array>} - Array of review objects
+ */
+export const getReviewsByPlace = async (placeId) => {
+  try {
+    const response = await api.get(`/places/${placeId}/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reviews for place:', error);
+    throw error;
+  }
+};
+
+/**
+ * Create a new review for a place
+ * 
+ * @param {Object} reviewData - Review data including text, rating, and place_id
+ * @returns {Promise<Object>} - The created review
+ */
+export const createReview = async (reviewData) => {
+  try {
+    const response = await api.post('/reviews', reviewData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating review:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update an existing review
+ * 
+ * @param {string} reviewId - The review ID
+ * @param {Object} reviewData - Updated review data
+ * @returns {Promise<Object>} - The updated review
+ */
+export const updateReview = async (reviewId, reviewData) => {
+  try {
+    const response = await api.put(`/reviews/${reviewId}`, reviewData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating review:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a review
+ * 
+ * @param {string} reviewId - The review ID
+ * @returns {Promise<Object>} - Response from the API
+ */
+export const deleteReview = async (reviewId) => {
+  try {
+    const response = await api.delete(`/reviews/${reviewId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    throw error;
+  }
+};
+
 // Export the axios instance for use in other modules if needed
 export default api;

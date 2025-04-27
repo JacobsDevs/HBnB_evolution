@@ -1,0 +1,273 @@
+.review-form-container {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-form-container.edit-mode {
+    background-color: #f0f9ff;
+    border-left: 4px solid #3b82f6;
+  }
+  
+  .review-form-container h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+  }
+  
+  .review-error-message {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .review-success-message {
+    background-color: #dcfce7;
+    color: #166534;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .login-prompt {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #f0f9ff;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .login-prompt a {
+    color: #ff5a5f;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .login-prompt a:hover {
+    text-decoration: underline;
+  }
+  
+  .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .rating-group {
+    margin-bottom: 0.5rem;
+  }
+  
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .rating-star {
+    font-size: 1.5rem;
+    color: #d1d5db;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .rating-star:hover,
+  .rating-star.active {
+    color: #ff5a5f;
+  }
+  
+  .rating-value {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  textarea {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .submit-review-button {
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    flex: 3;
+  }
+  
+  .submit-review-button:hover {
+    background-color: #ff4146;
+  }
+  
+  .submit-review-button:disabled {
+    background-color: #ffb8bb;
+    cursor: not-allowed;
+  }
+  
+  .cancel-button {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    flex: 1;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  /* Review Item Styles */
+  .review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  
+  .edit-review-btn,
+  .delete-review-btn {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .edit-review-btn {
+    color: #3b82f6;
+  }
+  
+  .edit-review-btn:hover {
+    background-color: #eff6ff;
+  }
+  
+  .delete-review-btn {
+    color: #ef4444;
+  }
+  
+  .delete-review-btn:hover {
+    background-color: #fee2e2;
+  }
+  
+  /* Confirmation Modal */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-header h3 {
+    color: #333;
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  
+  .modal-body {
+    margin-bottom: 1.5rem;
+    color: #555;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .confirm-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background-color: #dc2626;
+  }
+  
+  .cancel-modal-button {
+    background-color: #e5e7eb;
+    color: #374151;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .cancel-modal-button:hover {
+    background-color: #d1d5db;
+  }
